@@ -187,6 +187,7 @@ export function Navbar() {
               ) : (
                 <a
                   key={item.label}
+                  href={item.label === 'Pricing' ? '#pricing' : '#testimonials'}
                   className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
                 >
                   {item.label}
@@ -197,18 +198,24 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <span className="text-white/70 text-[13px]">Log In</span>
-          <button className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium">
+          <Link href="/login" className="text-white/70 text-[13px]">
+            Log In
+          </Link>
+          <Link
+            href="/register"
+            className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium"
+          >
             Start Project
-          </button>
+          </Link>
         </div>
 
         <button
-  className="lg:hidden z-[1001] text-white"
-  onClick={() => setMobileOpen(true)}
->
-  <Menu className="h-6 w-6" />
-</button>
+          className="lg:hidden z-[1001] text-white"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
       </div>
 
       {activeMenu && (
@@ -226,10 +233,7 @@ export function Navbar() {
               transition={{ duration: 0.14, ease: [0.25, 1, 0.5, 1] }}
             >
               {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
-                <div
-                  key={menuKey}
-                  className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6"
-                >
+                <div key={menuKey} className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6">
                   {menus[menuKey].columns.map((column) => (
                     <div key={column.title} className="min-w-0">
                       <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
@@ -257,12 +261,8 @@ export function Navbar() {
                               </div>
 
                               <div className="min-w-0 pt-[1px]">
-                                <p className="text-[14px] leading-5 font-medium text-white">
-                                  {item.label}
-                                </p>
-                                <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">
-                                  {item.desc}
-                                </p>
+                                <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
+                                <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
                               </div>
                             </a>
                           )
@@ -276,93 +276,93 @@ export function Navbar() {
           </div>
         </motion.div>
       )}
-      
+
       {mobileOpen && (
-  <div className="lg:hidden fixed inset-0 z-[999] bg-black text-white overflow-y-auto">
-    <div className="min-h-screen px-[23px] pt-[178px] pb-24">
-      <button
-        onClick={() => setMobileOpen(false)}
-        className="fixed right-[23px] top-[74px] z-[1000] flex h-[60px] w-[60px] items-center justify-center rounded-full border border-white/[0.16] bg-black text-white/75"
-        aria-label="Close menu"
-      >
-        <X className="h-7 w-7" strokeWidth={1.8} />
-      </button>
-
-      <div className="space-y-[14px] mb-[55px]">
-        <Link
-          href="/register"
-          onClick={() => setMobileOpen(false)}
-          className="flex h-[76px] items-center justify-center rounded-[10px] bg-white text-[18px] font-semibold text-black"
-        >
-          Sign Up
-        </Link>
-
-        <Link
-          href="/login"
-          onClick={() => setMobileOpen(false)}
-          className="flex h-[76px] items-center justify-center rounded-[10px] border border-white/[0.16] text-[18px] font-semibold text-white/70"
-        >
-          Log In
-        </Link>
-      </div>
-
-      <div className="space-y-[34px]">
-        {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
-          <div key={menuKey}>
+        <div className="lg:hidden fixed inset-0 z-[999] bg-black text-white overflow-y-auto">
+          <div className="min-h-screen px-[23px] pt-[130px] pb-24">
             <button
-              onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
-              className="flex w-full items-center justify-between text-[38px] font-normal leading-none text-white/55"
+              onClick={() => setMobileOpen(false)}
+              className="fixed right-[23px] top-[64px] z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-full border border-white/[0.16] bg-black text-white/75"
+              aria-label="Close menu"
             >
-              {menuKey}
-              <ChevronDown
-                className={`h-8 w-8 transition-transform ${
-                  activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
-                }`}
-                strokeWidth={1.8}
-              />
+              <X className="h-5 w-5" strokeWidth={1.9} />
             </button>
 
-            {activeMenu === menuKey && (
-              <div className="pt-7 space-y-7">
-                {menus[menuKey].columns.flatMap((column) => column.items).map((item) => {
-                  const Icon = item.icon
+            <div className="space-y-[14px] mb-[48px]">
+              <Link
+                href="/register"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-[56px] items-center justify-center rounded-[9px] bg-white text-[17px] font-semibold text-black"
+              >
+                Sign Up
+              </Link>
 
-                  return (
-                    <a
-                      href="#"
-                      key={`${menuKey}-${item.label}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-5 text-white/65"
-                    >
-                      <Icon className="h-7 w-7 shrink-0" strokeWidth={1.7} />
-                      <span className="text-[28px] leading-none">{item.label}</span>
-                    </a>
-                  )
-                })}
-              </div>
-            )}
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex h-[56px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[17px] font-semibold text-white/70"
+              >
+                Log In
+              </Link>
+            </div>
+
+            <div className="space-y-[28px]">
+              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+                <div key={menuKey}>
+                  <button
+                    onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
+                    className="flex w-full items-center justify-between text-[24px] font-normal leading-none text-white/55"
+                  >
+                    {menuKey}
+                    <ChevronDown
+                      className={`h-6 w-6 transition-transform ${
+                        activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
+                      }`}
+                      strokeWidth={1.8}
+                    />
+                  </button>
+
+                  {activeMenu === menuKey && (
+                    <div className="pt-6 space-y-5">
+                      {menus[menuKey].columns.flatMap((column) => column.items).map((item) => {
+                        const Icon = item.icon
+
+                        return (
+                          <a
+                            href="#"
+                            key={`${menuKey}-${item.label}`}
+                            onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-4 text-white/65"
+                          >
+                            <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
+                            <span className="text-[18px] leading-none">{item.label}</span>
+                          </a>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <a
+                href="#pricing"
+                onClick={() => setMobileOpen(false)}
+                className="block text-[24px] leading-none text-white/55"
+              >
+                Pricing
+              </a>
+
+              <a
+                href="#testimonials"
+                onClick={() => setMobileOpen(false)}
+                className="block text-[24px] leading-none text-white/55"
+              >
+                Reviews
+              </a>
+            </div>
           </div>
-        ))}
-
-        <a
-          href="#pricing"
-          onClick={() => setMobileOpen(false)}
-          className="block text-[38px] leading-none text-white/55"
-        >
-          Pricing
-        </a>
-
-        <a
-          href="#testimonials"
-          onClick={() => setMobileOpen(false)}
-          className="block text-[38px] leading-none text-white/55"
-        >
-          Reviews
-        </a>
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
     </header>
   )
 }
