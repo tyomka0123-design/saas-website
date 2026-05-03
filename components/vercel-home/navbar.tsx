@@ -268,19 +268,58 @@ export function Navbar() {
       )}
 
       {mobileOpen && (
-        <div className="lg:hidden bg-black/95 border-t border-white/[0.07] px-4 py-4 space-y-1">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              className="flex items-center justify-between w-full px-3 py-2.5 rounded-md text-[14px] font-medium text-white/70 hover:text-white"
-              onClick={() => setMobileOpen(false)}
-            >
-              {item.label}
-              {item.dropdown && <ChevronDown className="w-4 h-4 opacity-50" />}
-            </a>
-          ))}
+  <div className="lg:hidden absolute left-3 right-3 top-[62px] rounded-2xl border border-white/[0.10] bg-black/95 backdrop-blur-xl p-4 shadow-[0_24px_80px_rgba(0,0,0,0.75)]">
+    <div className="space-y-4">
+      {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+        <div key={menuKey}>
+          <p className="mb-3 text-[12px] font-medium text-white/35">{menuKey}</p>
+
+          <div className="grid gap-3">
+            {menus[menuKey].columns.flatMap((column) => column.items.slice(0, 3)).map((item) => {
+              const Icon = item.icon
+
+              return (
+                <a
+                  href="#"
+                  key={`${menuKey}-${item.label}`}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-3"
+                >
+                  <div className="flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.09] bg-white/[0.03] text-white/65">
+                    <Icon className="h-4 w-4" strokeWidth={1.8} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
+                    <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
+                  </div>
+                </a>
+              )
+            })}
+          </div>
         </div>
-      )}
+      ))}
+
+      <div className="grid grid-cols-2 gap-3 border-t border-white/[0.08] pt-4">
+        <Link
+          href="/login"
+          onClick={() => setMobileOpen(false)}
+          className="flex h-11 items-center justify-center rounded-xl border border-white/[0.08] text-[14px] font-medium text-white/70"
+        >
+          Log In
+        </Link>
+
+        <Link
+          href="/register"
+          onClick={() => setMobileOpen(false)}
+          className="flex h-11 items-center justify-center rounded-xl bg-white text-[14px] font-semibold text-black"
+        >
+          Start Project
+        </Link>
+      </div>
+    </div>
+  </div>
+)}
     </header>
   )
 }
