@@ -5,9 +5,9 @@ import { motion } from 'framer-motion'
 export function CdnGridBackground() {
   return (
     <div className="absolute inset-0 z-0 flex items-start justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_44%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.055),transparent_46%)]" />
 
-      <div className="absolute top-[72px] h-[650px] w-[1080px] max-w-[96vw] opacity-95 [perspective:950px] max-md:top-[92px] max-md:h-[560px] max-md:w-[900px] max-md:max-w-[145vw]">
+      <div className="absolute top-[50%] h-[650px] w-[1080px] max-w-[96vw] -translate-y-1/2 opacity-95 [perspective:950px] max-md:top-[48%] max-md:h-[560px] max-md:w-[920px] max-md:max-w-[150vw]">
         <div className="relative h-full w-full [transform-style:preserve-3d]">
           <div className="absolute inset-0 border border-white/[0.13]" />
           <div className="absolute inset-0 [transform:translateZ(-260px)] border border-white/[0.10]" />
@@ -43,70 +43,66 @@ export function CdnGridBackground() {
             />
           ))}
 
-          {/* Blue beam — знизу/зліва до центру, як у Vercel */}
           <motion.div
-            className="absolute left-[7%] top-[76%] h-[18px] w-[230px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-sky-300 to-cyan-200 shadow-[0_0_34px_rgba(56,189,248,0.5)]"
+            className="absolute left-[6%] top-[76%] h-[16px] w-[250px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-sky-300 to-cyan-100 shadow-[0_0_38px_rgba(56,189,248,0.55)] blur-[0.15px] max-md:h-[12px] max-md:w-[190px]"
             animate={{
-              x: ['-160px', '180px', '560px'],
-              y: ['95px', '25px', '-35px'],
+              x: ['-180px', '160px', '520px'],
+              y: ['90px', '20px', '-35px'],
               opacity: [0, 0.95, 0],
-              scale: [0.7, 1, 0.6],
-            }}
-            transition={{
-              duration: 3.2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-
-          {/* Green beam — зверху/справа до центру */}
-          <motion.div
-            className="absolute right-[8%] top-[9%] h-[18px] w-[230px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-emerald-300 to-teal-200 shadow-[0_0_34px_rgba(45,212,191,0.45)]"
-            animate={{
-              x: ['170px', '-40px', '-360px'],
-              y: ['-80px', '10px', '130px'],
-              opacity: [0, 0.9, 0],
-              scale: [0.7, 1, 0.65],
-            }}
-            transition={{
-              duration: 3.7,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 0.8,
-            }}
-          />
-
-          {/* Small blue side beam */}
-          <motion.div
-            className="absolute right-[2%] top-[42%] h-[14px] w-[150px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-blue-300 to-sky-200 shadow-[0_0_28px_rgba(96,165,250,0.45)]"
-            animate={{
-              x: ['170px', '10px', '-330px'],
-              y: ['-12px', '12px', '60px'],
-              opacity: [0, 0.85, 0],
-              scale: [0.75, 1, 0.7],
+              scale: [0.7, 1, 0.58],
             }}
             transition={{
               duration: 3,
               repeat: Infinity,
               ease: 'easeInOut',
-              delay: 1.7,
             }}
           />
 
-          {/* Red beam */}
           <motion.div
-            className="absolute left-[34%] top-[5%] h-[15px] w-[160px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-red-400 to-red-200 shadow-[0_0_30px_rgba(248,113,113,0.4)]"
+            className="absolute right-[8%] top-[11%] h-[16px] w-[245px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-emerald-300 to-teal-100 shadow-[0_0_38px_rgba(45,212,191,0.5)] blur-[0.15px] max-md:h-[12px] max-md:w-[185px]"
             animate={{
-              x: ['-120px', '10px', '180px'],
-              y: ['-70px', '10px', '105px'],
+              x: ['180px', '-35px', '-360px'],
+              y: ['-80px', '8px', '120px'],
+              opacity: [0, 0.92, 0],
+              scale: [0.7, 1, 0.6],
+            }}
+            transition={{
+              duration: 3.4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.75,
+            }}
+          />
+
+          <motion.div
+            className="absolute right-[2%] top-[43%] h-[13px] w-[160px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-blue-300 to-sky-100 shadow-[0_0_30px_rgba(96,165,250,0.48)] blur-[0.15px] max-md:h-[10px] max-md:w-[125px]"
+            animate={{
+              x: ['170px', '10px', '-320px'],
+              y: ['-14px', '10px', '58px'],
+              opacity: [0, 0.88, 0],
+              scale: [0.72, 1, 0.68],
+            }}
+            transition={{
+              duration: 2.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 1.6,
+            }}
+          />
+
+          <motion.div
+            className="absolute left-[34%] top-[6%] h-[13px] w-[165px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-red-400 to-red-200 shadow-[0_0_30px_rgba(248,113,113,0.42)] blur-[0.15px] max-md:h-[10px] max-md:w-[120px]"
+            animate={{
+              x: ['-120px', '8px', '170px'],
+              y: ['-65px', '8px', '100px'],
               opacity: [0, 0.75, 0],
               scale: [0.75, 1, 0.65],
             }}
             transition={{
-              duration: 3.5,
+              duration: 3.25,
               repeat: Infinity,
               ease: 'easeInOut',
-              delay: 2.4,
+              delay: 2.35,
             }}
           />
         </div>
@@ -114,8 +110,8 @@ export function CdnGridBackground() {
 
       <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent" />
-      <div className="absolute left-0 top-0 h-full w-[20%] bg-gradient-to-r from-black to-transparent" />
-      <div className="absolute right-0 top-0 h-full w-[20%] bg-gradient-to-l from-black to-transparent" />
+      <div className="absolute left-0 top-0 h-full w-[18%] bg-gradient-to-r from-black to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-[18%] bg-gradient-to-l from-black to-transparent" />
     </div>
   )
 }
