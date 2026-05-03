@@ -239,7 +239,7 @@ export function Navbar() {
               className="flex h-full"
               initial={false}
               animate={{ x: `-${menuIndex * 100}%` }}
-              transition={{ duration: 0.14, ease: [0.25, 1, 0.5, 1] }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             >
               {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
                 <div key={menuKey} className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6">
@@ -259,7 +259,7 @@ export function Navbar() {
                               className="flex min-h-[50px] items-start gap-3"
                             >
                               <div
-                                className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-all ${
+                                className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
                                   active
                                     ? 'bg-white text-black border-white'
                                     : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
