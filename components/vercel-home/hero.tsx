@@ -9,19 +9,19 @@ export function Hero() {
     <section className="relative min-h-screen overflow-hidden bg-black pt-24">
       <CdnGridBackground />
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl flex-col items-center px-4 text-center">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl flex-col items-center justify-center px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mt-2 mb-8 inline-flex items-center gap-2 rounded-full border border-white/[0.14] bg-black/50 px-4 py-2 text-[13px] text-white/55 backdrop-blur-md"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.14] bg-black/55 px-4 py-2 text-[13px] text-white/55 backdrop-blur-md"
         >
           <Sparkles className="h-3.5 w-3.5" />
           Premium web development for ambitious brands
           <ArrowRight className="h-3.5 w-3.5" />
         </motion.div>
 
-        <div className="relative w-full max-w-[820px] border border-white/[0.055] bg-black/70 px-4 py-10 shadow-[0_0_90px_rgba(0,0,0,0.75)] backdrop-blur-[2px]">
+        <div className="relative mx-auto w-full max-w-[820px] border border-white/[0.06] bg-black px-6 py-14 shadow-[0_0_120px_rgba(0,0,0,0.9)]">
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
