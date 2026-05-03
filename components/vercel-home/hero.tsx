@@ -22,16 +22,15 @@ export function Hero() {
         </motion.div>
 
         {/* HERO CARD */}
-        <div className="relative w-full max-w-[720px] border border-white/[0.08] bg-black/70 px-5 py-12 shadow-[0_0_90px_rgba(255,255,255,0.035)] backdrop-blur-[2px] md:px-12 md:py-16">
-
-          {/* + CORNER */}
-<div className="pointer-events-none absolute right-0 bottom-0 z-[80] translate-x-[50%] translate-y-[50%]">
-  <div className="relative h-[18px] w-[18px]">
-    <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/75" />
-    <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/75" />
+        <div className="relative w-full max-w-[720px] overflow-visible border border-white/[0.08] bg-black/70 px-5 py-12 shadow-[0_0_90px_rgba(255,255,255,0.035)] backdrop-blur-[2px] md:px-12 md:py-16">
+  
+  {/* + CORNER FIXED */}
+  <div className="pointer-events-none absolute bottom-0 right-0 z-[100] translate-x-1/2 translate-y-1/2">
+    <div className="relative h-[16px] w-[16px]">
+      <div className="absolute left-1/2 top-0 h-full w-[1px] -translate-x-1/2 bg-white/80" />
+      <div className="absolute top-1/2 left-0 h-[1px] w-full -translate-y-1/2 bg-white/80" />
+    </div>
   </div>
-</div>
-
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
