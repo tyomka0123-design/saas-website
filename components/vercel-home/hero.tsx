@@ -9,24 +9,24 @@ export function Hero() {
     <section className="relative min-h-screen overflow-hidden bg-black pt-24">
       <CdnGridBackground />
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl flex-col items-center justify-center px-4 text-center">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl flex-col items-center px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.14] bg-black/55 px-4 py-2 text-[13px] text-white/55 backdrop-blur-md"
+          className="mt-2 mb-8 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.035] px-4 py-2 text-[13px] text-white/55 backdrop-blur-md"
         >
           <Sparkles className="h-3.5 w-3.5" />
           Premium web development for ambitious brands
           <ArrowRight className="h-3.5 w-3.5" />
         </motion.div>
 
-        <div className="relative mx-auto w-full max-w-[820px] border border-white/[0.06] bg-black px-6 py-14 shadow-[0_0_120px_rgba(0,0,0,0.9)]">
+        <div className="relative w-full max-w-[720px] border border-white/[0.08] bg-black/70 px-5 py-12 shadow-[0_0_90px_rgba(255,255,255,0.035)] backdrop-blur-[2px] md:px-12 md:py-16">
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="bg-gradient-to-b from-white via-white to-white/55 bg-clip-text text-[48px] font-bold leading-[0.98] tracking-[-0.055em] text-transparent sm:text-[70px] md:text-[86px]"
+            className="bg-gradient-to-b from-white via-white to-white/55 bg-clip-text text-[48px] font-bold leading-[0.98] tracking-[-0.055em] text-transparent sm:text-[70px] md:text-[82px]"
           >
             Build & deploy
             <br />
@@ -39,7 +39,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.16 }}
-            className="mx-auto mt-8 max-w-[660px] text-[15px] leading-7 text-white/48 md:text-[17px]"
+            className="mx-auto mt-8 max-w-[620px] text-[15px] leading-7 text-white/48 md:text-[17px]"
           >
             Apex Studio creates premium websites, dashboards, and digital platforms that
             look expensive, load fast, and convert visitors into clients.
@@ -60,7 +60,7 @@ export function Hero() {
 
             <a
               href="#services"
-              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-white/[0.15] bg-black/45 px-7 text-[15px] font-medium text-white/75 transition hover:bg-white/[0.07] sm:w-auto"
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-white/[0.13] bg-black/45 px-7 text-[15px] font-medium text-white/75 transition hover:bg-white/[0.07] sm:w-auto"
             >
               View Services
               <ArrowRight className="h-4 w-4" />
