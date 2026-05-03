@@ -203,24 +203,26 @@ export function Navbar() {
         </div>
 
         <button
-  className="lg:hidden z-[1001] relative h-7 w-7 text-white"
+  className="lg:hidden z-[1001] relative h-7 w-7"
   onClick={() => setMobileOpen(!mobileOpen)}
   aria-label="Toggle menu"
 >
   <span
-    className={`absolute left-[5px] top-[8px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
-      mobileOpen ? 'top-1/2 rotate-45' : ''
+    className={`absolute left-1/2 top-1/2 h-[1.5px] w-[18px] bg-white rounded-full transition-all duration-300 ${
+      mobileOpen ? 'rotate-45' : '-translate-y-[6px] -translate-x-1/2'
+    }`}
+    style={{ transformOrigin: 'center' }}
+  />
+  <span
+    className={`absolute left-1/2 top-1/2 h-[1.5px] w-[18px] bg-white rounded-full transition-all duration-300 ${
+      mobileOpen ? 'opacity-0' : '-translate-x-1/2'
     }`}
   />
   <span
-    className={`absolute left-[5px] top-[14px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
-      mobileOpen ? 'opacity-0' : ''
+    className={`absolute left-1/2 top-1/2 h-[1.5px] w-[18px] bg-white rounded-full transition-all duration-300 ${
+      mobileOpen ? '-rotate-45' : 'translate-y-[6px] -translate-x-1/2'
     }`}
-  />
-  <span
-    className={`absolute left-[5px] top-[20px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
-      mobileOpen ? 'top-1/2 -rotate-45' : ''
-    }`}
+    style={{ transformOrigin: 'center' }}
   />
 </button>
       </div>
