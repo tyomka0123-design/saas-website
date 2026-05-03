@@ -203,9 +203,12 @@ export function Navbar() {
           </button>
         </div>
 
-        <button className="lg:hidden z-[1001] text-white" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X /> : <Menu />}
-        </button>
+        <button
+  className="lg:hidden z-[1001] text-white"
+  onClick={() => setMobileOpen(true)}
+>
+  <Menu className="h-6 w-6" />
+</button>
       </div>
 
       {activeMenu && (
@@ -276,19 +279,20 @@ export function Navbar() {
       
       {mobileOpen && (
   <div className="lg:hidden fixed inset-0 z-[999] bg-black text-white overflow-y-auto">
-    <div className="min-h-screen px-6 pt-[140px] pb-28">
+    <div className="min-h-screen px-[23px] pt-[178px] pb-24">
       <button
         onClick={() => setMobileOpen(false)}
-        className="fixed right-6 top-[92px] z-[1000] flex h-12 w-12 items-center justify-center rounded-full border border-white/[0.14] bg-black text-white/80"
+        className="fixed right-[23px] top-[74px] z-[1000] flex h-[60px] w-[60px] items-center justify-center rounded-full border border-white/[0.16] bg-black text-white/75"
+        aria-label="Close menu"
       >
-        <X className="h-6 w-6" />
+        <X className="h-7 w-7" strokeWidth={1.8} />
       </button>
 
-      <div className="space-y-3 mb-12">
+      <div className="space-y-[14px] mb-[55px]">
         <Link
           href="/register"
           onClick={() => setMobileOpen(false)}
-          className="flex h-14 items-center justify-center rounded-lg bg-white text-[17px] font-semibold text-black"
+          className="flex h-[76px] items-center justify-center rounded-[10px] bg-white text-[18px] font-semibold text-black"
         >
           Sign Up
         </Link>
@@ -296,29 +300,30 @@ export function Navbar() {
         <Link
           href="/login"
           onClick={() => setMobileOpen(false)}
-          className="flex h-14 items-center justify-center rounded-lg border border-white/[0.16] text-[17px] font-semibold text-white/80"
+          className="flex h-[76px] items-center justify-center rounded-[10px] border border-white/[0.16] text-[18px] font-semibold text-white/70"
         >
           Log In
         </Link>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-[34px]">
         {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
           <div key={menuKey}>
             <button
               onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
-              className="flex w-full items-center justify-between py-4 text-[28px] font-normal text-white/55"
+              className="flex w-full items-center justify-between text-[38px] font-normal leading-none text-white/55"
             >
               {menuKey}
               <ChevronDown
-                className={`h-6 w-6 transition-transform ${
+                className={`h-8 w-8 transition-transform ${
                   activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
                 }`}
+                strokeWidth={1.8}
               />
             </button>
 
             {activeMenu === menuKey && (
-              <div className="pb-5">
+              <div className="pt-7 space-y-7">
                 {menus[menuKey].columns.flatMap((column) => column.items).map((item) => {
                   const Icon = item.icon
 
@@ -327,10 +332,10 @@ export function Navbar() {
                       href="#"
                       key={`${menuKey}-${item.label}`}
                       onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-4 py-4 text-white/70"
+                      className="flex items-center gap-5 text-white/65"
                     >
-                      <Icon className="h-6 w-6 shrink-0" strokeWidth={1.8} />
-                      <span className="text-[25px] leading-none">{item.label}</span>
+                      <Icon className="h-7 w-7 shrink-0" strokeWidth={1.7} />
+                      <span className="text-[28px] leading-none">{item.label}</span>
                     </a>
                   )
                 })}
@@ -339,22 +344,21 @@ export function Navbar() {
           </div>
         ))}
 
-        <a href="#pricing" className="block py-4 text-[28px] text-white/55">
+        <a
+          href="#pricing"
+          onClick={() => setMobileOpen(false)}
+          className="block text-[38px] leading-none text-white/55"
+        >
           Pricing
         </a>
 
-        <a href="#testimonials" className="block py-4 text-[28px] text-white/55">
+        <a
+          href="#testimonials"
+          onClick={() => setMobileOpen(false)}
+          className="block text-[38px] leading-none text-white/55"
+        >
           Reviews
         </a>
-      </div>
-
-      <div className="mt-10 border-t border-white/[0.12] pt-6">
-        <div className="flex items-center justify-between">
-          <span className="text-[24px] text-white/55">Theme</span>
-          <div className="rounded-full border border-white/[0.14] px-4 py-2 text-white/50">
-            ◐
-          </div>
-        </div>
       </div>
     </div>
   </div>
