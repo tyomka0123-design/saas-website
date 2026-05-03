@@ -12,7 +12,6 @@ import {
   Globe,
   LayoutDashboard,
   Mail,
-  Menu,
   Rocket,
   Search,
   ShieldCheck,
@@ -21,10 +20,9 @@ import {
   Triangle,
   Users,
   Workflow,
-  X,
   Zap,
 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const menus = {
   Services: {
@@ -176,9 +174,7 @@ export function Navbar() {
                     setActiveMenu(item.label as keyof typeof menus)
                   }}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                    activeMenu === item.label
-                      ? 'bg-white/[0.12] text-white'
-                      : 'text-white/65 hover:text-white'
+                    activeMenu === item.label ? 'bg-white/[0.12] text-white' : 'text-white/65 hover:text-white'
                   }`}
                 >
                   {item.label}
@@ -201,20 +197,31 @@ export function Navbar() {
           <Link href="/login" className="text-white/70 text-[13px]">
             Log In
           </Link>
-          <Link
-            href="/register"
-            className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium"
-          >
+          <Link href="/register" className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium">
             Start Project
           </Link>
         </div>
 
         <button
-          className="lg:hidden z-[1001] text-white"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open menu"
+          className="lg:hidden z-[1001] relative h-8 w-8 text-white"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label="Toggle menu"
         >
-          <Menu className="h-6 w-6" />
+          <span
+            className={`absolute left-1 top-[9px] h-[2px] w-6 bg-white transition-all duration-300 ${
+              mobileOpen ? 'top-1/2 rotate-45' : ''
+            }`}
+          />
+          <span
+            className={`absolute left-1 top-[15px] h-[2px] w-6 bg-white transition-all duration-300 ${
+              mobileOpen ? 'opacity-0' : ''
+            }`}
+          />
+          <span
+            className={`absolute left-1 top-[21px] h-[2px] w-6 bg-white transition-all duration-300 ${
+              mobileOpen ? 'top-1/2 -rotate-45' : ''
+            }`}
+          />
         </button>
       </div>
 
@@ -237,7 +244,6 @@ export function Navbar() {
                   {menus[menuKey].columns.map((column) => (
                     <div key={column.title} className="min-w-0">
                       <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
-
                       <div className="space-y-3">
                         {column.items.map((item) => {
                           const Icon = item.icon
@@ -259,7 +265,6 @@ export function Navbar() {
                               >
                                 <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
                               </div>
-
                               <div className="min-w-0 pt-[1px]">
                                 <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
                                 <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
@@ -277,92 +282,105 @@ export function Navbar() {
         </motion.div>
       )}
 
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-[999] bg-black text-white overflow-y-auto">
-          <div className="min-h-screen px-[23px] pt-[130px] pb-24">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="fixed right-[23px] top-[64px] z-[1000] flex h-[44px] w-[44px] items-center justify-center rounded-full border border-white/[0.16] bg-black text-white/75"
-              aria-label="Close menu"
-            >
-              <X className="h-5 w-5" strokeWidth={1.9} />
-            </button>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden fixed inset-0 z-[999] bg-black text-white overflow-y-auto"
+          >
+            <div className="min-h-screen px-[23px] pt-[118px] pb-24">
+              <div className="space-y-[12px] mb-[42px]">
+                <Link
+                  href="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-[48px] items-center justify-center rounded-[9px] bg-white text-[15px] font-semibold text-black"
+                >
+                  Sign Up
+                </Link>
 
-            <div className="space-y-[14px] mb-[48px]">
-              <Link
-                href="/register"
-                onClick={() => setMobileOpen(false)}
-                className="flex h-[56px] items-center justify-center rounded-[9px] bg-white text-[17px] font-semibold text-black"
-              >
-                Sign Up
-              </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
+                >
+                  Log In
+                </Link>
+              </div>
 
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="flex h-[56px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[17px] font-semibold text-white/70"
-              >
-                Log In
-              </Link>
+              <div className="space-y-[24px]">
+                {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+                  <div key={menuKey}>
+                    <button
+                      onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
+                      className="flex w-full items-center justify-between text-[20px] font-normal leading-none text-white/55"
+                    >
+                      {menuKey}
+                      <ChevronDown
+                        className={`h-5 w-5 transition-transform duration-300 ${
+                          activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
+                        }`}
+                        strokeWidth={1.8}
+                      />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {activeMenu === menuKey && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-5 space-y-4">
+                            {menus[menuKey].columns.flatMap((column) => column.items).map((item, index) => {
+                              const Icon = item.icon
+
+                              return (
+                                <motion.a
+                                  href="#"
+                                  key={`${menuKey}-${item.label}`}
+                                  onClick={() => setMobileOpen(false)}
+                                  initial={{ opacity: 0, x: -8 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ duration: 0.18, delay: index * 0.015 }}
+                                  className="flex items-center gap-4 text-white/65"
+                                >
+                                  <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
+                                  <span className="text-[15px] leading-none">{item.label}</span>
+                                </motion.a>
+                              )
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+
+                <a
+                  href="#pricing"
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-[20px] leading-none text-white/55"
+                >
+                  Pricing
+                </a>
+
+                <a
+                  href="#testimonials"
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-[20px] leading-none text-white/55"
+                >
+                  Reviews
+                </a>
+              </div>
             </div>
-
-            <div className="space-y-[28px]">
-              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
-                <div key={menuKey}>
-                  <button
-                    onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
-                    className="flex w-full items-center justify-between text-[24px] font-normal leading-none text-white/55"
-                  >
-                    {menuKey}
-                    <ChevronDown
-                      className={`h-6 w-6 transition-transform ${
-                        activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
-                      }`}
-                      strokeWidth={1.8}
-                    />
-                  </button>
-
-                  {activeMenu === menuKey && (
-                    <div className="pt-6 space-y-5">
-                      {menus[menuKey].columns.flatMap((column) => column.items).map((item) => {
-                        const Icon = item.icon
-
-                        return (
-                          <a
-                            href="#"
-                            key={`${menuKey}-${item.label}`}
-                            onClick={() => setMobileOpen(false)}
-                            className="flex items-center gap-4 text-white/65"
-                          >
-                            <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
-                            <span className="text-[18px] leading-none">{item.label}</span>
-                          </a>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              <a
-                href="#pricing"
-                onClick={() => setMobileOpen(false)}
-                className="block text-[24px] leading-none text-white/55"
-              >
-                Pricing
-              </a>
-
-              <a
-                href="#testimonials"
-                onClick={() => setMobileOpen(false)}
-                className="block text-[24px] leading-none text-white/55"
-              >
-                Reviews
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
