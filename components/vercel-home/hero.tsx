@@ -21,7 +21,7 @@ export function Hero() {
           <ArrowRight className="h-3.5 w-3.5" />
         </motion.div>
 
-        <div className="relative w-full max-w-[820px] px-4 py-10">
+        <div className="relative w-full max-w-[820px] border border-white/[0.055] bg-black/70 px-4 py-10 shadow-[0_0_90px_rgba(0,0,0,0.75)] backdrop-blur-[2px]">
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
