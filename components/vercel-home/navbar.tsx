@@ -148,7 +148,11 @@ export function Navbar() {
               item.dropdown ? (
                 <button
                   key={item.label}
-                  onMouseEnter={() => setActiveMenu(item.label as keyof typeof menus)}
+                  onMouseEnter={() => {
+  setTimeout(() => {
+    setActiveMenu(item.label as keyof typeof menus)
+  }, 40) // 40ms пауза (дуже приємно відчувається)
+}}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-medium transition-all duration-150 ${
                     activeMenu === item.label
                       ? 'bg-white/[0.12] text-white'
@@ -198,18 +202,16 @@ export function Navbar() {
           initial={{ opacity: 0, y: -8, scale: 0.985 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="hidden lg:block absolute left-1/2 top-[58px] w-[768px] -translate-x-1/2 rounded-2xl border border-white/[0.10] bg-black/95 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl overflow-hidden"
+          className="hidden lg:block absolute left-[220px] top-[58px] w-[768px] rounded-2xl border border-white/[0.10] bg-black/95 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl overflow-hidden"
         >
           <div className="relative w-full overflow-hidden">
             <motion.div
               className="flex"
               animate={{ x: `-${menuIndex * 100}%` }}
               transition={{
-                type: 'spring',
-                stiffness: 160,
-                damping: 24,
-                mass: 0.8,
-              }}
+  duration: 0.18,
+  ease: [0.25, 1, 0.5, 1], // швидкий snap як у Vercel
+}}
             >
               {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
                 <div
