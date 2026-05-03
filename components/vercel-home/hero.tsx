@@ -23,14 +23,14 @@ export function Hero() {
 
         <div className="relative z-20 w-full max-w-[720px] overflow-visible border border-white/[0.08] bg-black/70 px-5 py-12 shadow-[0_0_90px_rgba(255,255,255,0.035)] backdrop-blur-[2px] md:px-12 md:py-16">
           <svg
-            className="pointer-events-none absolute -bottom-[8px] -right-[8px] z-[999] h-4 w-4 text-white/75"
-            viewBox="0 0 16 16"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
-            <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
-          </svg>
+  className="pointer-events-none absolute bottom-[2px] right-[2px] z-[999] h-4 w-4 text-white/75"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
 
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
