@@ -35,16 +35,17 @@ export function CdnGridBackground() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
+    // 🔥 ЧІТКІША СІТКА
     const line = (
       a: { x: number; y: number },
       b: { x: number; y: number },
-      alpha = 0.13
+      alpha = 0.2
     ) => {
       ctx.beginPath()
       ctx.moveTo(a.x, a.y)
       ctx.lineTo(b.x, b.y)
       ctx.strokeStyle = `rgba(255,255,255,${alpha})`
-      ctx.lineWidth = 1
+      ctx.lineWidth = 1.15
       ctx.stroke()
     }
 
@@ -69,7 +70,7 @@ export function CdnGridBackground() {
       gradient.addColorStop(1, `rgba(${color},0)`)
 
       ctx.shadowColor = `rgba(${color},${opacity})`
-      ctx.shadowBlur = 18
+      ctx.shadowBlur = 22
       ctx.fillStyle = gradient
 
       ctx.beginPath()
@@ -114,7 +115,7 @@ export function CdnGridBackground() {
       const backBL = { x: backLeft, y: backBottom }
       const backBR = { x: backRight, y: backBottom }
 
-      // main room
+      // 🔥 MAIN GRID (сильніший)
       ;[
         [outerTL, outerTR],
         [outerTR, outerBR],
@@ -128,38 +129,36 @@ export function CdnGridBackground() {
         [outerTR, backTR],
         [outerBL, backBL],
         [outerBR, backBR],
-      ].forEach(([a, b]) => line(a, b, 0.14))
+      ].forEach(([a, b]) => line(a, b, 0.22))
 
-      // back wall vertical
+      // back wall
       for (let i = 1; i < 6; i++) {
         const x = lerp(backLeft, backRight, i / 6)
-        line({ x, y: backTop }, { x, y: backBottom }, 0.105)
+        line({ x, y: backTop }, { x, y: backBottom }, 0.18)
       }
 
-      // back wall horizontal
       for (let i = 1; i < 4; i++) {
         const y = lerp(backTop, backBottom, i / 4)
-        line({ x: backLeft, y }, { x: backRight, y }, 0.105)
+        line({ x: backLeft, y }, { x: backRight, y }, 0.18)
       }
 
-      // ceiling + floor depth lines
+      // depth
       for (let i = 1; i < 8; i++) {
-        line(point(outerTL, outerTR, i / 8), point(backTL, backTR, i / 8), 0.1)
-        line(point(outerBL, outerBR, i / 8), point(backBL, backBR, i / 8), 0.12)
+        line(point(outerTL, outerTR, i / 8), point(backTL, backTR, i / 8), 0.17)
+        line(point(outerBL, outerBR, i / 8), point(backBL, backBR, i / 8), 0.19)
       }
 
-      // floor / ceiling horizontal layers
       for (let i = 1; i < 5; i++) {
-        line(point(outerTL, backTL, i / 5), point(outerTR, backTR, i / 5), 0.09)
-        line(point(outerBL, backBL, i / 5), point(outerBR, backBR, i / 5), 0.115)
+        line(point(outerTL, backTL, i / 5), point(outerTR, backTR, i / 5), 0.15)
+        line(point(outerBL, backBL, i / 5), point(outerBR, backBR, i / 5), 0.18)
       }
 
-      // side wall horizontal lines
       for (let i = 1; i < 5; i++) {
-        line(point(outerTL, outerBL, i / 5), point(backTL, backBL, i / 5), 0.1)
-        line(point(outerTR, outerBR, i / 5), point(backTR, backBR, i / 5), 0.1)
+        line(point(outerTL, outerBL, i / 5), point(backTL, backBL, i / 5), 0.16)
+        line(point(outerTR, outerBR, i / 5), point(backTR, backBR, i / 5), 0.16)
       }
 
+      // ⚡ СВІТЛО ШВИДШЕ
       const beams = [
         {
           a: point(outerBL, outerBR, 0.1),
@@ -167,7 +166,7 @@ export function CdnGridBackground() {
           color: '56,189,248',
           length: 240,
           width: 17,
-          speed: 0.2,
+          speed: 0.32,
           delay: 0,
         },
         {
@@ -176,7 +175,7 @@ export function CdnGridBackground() {
           color: '45,212,191',
           length: 210,
           width: 16,
-          speed: 0.18,
+          speed: 0.3,
           delay: 0.35,
         },
         {
@@ -185,7 +184,7 @@ export function CdnGridBackground() {
           color: '96,165,250',
           length: 170,
           width: 15,
-          speed: 0.22,
+          speed: 0.34,
           delay: 0.58,
         },
         {
@@ -194,7 +193,7 @@ export function CdnGridBackground() {
           color: '248,113,113',
           length: 150,
           width: 14,
-          speed: 0.16,
+          speed: 0.26,
           delay: 0.78,
         },
       ]
@@ -206,10 +205,10 @@ export function CdnGridBackground() {
         const angle = Math.atan2(b.b.y - b.a.y, b.b.x - b.a.x)
         const scale = lerp(1.15, 0.55, t)
 
-        beam(p.x, p.y, angle, b.length * scale, b.width * scale, b.color, fade * 0.9)
+        beam(p.x, p.y, angle, b.length * scale, b.width * scale, b.color, fade * 0.95)
       })
 
-      // center darkness WITHOUT visible square
+      // darkness
       const center = ctx.createRadialGradient(cx, h * 0.45, 0, cx, h * 0.45, 520)
       center.addColorStop(0, 'rgba(0,0,0,0.96)')
       center.addColorStop(0.38, 'rgba(0,0,0,0.84)')
@@ -219,7 +218,6 @@ export function CdnGridBackground() {
       ctx.fillStyle = center
       ctx.fillRect(0, 0, w, h)
 
-      // global vignette
       const vignette = ctx.createRadialGradient(cx, h * 0.44, 0, cx, h * 0.44, Math.max(w, h) * 0.72)
       vignette.addColorStop(0, 'rgba(0,0,0,0)')
       vignette.addColorStop(0.58, 'rgba(0,0,0,0.2)')
@@ -241,5 +239,5 @@ export function CdnGridBackground() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden="true" />
+  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 }
