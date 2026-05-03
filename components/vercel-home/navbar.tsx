@@ -139,6 +139,13 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [mobileOpen])
+
   const menuIndex =
     activeMenu === 'Services' ? 0 : activeMenu === 'Process' ? 1 : activeMenu === 'Workflows' ? 2 : 0
 
@@ -266,56 +273,81 @@ export function Navbar() {
           </div>
         </motion.div>
       )}
-
+      
       {mobileOpen && (
-  <div className="lg:hidden absolute left-3 right-3 top-[62px] rounded-2xl border border-white/[0.10] bg-black/95 backdrop-blur-xl p-4 shadow-[0_24px_80px_rgba(0,0,0,0.75)]">
-    <div className="space-y-4">
-      {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
-        <div key={menuKey}>
-          <p className="mb-3 text-[12px] font-medium text-white/35">{menuKey}</p>
+  <div className="lg:hidden fixed inset-0 z-[999] bg-white text-black overflow-y-auto">
+    <div className="min-h-screen px-6 pt-28 pb-28">
+      <button
+        onClick={() => setMobileOpen(false)}
+        className="fixed right-6 top-20 z-[1000] flex h-12 w-12 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-sm"
+      >
+        <X className="h-6 w-6" />
+      </button>
 
-          <div className="grid gap-3">
-            {menus[menuKey].columns.flatMap((column) => column.items.slice(0, 3)).map((item) => {
-              const Icon = item.icon
-
-              return (
-                <a
-                  href="#"
-                  key={`${menuKey}-${item.label}`}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-3"
-                >
-                  <div className="flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.09] bg-white/[0.03] text-white/65">
-                    <Icon className="h-4 w-4" strokeWidth={1.8} />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
-                    <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
-                  </div>
-                </a>
-              )
-            })}
-          </div>
-        </div>
-      ))}
-
-      <div className="grid grid-cols-2 gap-3 border-t border-white/[0.08] pt-4">
-        <Link
-          href="/login"
-          onClick={() => setMobileOpen(false)}
-          className="flex h-11 items-center justify-center rounded-xl border border-white/[0.08] text-[14px] font-medium text-white/70"
-        >
-          Log In
-        </Link>
-
+      <div className="space-y-3 mb-9">
         <Link
           href="/register"
           onClick={() => setMobileOpen(false)}
-          className="flex h-11 items-center justify-center rounded-xl bg-white text-[14px] font-semibold text-black"
+          className="flex h-14 items-center justify-center rounded-lg bg-black text-[17px] font-semibold text-white"
         >
-          Start Project
+          Sign Up
         </Link>
+
+        <Link
+          href="/login"
+          onClick={() => setMobileOpen(false)}
+          className="flex h-14 items-center justify-center rounded-lg border border-black/10 text-[17px] font-semibold text-black"
+        >
+          Log In
+        </Link>
+      </div>
+
+      <div className="space-y-2">
+        {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+          <div key={menuKey}>
+            <button
+              onClick={() => setActiveMenu(activeMenu === menuKey ? null : menuKey)}
+              className={`flex w-full items-center justify-between rounded-lg px-0 py-4 text-[22px] ${
+                activeMenu === menuKey ? 'text-black' : 'text-black/65'
+              }`}
+            >
+              {menuKey}
+              <ChevronDown
+                className={`h-6 w-6 transition-transform ${
+                  activeMenu === menuKey ? 'rotate-180' : '-rotate-90'
+                }`}
+              />
+            </button>
+
+            {activeMenu === menuKey && (
+              <div className="pb-4">
+                {menus[menuKey].columns.flatMap((column) => column.items).map((item) => {
+                  const Icon = item.icon
+
+                  return (
+                    <a
+                      href="#"
+                      key={`${menuKey}-${item.label}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-4 rounded-lg py-4 text-black/70 active:bg-black/[0.04]"
+                    >
+                      <Icon className="h-6 w-6 shrink-0" strokeWidth={1.8} />
+                      <span className="text-[22px] leading-none">{item.label}</span>
+                    </a>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+
+        <a href="#pricing" className="block py-4 text-[22px] text-black/65">
+          Pricing
+        </a>
+
+        <a href="#testimonials" className="block py-4 text-[22px] text-black/65">
+          Reviews
+        </a>
       </div>
     </div>
   </div>
