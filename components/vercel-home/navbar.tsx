@@ -190,68 +190,81 @@ export function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {activeMenu && (
-          <motion.div
-            key={activeMenu}
-            initial={{ opacity: 0, y: -8, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.985 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block absolute left-1/2 top-[58px] w-[768px] -translate-x-1/2 rounded-2xl border border-white/[0.10] bg-black/95 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl overflow-hidden"
+      {activeMenu && (
+  <div className="hidden lg:block absolute left-1/2 top-[58px] w-[768px] -translate-x-1/2 rounded-2xl border border-white/[0.10] bg-black/95 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl overflow-hidden">
+
+    <div className="relative w-full overflow-hidden">
+      <motion.div
+        className="flex w-full"
+        animate={{
+          x:
+            activeMenu === 'Services'
+              ? '0%'
+              : activeMenu === 'Process'
+              ? '-100%'
+              : '-200%',
+        }}
+        transition={{
+          duration: 0.35,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+      >
+        {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+          <div
+            key={menuKey}
+            className="w-full shrink-0 p-5 grid gap-8"
+            style={{
+              gridTemplateColumns: `repeat(${menus[menuKey].columns.length}, minmax(0, 1fr))`,
+            }}
           >
-            <motion.div
-              key={`${activeMenu}-content`}
-              initial={{ x: 18, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -18, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="grid gap-8 p-5"
-              style={{
-                gridTemplateColumns: `repeat(${menus[activeMenu].columns.length}, minmax(0, 1fr))`,
-              }}
-            >
-              {menus[activeMenu].columns.map((column) => (
-                <div key={column.title}>
-                  <p className="mb-3 px-2 text-[13px] text-white/40">{column.title}</p>
+            {menus[menuKey].columns.map((column) => (
+              <div key={column.title}>
+                <p className="mb-3 px-2 text-[13px] text-white/40">
+                  {column.title}
+                </p>
 
-                  <div className="space-y-1">
-                    {column.items.map((item) => {
-                      const Icon = item.icon
-                      const active = hoveredItem === item.label
+                <div className="space-y-1">
+                  {column.items.map((item) => {
+                    const Icon = item.icon
+                    const active = hoveredItem === item.label
 
-                      return (
-                        <a
-                          href="#"
-                          key={item.label}
-                          onMouseEnter={() => setHoveredItem(item.label)}
-                          className="group flex gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/[0.055]"
+                    return (
+                      <a
+                        href="#"
+                        key={item.label}
+                        onMouseEnter={() => setHoveredItem(item.label)}
+                        className="group flex gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/[0.055]"
+                      >
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-all ${
+                            active
+                              ? 'bg-white text-black border-white'
+                              : 'bg-white/[0.03] text-white/55 border-white/[0.08] group-hover:text-white group-hover:border-white/20'
+                          }`}
                         >
-                          <div
-                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-all ${
-                              active
-                                ? 'bg-white text-black border-white'
-                                : 'bg-white/[0.03] text-white/55 border-white/[0.08] group-hover:text-white group-hover:border-white/20'
-                            }`}
-                          >
-                            <Icon className="h-4 w-4" />
-                          </div>
+                          <Icon className="h-4 w-4" />
+                        </div>
 
-                          <div>
-                            <p className="text-[14px] font-medium text-white">{item.label}</p>
-                            <p className="mt-0.5 text-[12px] leading-snug text-white/42">
-                              {item.desc}
-                            </p>
-                          </div>
-                        </a>
-                      )
-                    })}
-                  </div>
+                        <div>
+                          <p className="text-[14px] font-medium text-white">
+                            {item.label}
+                          </p>
+                          <p className="mt-0.5 text-[12px] leading-snug text-white/42">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </a>
+                    )
+                  })}
                 </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        )}
+              </div>
+            ))}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  </div>
+)}
       </AnimatePresence>
 
       {mobileOpen && (
