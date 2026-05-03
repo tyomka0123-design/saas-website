@@ -2,100 +2,185 @@
 
 import { motion } from 'framer-motion'
 
+function Beam({
+  className,
+  delay = 0,
+  duration = 4,
+}: {
+  className: string
+  delay?: number
+  duration?: number
+}) {
+  return (
+    <motion.div
+      className={`pointer-events-none absolute h-[18px] rounded-full ${className}`}
+      initial={{ opacity: 0, x: 0, y: 0, scaleX: 0.65 }}
+      animate={{
+        opacity: [0, 0.9, 0.65, 0],
+        x: ['0%', '42%', '88%', '118%'],
+        y: ['0%', '-10%', '-20%', '-26%'],
+        scaleX: [0.55, 1, 1.08, 0.7],
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        ease: [0.42, 0, 0.18, 1],
+      }}
+    />
+  )
+}
+
 export function CdnGridBackground() {
   return (
     <div className="absolute inset-0 z-0 flex items-start justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.055),transparent_42%)]" />
+      {/* soft center glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(255,255,255,0.06),transparent_38%)]" />
 
-      <div className="absolute top-[64px] h-[650px] w-[1060px] max-w-[92vw] opacity-90 [perspective:900px]">
+      {/* 3D room */}
+      <div className="absolute top-[72px] h-[650px] w-[1060px] max-w-[92vw] [perspective:920px]">
         <div className="relative h-full w-full [transform-style:preserve-3d]">
-          <div className="absolute inset-0 border border-white/[0.10]" />
+          {/* back panel */}
+          <div className="absolute left-[18%] top-[20%] h-[52%] w-[64%] border border-white/[0.105] bg-black/35" />
 
-          <div className="absolute left-0 top-0 h-full w-full [transform:translateZ(-260px)] border border-white/[0.08]" />
+          {/* outer frame */}
+          <div className="absolute inset-0 border border-white/[0.095]" />
 
-          <div className="absolute left-0 top-0 h-full w-full origin-left [transform:rotateY(58deg)] border-r border-white/[0.09]" />
-          <div className="absolute right-0 top-0 h-full w-full origin-right [transform:rotateY(-58deg)] border-l border-white/[0.09]" />
-          <div className="absolute left-0 top-0 h-full w-full origin-top [transform:rotateX(-58deg)] border-b border-white/[0.09]" />
-          <div className="absolute left-0 bottom-0 h-full w-full origin-bottom [transform:rotateX(58deg)] border-t border-white/[0.09]" />
+          {/* left wall */}
+          <div className="absolute left-0 top-0 h-full w-[32%] origin-right border-y border-l border-white/[0.075] [transform:skewY(18deg)]" />
 
-          {Array.from({ length: 7 }).map((_, i) => (
-            <div
-              key={`v-${i}`}
-              className="absolute top-0 h-full w-px bg-white/[0.08]"
-              style={{ left: `${12.5 + i * 12.5}%` }}
-            />
-          ))}
+          {/* right wall */}
+          <div className="absolute right-0 top-0 h-full w-[32%] origin-left border-y border-r border-white/[0.075] [transform:skewY(-18deg)]" />
 
+          {/* ceiling */}
+          <div className="absolute left-[18%] top-0 h-[20%] w-[64%] border-x border-t border-white/[0.075]" />
+
+          {/* floor */}
+          <div className="absolute bottom-0 left-[18%] h-[28%] w-[64%] border-x border-b border-white/[0.075]" />
+
+          {/* vertical back grid */}
           {Array.from({ length: 5 }).map((_, i) => (
             <div
-              key={`h-${i}`}
-              className="absolute left-0 h-px w-full bg-white/[0.08]"
-              style={{ top: `${16.6 + i * 16.6}%` }}
+              key={`back-v-${i}`}
+              className="absolute top-[20%] h-[52%] w-px bg-white/[0.075]"
+              style={{ left: `${28.5 + i * 10.75}%` }}
             />
           ))}
 
-          {Array.from({ length: 7 }).map((_, i) => (
+          {/* horizontal back grid */}
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
-              key={`depth-${i}`}
-              className="absolute left-1/2 top-1/2 h-px w-[125%] origin-left bg-white/[0.055]"
+              key={`back-h-${i}`}
+              className="absolute left-[18%] h-px w-[64%] bg-white/[0.075]"
+              style={{ top: `${33 + i * 13}%` }}
+            />
+          ))}
+
+          {/* perspective side lines */}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={`left-depth-${i}`}
+              className="absolute left-0 h-px w-[18%] origin-right bg-white/[0.07]"
               style={{
-                transform: `rotate(${[-28, -18, -9, 0, 9, 18, 28][i]}deg) translateX(-50%)`,
+                top: `${20 + i * 17.3}%`,
+                transform: 'rotate(18deg)',
               }}
             />
           ))}
 
-          <motion.div
-            className="absolute left-[8%] top-[78%] h-[22px] w-[190px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-cyan-300 via-sky-400 to-transparent blur-[0.2px]"
-            animate={{
-              x: ['-170px', '260px', '760px'],
-              y: ['110px', '35px', '-35px'],
-              opacity: [0, 1, 0],
-              scale: [0.7, 1, 0.65],
-            }}
-            transition={{
-              duration: 4.2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={`right-depth-${i}`}
+              className="absolute right-0 h-px w-[18%] origin-left bg-white/[0.07]"
+              style={{
+                top: `${20 + i * 17.3}%`,
+                transform: 'rotate(-18deg)',
+              }}
+            />
+          ))}
+
+          {/* floor perspective lines */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={`floor-line-${i}`}
+              className="absolute bottom-0 h-[28%] w-px origin-top bg-white/[0.065]"
+              style={{
+                left: `${24 + i * 10.4}%`,
+                transform: `skewX(${i < 3 ? 14 - i * 5 : -(i - 2) * 5}deg)`,
+              }}
+            />
+          ))}
+
+          {/* ceiling perspective lines */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={`ceil-line-${i}`}
+              className="absolute top-0 h-[20%] w-px origin-bottom bg-white/[0.055]"
+              style={{
+                left: `${24 + i * 10.4}%`,
+                transform: `skewX(${i < 3 ? -14 + i * 5 : (i - 2) * 5}deg)`,
+              }}
+            />
+          ))}
+
+          {/* cyan beam - left floor */}
+          <Beam
+            duration={4.8}
+            delay={0.2}
+            className="
+              left-[-7%] top-[78%] w-[230px] -skew-x-[24deg]
+              bg-[linear-gradient(90deg,transparent,rgba(125,211,252,0.95),rgba(56,189,248,0.7),transparent)]
+              shadow-[0_0_28px_rgba(56,189,248,0.38)]
+              blur-[0.2px]
+            "
           />
 
-          <motion.div
-            className="absolute right-[3%] top-[20%] h-[20px] w-[155px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-teal-300 via-cyan-300 to-transparent"
-            animate={{
-              x: ['260px', '70px', '-260px'],
-              y: ['-90px', '-10px', '80px'],
-              opacity: [0, 0.9, 0],
-              scale: [0.65, 1, 0.75],
-            }}
-            transition={{
-              duration: 5.1,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 1.1,
-            }}
+          {/* green beam - upper right */}
+          <Beam
+            duration={5.7}
+            delay={1.4}
+            className="
+              left-[73%] top-[12%] w-[210px] -skew-x-[24deg]
+              bg-[linear-gradient(90deg,transparent,rgba(94,234,212,0.95),rgba(45,212,191,0.55),transparent)]
+              shadow-[0_0_30px_rgba(45,212,191,0.35)]
+              blur-[0.2px]
+            "
           />
 
-          <motion.div
-            className="absolute right-[2%] top-[42%] h-[18px] w-[125px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-sky-300 via-blue-400 to-transparent"
-            animate={{
-              x: ['220px', '40px', '-420px'],
-              y: ['-20px', '18px', '70px'],
-              opacity: [0, 0.9, 0],
-            }}
-            transition={{
-              duration: 3.8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 2.2,
-            }}
+          {/* blue beam - right wall */}
+          <Beam
+            duration={4.3}
+            delay={2.4}
+            className="
+              left-[82%] top-[42%] w-[160px] -skew-x-[24deg]
+              bg-[linear-gradient(90deg,transparent,rgba(147,197,253,0.95),rgba(59,130,246,0.5),transparent)]
+              shadow-[0_0_26px_rgba(59,130,246,0.32)]
+              blur-[0.2px]
+            "
+          />
+
+          {/* tiny warm beam, very subtle */}
+          <Beam
+            duration={6.2}
+            delay={3.1}
+            className="
+              left-[31%] top-[4%] w-[120px] -skew-x-[24deg]
+              bg-[linear-gradient(90deg,transparent,rgba(248,113,113,0.45),rgba(248,113,113,0.25),transparent)]
+              shadow-[0_0_20px_rgba(248,113,113,0.18)]
+              blur-[0.4px]
+            "
           />
         </div>
       </div>
 
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black to-transparent" />
-      <div className="absolute left-0 top-0 h-full w-[22%] bg-gradient-to-r from-black to-transparent" />
-      <div className="absolute right-0 top-0 h-full w-[22%] bg-gradient-to-l from-black to-transparent" />
+      {/* dark masks */}
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-black/80 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black via-black/80 to-transparent" />
+      <div className="absolute left-0 top-0 h-full w-[18%] bg-gradient-to-r from-black to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-[18%] bg-gradient-to-l from-black to-transparent" />
+
+      {/* subtle vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_42%,rgba(0,0,0,0.72)_100%)]" />
     </div>
   )
 }
