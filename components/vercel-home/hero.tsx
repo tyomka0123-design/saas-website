@@ -21,7 +21,17 @@ export function Hero() {
           <ArrowRight className="h-3.5 w-3.5" />
         </motion.div>
 
+        {/* HERO CARD */}
         <div className="relative w-full max-w-[720px] border border-white/[0.08] bg-black/70 px-5 py-12 shadow-[0_0_90px_rgba(255,255,255,0.035)] backdrop-blur-[2px] md:px-12 md:py-16">
+
+          {/* + CORNER (Vercel style) */}
+          <div className="pointer-events-none absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2 opacity-70">
+            <div className="relative h-[14px] w-[14px] sm:h-[16px] sm:w-[16px]">
+              <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/60" />
+              <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/60" />
+            </div>
+          </div>
+
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
