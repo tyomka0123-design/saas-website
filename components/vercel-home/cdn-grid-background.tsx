@@ -89,8 +89,8 @@ export function CdnGridBackground() {
 
       const cx = w / 2
 
-      const outerW = Math.min(w * 0.86, 1120)
-      const outerH = Math.min(h * 0.73, 650)
+      const outerW = Math.min(w * 0.94, 1240)
+      const outerH = Math.min(h * 0.8, 720)
 
       const outerLeft = cx - outerW / 2
       const outerRight = cx + outerW / 2
@@ -153,10 +153,17 @@ export function CdnGridBackground() {
         line(point(outerBL, backBL, i / 5), point(outerBR, backBR, i / 5), 0.18)
       }
 
-      for (let i = 1; i < 5; i++) {
-        line(point(outerTL, outerBL, i / 5), point(backTL, backBL, i / 5), 0.16)
-        line(point(outerTR, outerBR, i / 5), point(backTR, backBR, i / 5), 0.16)
-      }
+      // side wall horizontal lines
+for (let i = 1; i < 6; i++) {
+  line(point(outerTL, outerBL, i / 6), point(backTL, backBL, i / 6), 0.16)
+  line(point(outerTR, outerBR, i / 6), point(backTR, backBR, i / 6), 0.16)
+}
+
+// side wall vertical subdivision lines
+for (let i = 1; i < 4; i++) {
+  line(point(outerTL, backTL, i / 4), point(outerBL, backBL, i / 4), 0.13)
+  line(point(outerTR, backTR, i / 4), point(outerBR, backBR, i / 4), 0.13)
+}
 
       // ⚡ СВІТЛО ШВИДШЕ
       const beams = [
