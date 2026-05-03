@@ -2,6 +2,43 @@
 
 import { motion } from 'framer-motion'
 
+function LightBeam({
+  className,
+  delay = 0,
+  duration = 3.8,
+  x,
+  y,
+  scale,
+}: {
+  className: string
+  delay?: number
+  duration?: number
+  x: string[]
+  y: string[]
+  scale?: number[]
+}) {
+  return (
+    <motion.div
+      className={`pointer-events-none absolute rounded-full blur-[0.5px] ${className}`}
+      animate={{
+        x,
+        y,
+        opacity: [0, 0.15, 0.95, 0.45, 0],
+        scale: scale ?? [0.72, 0.95, 1, 0.72],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: [0.45, 0, 0.2, 1],
+        delay,
+      }}
+    >
+      <div className="absolute inset-0 rounded-full bg-inherit blur-[10px] opacity-70" />
+      <div className="absolute inset-[2px] rounded-full bg-white/35 blur-[2px]" />
+    </motion.div>
+  )
+}
+
 export function CdnGridBackground() {
   return (
     <div className="absolute inset-0 z-0 flex items-start justify-center overflow-hidden bg-black">
@@ -43,67 +80,40 @@ export function CdnGridBackground() {
             />
           ))}
 
-          <motion.div
-            className="absolute left-[6%] top-[76%] h-[16px] w-[250px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-sky-300 to-cyan-100 shadow-[0_0_38px_rgba(56,189,248,0.55)] blur-[0.15px] max-md:h-[12px] max-md:w-[190px]"
-            animate={{
-              x: ['-180px', '160px', '520px'],
-              y: ['90px', '20px', '-35px'],
-              opacity: [0, 0.95, 0],
-              scale: [0.7, 1, 0.58],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+          {/* PREMIUM LIGHT BEAMS */}
+          <LightBeam
+            className="left-[5%] top-[76%] h-[10px] w-[270px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-cyan-200 to-sky-400 shadow-[0_0_42px_rgba(56,189,248,0.55)] max-md:h-[8px] max-md:w-[190px]"
+            x={['-210px', '120px', '520px']}
+            y={['105px', '28px', '-36px']}
+            scale={[0.65, 1, 0.62]}
+            duration={3.2}
           />
 
-          <motion.div
-            className="absolute right-[8%] top-[11%] h-[16px] w-[245px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-emerald-300 to-teal-100 shadow-[0_0_38px_rgba(45,212,191,0.5)] blur-[0.15px] max-md:h-[12px] max-md:w-[185px]"
-            animate={{
-              x: ['180px', '-35px', '-360px'],
-              y: ['-80px', '8px', '120px'],
-              opacity: [0, 0.92, 0],
-              scale: [0.7, 1, 0.6],
-            }}
-            transition={{
-              duration: 3.4,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 0.75,
-            }}
+          <LightBeam
+            className="right-[7%] top-[13%] h-[10px] w-[260px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-emerald-200 to-teal-400 shadow-[0_0_42px_rgba(45,212,191,0.52)] max-md:h-[8px] max-md:w-[185px]"
+            x={['210px', '-24px', '-370px']}
+            y={['-92px', '8px', '126px']}
+            scale={[0.66, 1, 0.6]}
+            duration={3.6}
+            delay={0.65}
           />
 
-          <motion.div
-            className="absolute right-[2%] top-[43%] h-[13px] w-[160px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-blue-300 to-sky-100 shadow-[0_0_30px_rgba(96,165,250,0.48)] blur-[0.15px] max-md:h-[10px] max-md:w-[125px]"
-            animate={{
-              x: ['170px', '10px', '-320px'],
-              y: ['-14px', '10px', '58px'],
-              opacity: [0, 0.88, 0],
-              scale: [0.72, 1, 0.68],
-            }}
-            transition={{
-              duration: 2.8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 1.6,
-            }}
+          <LightBeam
+            className="right-[1%] top-[43%] h-[8px] w-[180px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-blue-200 to-sky-400 shadow-[0_0_34px_rgba(96,165,250,0.5)] max-md:h-[7px] max-md:w-[130px]"
+            x={['185px', '10px', '-330px']}
+            y={['-18px', '10px', '58px']}
+            scale={[0.7, 1, 0.65]}
+            duration={2.9}
+            delay={1.45}
           />
 
-          <motion.div
-            className="absolute left-[34%] top-[6%] h-[13px] w-[165px] -skew-x-[28deg] rounded-sm bg-gradient-to-r from-transparent via-red-400 to-red-200 shadow-[0_0_30px_rgba(248,113,113,0.42)] blur-[0.15px] max-md:h-[10px] max-md:w-[120px]"
-            animate={{
-              x: ['-120px', '8px', '170px'],
-              y: ['-65px', '8px', '100px'],
-              opacity: [0, 0.75, 0],
-              scale: [0.75, 1, 0.65],
-            }}
-            transition={{
-              duration: 3.25,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 2.35,
-            }}
+          <LightBeam
+            className="left-[34%] top-[6%] h-[8px] w-[165px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-rose-200 to-red-400 shadow-[0_0_32px_rgba(248,113,113,0.38)] max-md:h-[7px] max-md:w-[118px]"
+            x={['-120px', '6px', '168px']}
+            y={['-65px', '8px', '98px']}
+            scale={[0.72, 1, 0.62]}
+            duration={3.4}
+            delay={2.25}
           />
         </div>
       </div>
