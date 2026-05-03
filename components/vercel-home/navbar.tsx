@@ -203,26 +203,26 @@ export function Navbar() {
         </div>
 
         <button
-          className="lg:hidden z-[1001] relative h-8 w-8 text-white"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          <span
-            className={`absolute left-1 top-[9px] h-[2px] w-6 bg-white transition-all duration-300 ${
-              mobileOpen ? 'top-1/2 rotate-45' : ''
-            }`}
-          />
-          <span
-            className={`absolute left-1 top-[15px] h-[2px] w-6 bg-white transition-all duration-300 ${
-              mobileOpen ? 'opacity-0' : ''
-            }`}
-          />
-          <span
-            className={`absolute left-1 top-[21px] h-[2px] w-6 bg-white transition-all duration-300 ${
-              mobileOpen ? 'top-1/2 -rotate-45' : ''
-            }`}
-          />
-        </button>
+  className="lg:hidden z-[1001] relative h-7 w-7 text-white"
+  onClick={() => setMobileOpen(!mobileOpen)}
+  aria-label="Toggle menu"
+>
+  <span
+    className={`absolute left-[5px] top-[8px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
+      mobileOpen ? 'top-1/2 rotate-45' : ''
+    }`}
+  />
+  <span
+    className={`absolute left-[5px] top-[14px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
+      mobileOpen ? 'opacity-0' : ''
+    }`}
+  />
+  <span
+    className={`absolute left-[5px] top-[20px] h-[1.5px] w-[18px] rounded-full bg-white transition-all duration-300 ${
+      mobileOpen ? 'top-1/2 -rotate-45' : ''
+    }`}
+  />
+</button>
       </div>
 
       {activeMenu && (
