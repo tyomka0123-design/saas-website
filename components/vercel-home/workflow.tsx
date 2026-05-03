@@ -2,46 +2,52 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Code2, Database, Globe, CalendarCheck, Zap, ShieldCheck } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 const tabs = ['Landing Page', 'Business Site', 'Dashboard', 'E-commerce', 'Bookings', 'Automation']
 
 const cards = [
   {
-    title: 'Next.js',
-    desc: 'The React framework for premium web products',
-    icon: Code2,
-    color: 'rgba(255,255,255,0.08)',
+    title: 'Next.js Templates',
+    logo: 'N',
+    color: 'white',
+    glow: 'rgba(255,255,255,0.12)',
+    grid: 'rgba(255,255,255,0.22)',
   },
   {
-    title: 'Supabase',
-    desc: 'Authentication, database, and client workflows',
-    icon: Database,
-    color: 'rgba(34,197,94,0.16)',
+    title: 'Supabase Templates',
+    logo: 'S',
+    color: '#3ecf8e',
+    glow: 'rgba(62,207,142,0.18)',
+    grid: 'rgba(62,207,142,0.22)',
   },
   {
-    title: 'Vercel',
-    desc: 'Fast hosting and production deployments',
-    icon: Globe,
-    color: 'rgba(59,130,246,0.16)',
+    title: 'React Templates',
+    logo: '⚛',
+    color: '#38bdf8',
+    glow: 'rgba(56,189,248,0.18)',
+    grid: 'rgba(56,189,248,0.22)',
   },
   {
-    title: 'Bookings',
-    desc: 'Appointment systems for real businesses',
-    icon: CalendarCheck,
-    color: 'rgba(168,85,247,0.14)',
+    title: 'Nuxt Templates',
+    logo: '△',
+    color: '#00dc82',
+    glow: 'rgba(0,220,130,0.18)',
+    grid: 'rgba(0,220,130,0.22)',
   },
   {
-    title: 'Automation',
-    desc: 'Emails, forms, admin actions, and client flow',
-    icon: Zap,
-    color: 'rgba(245,158,11,0.14)',
+    title: 'Astro Templates',
+    logo: 'A',
+    color: 'white',
+    glow: 'rgba(255,255,255,0.12)',
+    grid: 'rgba(255,255,255,0.20)',
   },
   {
-    title: 'Security',
-    desc: 'Protected routes, accounts, and private dashboards',
-    icon: ShieldCheck,
-    color: 'rgba(20,184,166,0.14)',
+    title: 'Python Templates',
+    logo: 'Py',
+    color: '#facc15',
+    glow: 'rgba(250,204,21,0.16)',
+    grid: 'rgba(250,204,21,0.20)',
   },
 ]
 
@@ -50,7 +56,7 @@ export function Workflow() {
 
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-28 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_45%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.04),transparent_48%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-3xl text-center">
@@ -84,58 +90,65 @@ export function Workflow() {
           ))}
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card, index) => {
-            const Icon = card.icon
+        <div className="mt-14 grid gap-7 md:grid-cols-2">
+          {cards.map((card, index) => (
+            <motion.a
+              href="#services"
+              key={card.title}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.45, delay: index * 0.05 }}
+              className="group relative h-[245px] overflow-hidden border border-white/[0.11] bg-black transition hover:border-white/[0.22]"
+            >
+              <div
+                className="absolute inset-x-0 top-0 h-[150px]"
+                style={{
+                  background: `linear-gradient(to bottom, ${card.glow}, rgba(0,0,0,0.15))`,
+                }}
+              />
 
-            return (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.45, delay: index * 0.05 }}
-                className="group relative overflow-hidden border border-white/[0.09] bg-white/[0.025] transition hover:border-white/[0.18]"
+              <div
+                className="absolute inset-x-0 top-0 h-[150px] opacity-70"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, ${card.grid} 1px, transparent 1px),
+                    linear-gradient(to bottom, ${card.grid} 1px, transparent 1px)
+                  `,
+                  backgroundSize: '96px 56px',
+                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                }}
+              />
+
+              <div className="absolute right-0 top-0 h-[72px] w-[72px] border-l border-b border-white/[0.12] bg-black/40 [clip-path:polygon(0_0,100%_0,100%_100%)]" />
+
+              <div
+                className="absolute left-1/2 top-[72px] flex h-[72px] w-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-dashed bg-black/45"
+                style={{
+                  borderColor: card.grid,
+                  boxShadow: `0 0 42px ${card.glow}`,
+                }}
               >
                 <div
-                  className="relative h-[150px] border-b border-white/[0.07]"
-                  style={{
-                    background: `linear-gradient(to bottom, ${card.color}, rgba(0,0,0,0.25))`,
-                  }}
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-full border border-white/[0.18] bg-black text-[24px] font-bold"
+                  style={{ color: card.color }}
                 >
-                  <div
-                    className="absolute inset-0 opacity-[0.28]"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(to right, rgba(255,255,255,0.22) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(255,255,255,0.22) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '64px 46px',
-                    }}
-                  />
-
-                  <div className="absolute right-0 top-0 h-16 w-16 border-l border-b border-white/[0.08] bg-black/35 [clip-path:polygon(0_0,100%_0,100%_100%)]" />
-
-                  <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.12] bg-black/45 shadow-[0_0_50px_rgba(255,255,255,0.08)]">
-                    <Icon className="h-7 w-7 text-white/85" strokeWidth={1.7} />
-                  </div>
+                  {card.logo}
                 </div>
+              </div>
 
-                <div className="p-5">
-                  <h3 className="text-[17px] font-semibold text-white">{card.title}</h3>
-                  <p className="mt-2 text-[13px] leading-6 text-white/42">{card.desc}</p>
+              <div className="absolute inset-x-0 bottom-0 bg-black px-7 py-7">
+                <h3 className="text-[22px] font-bold tracking-[-0.04em] text-white">
+                  {card.title}
+                </h3>
 
-                  <a
-                    href="#services"
-                    className="mt-5 inline-flex items-center gap-2 text-[13px] font-medium text-white/32 transition group-hover:text-white/75"
-                  >
-                    Build with this
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
+                <div className="mt-4 flex items-center gap-2 text-[13px] font-medium text-white/28 transition group-hover:text-white/70">
+                  Build with this
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </div>
-              </motion.div>
-            )
-          })}
+              </div>
+            </motion.a>
+          ))}
         </div>
 
         <div className="mt-12 flex justify-center">
