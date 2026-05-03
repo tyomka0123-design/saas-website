@@ -89,12 +89,12 @@ export function CdnGridBackground() {
 
       const cx = w / 2
 
-      const outerW = Math.min(w * 0.94, 1240)
-      const outerH = Math.min(h * 0.8, 720)
+      const outerW = Math.min(w * 1.02, 1340)
+      const outerH = Math.min(h * 0.86, 760)
 
       const outerLeft = cx - outerW / 2
       const outerRight = cx + outerW / 2
-      const outerTop = h * 0.12
+      const outerTop = h * 0.18
       const outerBottom = outerTop + outerH
 
       const backW = outerW * 0.56
@@ -102,7 +102,7 @@ export function CdnGridBackground() {
 
       const backLeft = cx - backW / 2
       const backRight = cx + backW / 2
-      const backTop = outerTop + outerH * 0.21
+      const backTop = outerTop + outerH * 0.24
       const backBottom = backTop + backH
 
       const outerTL = { x: outerLeft, y: outerTop }
