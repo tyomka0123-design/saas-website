@@ -2,85 +2,100 @@
 
 import { motion } from 'framer-motion'
 
-const sideLines = [0, 1, 2, 3, 4, 5]
-const depthLines = [0, 1, 2, 3]
-
-const beams = [
-  { side: 'left', delay: 0, color: 'from-cyan-300 via-sky-400 to-transparent' },
-  { side: 'right', delay: 1.35, color: 'from-teal-300 via-cyan-400 to-transparent' },
-  { side: 'top', delay: 2.45, color: 'from-rose-400 via-red-500 to-transparent' },
-  { side: 'bottom', delay: 3.2, color: 'from-blue-300 via-cyan-400 to-transparent' },
-]
-
 export function CdnGridBackground() {
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.012)_32%,transparent_68%)]" />
+    <div className="absolute inset-0 z-0 flex items-start justify-center overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.055),transparent_42%)]" />
 
-      <div className="relative h-[780px] w-[1120px] max-w-[92vw] opacity-95 [perspective:900px] max-md:h-[620px] max-md:w-[92vw]">
-        <svg viewBox="0 0 1120 780" className="absolute inset-0 h-full w-full overflow-visible">
-          <defs>
-            <linearGradient id="gridFade" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="rgba(255,255,255,0.14)" />
-              <stop offset="52%" stopColor="rgba(255,255,255,0.08)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0.035)" />
-            </linearGradient>
-            <radialGradient id="centerFade" cx="50%" cy="50%" r="55%">
-              <stop offset="0%" stopColor="rgba(255,255,255,0.16)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0.04)" />
-            </radialGradient>
-          </defs>
+      <div className="absolute top-[64px] h-[650px] w-[1060px] max-w-[92vw] opacity-90 [perspective:900px]">
+        <div className="relative h-full w-full [transform-style:preserve-3d]">
+          <div className="absolute inset-0 border border-white/[0.10]" />
 
-          <rect x="160" y="70" width="800" height="560" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-          <rect x="330" y="180" width="460" height="340" fill="rgba(0,0,0,0.18)" stroke="rgba(255,255,255,0.085)" strokeWidth="1" />
+          <div className="absolute left-0 top-0 h-full w-full [transform:translateZ(-260px)] border border-white/[0.08]" />
 
-          {depthLines.map((_, i) => {
-            const t = (i + 1) / 5
-            const x = 160 + (330 - 160) * t
-            const y = 70 + (180 - 70) * t
-            const w = 800 - (800 - 460) * t
-            const h = 560 - (560 - 340) * t
-            return <rect key={`depth-${i}`} x={x} y={y} width={w} height={h} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-          })}
+          <div className="absolute left-0 top-0 h-full w-full origin-left [transform:rotateY(58deg)] border-r border-white/[0.09]" />
+          <div className="absolute right-0 top-0 h-full w-full origin-right [transform:rotateY(-58deg)] border-l border-white/[0.09]" />
+          <div className="absolute left-0 top-0 h-full w-full origin-top [transform:rotateX(-58deg)] border-b border-white/[0.09]" />
+          <div className="absolute left-0 bottom-0 h-full w-full origin-bottom [transform:rotateX(58deg)] border-t border-white/[0.09]" />
 
-          <line x1="160" y1="70" x2="330" y2="180" stroke="rgba(255,255,255,0.08)" />
-          <line x1="960" y1="70" x2="790" y2="180" stroke="rgba(255,255,255,0.08)" />
-          <line x1="160" y1="630" x2="330" y2="520" stroke="rgba(255,255,255,0.08)" />
-          <line x1="960" y1="630" x2="790" y2="520" stroke="rgba(255,255,255,0.08)" />
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={`v-${i}`}
+              className="absolute top-0 h-full w-px bg-white/[0.08]"
+              style={{ left: `${12.5 + i * 12.5}%` }}
+            />
+          ))}
 
-          {sideLines.map((_, i) => {
-            const t = (i + 1) / 7
-            return (
-              <g key={`grid-${i}`}>
-                <line x1={160 + 800 * t} y1="70" x2={330 + 460 * t} y2="180" stroke="rgba(255,255,255,0.055)" />
-                <line x1={160 + 800 * t} y1="630" x2={330 + 460 * t} y2="520" stroke="rgba(255,255,255,0.055)" />
-                <line x1="160" y1={70 + 560 * t} x2="330" y2={180 + 340 * t} stroke="rgba(255,255,255,0.055)" />
-                <line x1="960" y1={70 + 560 * t} x2="790" y2={180 + 340 * t} stroke="rgba(255,255,255,0.055)" />
-              </g>
-            )
-          })}
-        </svg>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={`h-${i}`}
+              className="absolute left-0 h-px w-full bg-white/[0.08]"
+              style={{ top: `${16.6 + i * 16.6}%` }}
+            />
+          ))}
 
-        {beams.map((beam, i) => (
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={`depth-${i}`}
+              className="absolute left-1/2 top-1/2 h-px w-[125%] origin-left bg-white/[0.055]"
+              style={{
+                transform: `rotate(${[-28, -18, -9, 0, 9, 18, 28][i]}deg) translateX(-50%)`,
+              }}
+            />
+          ))}
+
           <motion.div
-            key={i}
-            className={`absolute h-[18px] w-[118px] rounded-full bg-gradient-to-r ${beam.color} blur-[0.2px] shadow-[0_0_26px_rgba(80,220,255,0.38)]`}
-            initial={false}
-            animate={
-              beam.side === 'left'
-                ? { x: [-120, 260, 440], y: [510, 440, 375], scale: [0.7, 1.05, 0.18], opacity: [0, 1, 0] }
-                : beam.side === 'right'
-                  ? { x: [1040, 790, 610], y: [235, 285, 365], scale: [0.7, 1.05, 0.18], opacity: [0, 1, 0] }
-                  : beam.side === 'top'
-                    ? { x: [520, 545, 555], y: [-45, 115, 250], scale: [0.55, 0.95, 0.18], opacity: [0, 0.9, 0] }
-                    : { x: [440, 500, 555], y: [700, 560, 455], scale: [0.7, 1.05, 0.18], opacity: [0, 1, 0] }
-            }
-            transition={{ duration: 2.8, delay: beam.delay, repeat: Infinity, repeatDelay: 2.2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute left-[8%] top-[78%] h-[22px] w-[190px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-cyan-300 via-sky-400 to-transparent blur-[0.2px]"
+            animate={{
+              x: ['-170px', '260px', '760px'],
+              y: ['110px', '35px', '-35px'],
+              opacity: [0, 1, 0],
+              scale: [0.7, 1, 0.65],
+            }}
+            transition={{
+              duration: 4.2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
           />
-        ))}
 
-        <div className="absolute inset-x-[27%] top-[23%] h-[43%] border border-white/[0.06] bg-black/20 shadow-[0_0_80px_rgba(0,0,0,0.55)]" />
+          <motion.div
+            className="absolute right-[3%] top-[20%] h-[20px] w-[155px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-teal-300 via-cyan-300 to-transparent"
+            animate={{
+              x: ['260px', '70px', '-260px'],
+              y: ['-90px', '-10px', '80px'],
+              opacity: [0, 0.9, 0],
+              scale: [0.65, 1, 0.75],
+            }}
+            transition={{
+              duration: 5.1,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 1.1,
+            }}
+          />
+
+          <motion.div
+            className="absolute right-[2%] top-[42%] h-[18px] w-[125px] -skew-x-[24deg] rounded-sm bg-gradient-to-r from-sky-300 via-blue-400 to-transparent"
+            animate={{
+              x: ['220px', '40px', '-420px'],
+              y: ['-20px', '18px', '70px'],
+              opacity: [0, 0.9, 0],
+            }}
+            transition={{
+              duration: 3.8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 2.2,
+            }}
+          />
+        </div>
       </div>
+
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black to-transparent" />
+      <div className="absolute left-0 top-0 h-full w-[22%] bg-gradient-to-r from-black to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-[22%] bg-gradient-to-l from-black to-transparent" />
     </div>
   )
 }
