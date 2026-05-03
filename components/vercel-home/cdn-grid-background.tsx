@@ -97,15 +97,5 @@ export function CdnGridBackground() {
       <div className="absolute left-1/2 top-[49%] h-[440px] w-[780px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.92)_48%,transparent_72%)] max-md:h-[500px] max-md:w-[92vw]" />
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.18)_58%,#000_100%)]" />
-
-{/* bottom grid cross */}
-<div className="pointer-events-none absolute right-[25.7%] bottom-[22.6%] z-20 h-[16px] w-[16px] opacity-70 max-md:right-[8%] max-md:bottom-[24%]">
-  <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/60" />
-  <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/60" />
-</div>
-
-<div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black to-transparent" />
-<div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent" />
-    </div>
   )
 }
