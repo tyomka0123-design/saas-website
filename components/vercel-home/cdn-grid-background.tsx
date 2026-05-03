@@ -1,127 +1,115 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import React from 'react'
 
-function LightBeam({
-  className,
-  delay = 0,
-  duration = 3.8,
-  x,
-  y,
-  scale,
-}: {
-  className: string
+interface LightBeamProps {
+  className?: string
   delay?: number
   duration?: number
-  x: string[]
-  y: string[]
-  scale?: number[]
-}) {
+  path: { x: string[]; y: string[] }
+  color: string
+}
+
+function LightBeam({ className, delay = 0, duration = 4, path, color }: LightBeamProps) {
   return (
     <motion.div
-      className={`pointer-events-none absolute rounded-full blur-[0.5px] ${className}`}
+      initial={{ opacity: 0, scale: 0.8 }}
       animate={{
-        x,
-        y,
-        opacity: [0, 0.15, 0.95, 0.45, 0],
-        scale: scale ?? [0.72, 0.95, 1, 0.72],
+        x: path.x,
+        y: path.y,
+        opacity: [0, 1, 1, 0],
+        scale: [0.8, 1.1, 1.1, 0.8],
       }}
       transition={{
         duration,
         repeat: Infinity,
-        ease: [0.45, 0, 0.2, 1],
+        ease: "easeInOut",
         delay,
       }}
+      className={`absolute z-10 h-[2px] w-[150px] pointer-events-none ${className}`}
     >
-      <div className="absolute inset-0 rounded-full bg-inherit blur-[10px] opacity-70" />
-      <div className="absolute inset-[2px] rounded-full bg-white/35 blur-[2px]" />
+      {/* Основний промінь з градієнтом */}
+      <div 
+        className="h-full w-full rounded-full"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${color}, white, ${color}, transparent)`,
+          boxShadow: `0 0 25px 2px ${color}`,
+          filter: 'blur(0.5px)'
+        }}
+      />
+      {/* Додаткове розсіяне сяйво (halo) */}
+      <div 
+        className="absolute inset-0 h-full w-full blur-[12px] opacity-40"
+        style={{ backgroundColor: color }}
+      />
     </motion.div>
   )
 }
 
 export function CdnGridBackground() {
   return (
-    <div className="absolute inset-0 z-0 flex items-start justify-center overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.055),transparent_46%)]" />
+    <div className="relative h-[800px] w-full overflow-hidden bg-[#020202] flex items-center justify-center">
+      {/* 1. Глобальний фоновий градієнт для м'якості */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#111,transparent_70%)]" />
 
-      <div className="absolute top-[50%] h-[650px] w-[1080px] max-w-[96vw] -translate-y-1/2 opacity-95 [perspective:950px] max-md:top-[48%] max-md:h-[560px] max-md:w-[920px] max-md:max-w-[150vw]">
-        <div className="relative h-full w-full [transform-style:preserve-3d]">
-          <div className="absolute inset-0 border border-white/[0.13]" />
-          <div className="absolute inset-0 [transform:translateZ(-260px)] border border-white/[0.10]" />
+      {/* 2. Контейнер з перспективою */}
+      <div 
+        className="relative h-full w-full overflow-hidden [perspective:1000px]"
+        style={{
+          maskImage: 'radial-gradient(circle at 50% 50%, black 20%, transparent 85%)',
+          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 20%, transparent 85%)',
+        }}
+      >
+        <div className="absolute inset-0 h-full w-full [transform:rotateX(35deg)] origin-center">
+          
+          {/* 3. Оптимізована сітка (CSS Grid Pattern) */}
+          <div 
+            className="absolute inset-[-100%] opacity-[0.15]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(255,255,255,0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.2) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+          />
 
-          <div className="absolute inset-0 origin-left [transform:rotateY(58deg)] border-r border-white/[0.12]" />
-          <div className="absolute inset-0 origin-right [transform:rotateY(-58deg)] border-l border-white/[0.12]" />
-          <div className="absolute inset-0 origin-top [transform:rotateX(-58deg)] border-b border-white/[0.12]" />
-          <div className="absolute inset-0 origin-bottom [transform:rotateX(58deg)] border-t border-white/[0.12]" />
-
-          {Array.from({ length: 7 }).map((_, i) => (
-            <div
-              key={`v-${i}`}
-              className="absolute top-0 h-full w-px bg-white/[0.105]"
-              style={{ left: `${12.5 + i * 12.5}%` }}
+          {/* 4. Промені світла (Beams) */}
+          <div className="absolute inset-0 mix-blend-screen">
+            <LightBeam 
+              color="#38bdf8" // Cyan
+              path={{ x: ['10%', '50%', '80%'], y: ['20%', '40%', '10%'] }}
+              duration={5}
+              delay={0}
             />
-          ))}
-
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={`h-${i}`}
-              className="absolute left-0 h-px w-full bg-white/[0.105]"
-              style={{ top: `${16.6 + i * 16.6}%` }}
+            <LightBeam 
+              color="#fb7185" // Rose
+              path={{ x: ['90%', '40%', '10%'], y: ['30%', '60%', '80%'] }}
+              duration={7}
+              delay={1}
             />
-          ))}
-
-          {Array.from({ length: 7 }).map((_, i) => (
-            <div
-              key={`depth-${i}`}
-              className="absolute left-1/2 top-1/2 h-px w-[128%] origin-left bg-white/[0.075]"
-              style={{
-                transform: `rotate(${[-28, -18, -9, 0, 9, 18, 28][i]}deg) translateX(-50%)`,
-              }}
+            <LightBeam 
+              color="#34d399" // Emerald
+              path={{ x: ['20%', '60%', '90%'], y: ['80%', '50%', '40%'] }}
+              duration={6}
+              delay={3}
             />
-          ))}
-
-          {/* PREMIUM LIGHT BEAMS */}
-          <LightBeam
-            className="left-[5%] top-[76%] h-[10px] w-[270px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-cyan-200 to-sky-400 shadow-[0_0_42px_rgba(56,189,248,0.55)] max-md:h-[8px] max-md:w-[190px]"
-            x={['-210px', '120px', '520px']}
-            y={['105px', '28px', '-36px']}
-            scale={[0.65, 1, 0.62]}
-            duration={3.2}
-          />
-
-          <LightBeam
-            className="right-[7%] top-[13%] h-[10px] w-[260px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-emerald-200 to-teal-400 shadow-[0_0_42px_rgba(45,212,191,0.52)] max-md:h-[8px] max-md:w-[185px]"
-            x={['210px', '-24px', '-370px']}
-            y={['-92px', '8px', '126px']}
-            scale={[0.66, 1, 0.6]}
-            duration={3.6}
-            delay={0.65}
-          />
-
-          <LightBeam
-            className="right-[1%] top-[43%] h-[8px] w-[180px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-blue-200 to-sky-400 shadow-[0_0_34px_rgba(96,165,250,0.5)] max-md:h-[7px] max-md:w-[130px]"
-            x={['185px', '10px', '-330px']}
-            y={['-18px', '10px', '58px']}
-            scale={[0.7, 1, 0.65]}
-            duration={2.9}
-            delay={1.45}
-          />
-
-          <LightBeam
-            className="left-[34%] top-[6%] h-[8px] w-[165px] -skew-x-[30deg] bg-gradient-to-r from-transparent via-rose-200 to-red-400 shadow-[0_0_32px_rgba(248,113,113,0.38)] max-md:h-[7px] max-md:w-[118px]"
-            x={['-120px', '6px', '168px']}
-            y={['-65px', '8px', '98px']}
-            scale={[0.72, 1, 0.62]}
-            duration={3.4}
-            delay={2.25}
-          />
+            <LightBeam 
+              color="#818cf8" // Indigo
+              path={{ x: ['50%', '20%', '40%'], y: ['10%', '30%', '70%'] }}
+              duration={8}
+              delay={2}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black to-transparent" />
-      <div className="absolute left-0 top-0 h-full w-[18%] bg-gradient-to-r from-black to-transparent" />
-      <div className="absolute right-0 top-0 h-full w-[18%] bg-gradient-to-l from-black to-transparent" />
+      {/* 5. Віньєтка та фінальні градієнти (Vercel Style) */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_50%,transparent_0%,#020202_90%)]" />
+      
+      {/* Декоративне центральне світло */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-500/10 blur-[120px] rounded-full" />
     </div>
   )
 }
