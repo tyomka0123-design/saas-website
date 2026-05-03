@@ -103,11 +103,11 @@ const menus = {
 }
 
 const navItems = [
-  { label: 'Services', href: '#services', dropdown: true },
-  { label: 'Process', href: '#process', dropdown: true },
-  { label: 'Workflows', href: '#workflow', dropdown: true },
-  { label: 'Pricing', href: '#pricing', dropdown: false },
-  { label: 'Reviews', href: '#testimonials', dropdown: false },
+  { label: 'Services', dropdown: true },
+  { label: 'Process', dropdown: true },
+  { label: 'Workflows', dropdown: true },
+  { label: 'Pricing', dropdown: false },
+  { label: 'Reviews', dropdown: false },
 ]
 
 export function Navbar() {
@@ -132,13 +132,13 @@ export function Navbar() {
         setActiveMenu(null)
         setHoveredItem(null)
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 vercel-nav-blur ${
-        scrolled ? 'bg-black/80 border-b border-white/[0.07]' : 'bg-transparent border-b border-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-black/80 border-b border-white/[0.07]' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2">
             <Triangle className="w-5 h-5 fill-white text-white" />
             <span className="font-semibold text-white text-[15px]">Apex Studio</span>
           </Link>
@@ -149,28 +149,22 @@ export function Navbar() {
                 <button
                   key={item.label}
                   onMouseEnter={() => {
-  setTimeout(() => {
-    setActiveMenu(item.label as keyof typeof menus)
-  }, 40) // 40ms пауза (дуже приємно відчувається)
-}}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[13px] font-medium transition-all duration-150 ${
+                    setHoveredItem(null)
+                    setActiveMenu(item.label as keyof typeof menus)
+                  }}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
                     activeMenu === item.label
                       ? 'bg-white/[0.12] text-white'
-                      : 'text-white/65 hover:text-white hover:bg-white/[0.06]'
+                      : 'text-white/65 hover:text-white'
                   }`}
                 >
                   {item.label}
-                  <ChevronDown
-                    className={`w-3 h-3 opacity-60 transition-transform ${
-                      activeMenu === item.label ? 'rotate-180' : ''
-                    }`}
-                  />
+                  <ChevronDown className="w-3 h-3 opacity-60" />
                 </button>
               ) : (
                 <a
                   key={item.label}
-                  href={item.href}
-                  className="px-3 py-1.5 rounded-full text-[13px] font-medium text-white/65 hover:text-white hover:bg-white/[0.06] transition-all duration-150"
+                  className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
                 >
                   {item.label}
                 </a>
@@ -180,50 +174,55 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Link href="/login" className="text-[13px] font-medium text-white/70 hover:text-white transition-colors px-3 py-1.5">
-            Log In
-          </Link>
-          <Link href="/register" className="vercel-btn-white text-[13px] py-1.5 px-4 rounded-md">
+          <span className="text-white/70 text-[13px]">Log In</span>
+          <button className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium">
             Start Project
-          </Link>
+          </button>
         </div>
 
         <button
-          className="lg:hidden text-white/70 hover:text-white transition-colors"
+          className="lg:hidden text-white"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
         >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {mobileOpen ? <X /> : <Menu />}
         </button>
       </div>
 
       {activeMenu && (
         <motion.div
-          initial={{ opacity: 0, y: -8, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="hidden lg:block absolute left-[220px] top-[58px] w-[768px] rounded-2xl border border-white/[0.10] bg-black/95 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl overflow-hidden"
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+          className="hidden lg:block absolute left-[220px] top-[58px] w-[720px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
         >
-          <div className="relative w-full overflow-hidden">
+          <div
+            className="relative w-full overflow-hidden transition-[height] duration-200"
+            style={{
+              height:
+                activeMenu === 'Services'
+                  ? 360
+                  : activeMenu === 'Process'
+                  ? 280
+                  : 300,
+            }}
+          >
             <motion.div
               className="flex"
+              initial={false}
               animate={{ x: `-${menuIndex * 100}%` }}
-              transition={{
-  duration: 0.18,
-  ease: [0.25, 1, 0.5, 1], // швидкий snap як у Vercel
-}}
+              transition={{ duration: 0.18 }}
             >
               {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
                 <div
                   key={menuKey}
                   className="w-full shrink-0 p-5 grid gap-8"
                   style={{
-                    gridTemplateColumns: `repeat(${menus[menuKey].columns.length}, minmax(0, 1fr))`,
+                    gridTemplateColumns: `repeat(${menus[menuKey].columns.length}, 1fr)`,
                   }}
                 >
                   {menus[menuKey].columns.map((column) => (
                     <div key={column.title}>
-                      <p className="mb-3 px-2 text-[13px] text-white/40">{column.title}</p>
+                      <p className="mb-3 text-[13px] text-white/40">{column.title}</p>
 
                       <div className="space-y-1">
                         {column.items.map((item) => {
@@ -232,24 +231,23 @@ export function Navbar() {
 
                           return (
                             <a
-                              href="#"
                               key={item.label}
                               onMouseEnter={() => setHoveredItem(item.label)}
-                              className="group flex gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/[0.055]"
+                              className="flex gap-3 p-2.5 rounded-xl"
                             >
                               <div
-                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-all ${
+                                className={`h-9 w-9 flex items-center justify-center rounded-lg border ${
                                   active
                                     ? 'bg-white text-black border-white'
-                                    : 'bg-white/[0.03] text-white/55 border-white/[0.08] group-hover:text-white group-hover:border-white/20'
+                                    : 'text-white/55 border-white/[0.08]'
                                 }`}
                               >
                                 <Icon className="h-4 w-4" />
                               </div>
 
                               <div>
-                                <p className="text-[14px] font-medium text-white">{item.label}</p>
-                                <p className="mt-0.5 text-[12px] leading-snug text-white/42">{item.desc}</p>
+                                <p className="text-[14px] text-white">{item.label}</p>
+                                <p className="text-[12px] text-white/40">{item.desc}</p>
                               </div>
                             </a>
                           )
@@ -262,31 +260,6 @@ export function Navbar() {
             </motion.div>
           </div>
         </motion.div>
-      )}
-
-      {mobileOpen && (
-        <div className="lg:hidden bg-black/95 border-t border-white/[0.07] px-4 py-4 space-y-1">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="flex items-center justify-between w-full px-3 py-2.5 rounded-md text-[14px] font-medium text-white/70 hover:text-white hover:bg-white/[0.06] transition-all"
-              onClick={() => setMobileOpen(false)}
-            >
-              {item.label}
-              {item.dropdown && <ChevronDown className="w-4 h-4 opacity-50" />}
-            </a>
-          ))}
-
-          <div className="pt-3 flex gap-3 border-t border-white/[0.07] mt-3">
-            <Link href="/login" className="flex-1 text-center text-[13px] font-medium text-white/70 hover:text-white py-2 transition-colors">
-              Log In
-            </Link>
-            <Link href="/register" className="flex-1 vercel-btn-white text-[13px] py-2 text-center justify-center">
-              Start Project
-            </Link>
-          </div>
-        </div>
       )}
     </header>
   )
