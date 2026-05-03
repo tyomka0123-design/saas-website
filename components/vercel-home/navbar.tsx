@@ -36,7 +36,6 @@ const menus = {
           { icon: CalendarCheck, label: 'Appointment Booking', desc: 'Let clients book online 24/7' },
           { icon: LayoutDashboard, label: 'Client Dashboards', desc: 'Private portals for customers' },
           { icon: Search, label: 'SEO & Speed', desc: 'Fast pages built to rank better' },
-          { icon: Mail, label: 'Lead Capture', desc: 'Forms, emails, and client requests' },
         ],
       },
       {
@@ -75,6 +74,15 @@ const menus = {
           { icon: CalendarCheck, label: 'Booking Setup', desc: 'Appointments, requests, forms' },
           { icon: LayoutDashboard, label: 'Admin Controls', desc: 'Manage orders and clients' },
           { icon: Globe, label: 'Live Website', desc: 'Hosted, fast, and production ready' },
+          { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
+        ],
+      },
+      {
+        title: 'After Launch',
+        items: [
+          { icon: BarChart3, label: 'Performance', desc: 'Review speed and conversion' },
+          { icon: Mail, label: 'Lead Review', desc: 'Check forms and client flow' },
+          { icon: Zap, label: 'Optimization', desc: 'Improve what brings results' },
         ],
       },
     ],
@@ -96,6 +104,14 @@ const menus = {
           { icon: LayoutDashboard, label: 'Admin Panel', desc: 'See clients, orders, payments' },
           { icon: BarChart3, label: 'Performance View', desc: 'Track what is working' },
           { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
+        ],
+      },
+      {
+        title: 'Growth',
+        items: [
+          { icon: Search, label: 'SEO Tracking', desc: 'Understand how people find you' },
+          { icon: Rocket, label: 'Launch Updates', desc: 'Improve sections over time' },
+          { icon: Users, label: 'Client Journey', desc: 'Make visitors become clients' },
         ],
       },
     ],
@@ -180,10 +196,7 @@ export function Navbar() {
           </button>
         </div>
 
-        <button
-          className="lg:hidden text-white"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
+        <button className="lg:hidden text-white" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X /> : <Menu />}
         </button>
       </div>
@@ -192,62 +205,54 @@ export function Navbar() {
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.15 }}
-          className="hidden lg:block absolute left-[220px] top-[58px] w-[720px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
+          transition={{ duration: 0.12 }}
+          className="hidden lg:block absolute left-[180px] top-[58px] w-[760px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
         >
-          <div
-            className="relative w-full overflow-hidden transition-[height] duration-200"
-            style={{
-              height:
-                activeMenu === 'Services'
-                  ? 360
-                  : activeMenu === 'Process'
-                  ? 280
-                  : 300,
-            }}
-          >
+          <div className="relative w-full h-[340px] overflow-hidden">
             <motion.div
-              className="flex"
+              className="flex h-full"
               initial={false}
               animate={{ x: `-${menuIndex * 100}%` }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: 0.14, ease: [0.25, 1, 0.5, 1] }}
             >
               {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
                 <div
                   key={menuKey}
-                  className="w-full shrink-0 p-5 grid gap-8"
-                  style={{
-                    gridTemplateColumns: `repeat(${menus[menuKey].columns.length}, 1fr)`,
-                  }}
+                  className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6"
                 >
                   {menus[menuKey].columns.map((column) => (
-                    <div key={column.title}>
-                      <p className="mb-3 text-[13px] text-white/40">{column.title}</p>
+                    <div key={column.title} className="min-w-0">
+                      <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
 
-                      <div className="space-y-1">
+                      <div className="space-y-3">
                         {column.items.map((item) => {
                           const Icon = item.icon
                           const active = hoveredItem === item.label
 
                           return (
                             <a
+                              href="#"
                               key={item.label}
                               onMouseEnter={() => setHoveredItem(item.label)}
-                              className="flex gap-3 p-2.5 rounded-xl"
+                              className="flex min-h-[50px] items-start gap-3"
                             >
                               <div
-                                className={`h-9 w-9 flex items-center justify-center rounded-lg border ${
+                                className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-all ${
                                   active
                                     ? 'bg-white text-black border-white'
-                                    : 'text-white/55 border-white/[0.08]'
+                                    : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
                                 }`}
                               >
-                                <Icon className="h-4 w-4" />
+                                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
                               </div>
 
-                              <div>
-                                <p className="text-[14px] text-white">{item.label}</p>
-                                <p className="text-[12px] text-white/40">{item.desc}</p>
+                              <div className="min-w-0 pt-[1px]">
+                                <p className="text-[14px] leading-5 font-medium text-white">
+                                  {item.label}
+                                </p>
+                                <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">
+                                  {item.desc}
+                                </p>
                               </div>
                             </a>
                           )
@@ -260,6 +265,21 @@ export function Navbar() {
             </motion.div>
           </div>
         </motion.div>
+      )}
+
+      {mobileOpen && (
+        <div className="lg:hidden bg-black/95 border-t border-white/[0.07] px-4 py-4 space-y-1">
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              className="flex items-center justify-between w-full px-3 py-2.5 rounded-md text-[14px] font-medium text-white/70 hover:text-white"
+              onClick={() => setMobileOpen(false)}
+            >
+              {item.label}
+              {item.dropdown && <ChevronDown className="w-4 h-4 opacity-50" />}
+            </a>
+          ))}
+        </div>
       )}
     </header>
   )
