@@ -4,12 +4,48 @@ import { ArrowRight, Eye, Github, Lock, Server } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const cards = [
-  { title: 'Next.js Templates', logo: 'N', color: '#ffffff', tint: 'rgba(255,255,255,0.08)' },
-  { title: 'Supabase Templates', logo: 'S', color: '#3ecf8e', tint: 'rgba(62,207,142,0.12)' },
-  { title: 'React Templates', logo: '⚛', color: '#38bdf8', tint: 'rgba(56,189,248,0.12)' },
-  { title: 'Nuxt Templates', logo: '△', color: '#00dc82', tint: 'rgba(0,220,130,0.12)' },
-  { title: 'Astro Templates', logo: 'A', color: '#ffffff', tint: 'rgba(255,255,255,0.08)' },
-  { title: 'Python Templates', logo: 'Py', color: '#facc15', tint: 'rgba(250,204,21,0.12)' },
+  {
+    title: 'Next.js Templates',
+    logo: 'N',
+    color: '#ffffff',
+    tint: 'rgba(255,255,255,0.08)',
+    line: 'rgba(255,255,255,0.20)',
+  },
+  {
+    title: 'Svelte Templates',
+    logo: 'S',
+    color: '#ff3e00',
+    tint: 'rgba(255,62,0,0.13)',
+    line: 'rgba(255,62,0,0.26)',
+  },
+  {
+    title: 'React Templates',
+    logo: '⚛',
+    color: '#38bdf8',
+    tint: 'rgba(56,189,248,0.12)',
+    line: 'rgba(56,189,248,0.28)',
+  },
+  {
+    title: 'Nuxt Templates',
+    logo: '△',
+    color: '#00dc82',
+    tint: 'rgba(0,220,130,0.12)',
+    line: 'rgba(0,220,130,0.28)',
+  },
+  {
+    title: 'Astro Templates',
+    logo: 'A',
+    color: '#ffffff',
+    tint: 'rgba(255,255,255,0.08)',
+    line: 'rgba(255,255,255,0.20)',
+  },
+  {
+    title: 'Python Templates',
+    logo: 'Py',
+    color: '#facc15',
+    tint: 'rgba(250,204,21,0.12)',
+    line: 'rgba(250,204,21,0.26)',
+  },
 ]
 
 const bullets = [
@@ -41,7 +77,10 @@ export function Workflow() {
                   const Icon = item.icon
 
                   return (
-                    <div key={item.text} className="grid grid-cols-[18px_1fr] gap-4 text-[17px] leading-7 text-white/70">
+                    <div
+                      key={item.text}
+                      className="grid grid-cols-[18px_1fr] gap-4 text-[17px] leading-7 text-white/70"
+                    >
                       <Icon className="mt-1 h-4 w-4 text-white/90" strokeWidth={1.8} />
                       <p>{item.text}</p>
                     </div>
@@ -61,31 +100,37 @@ export function Workflow() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-80px' }}
                   transition={{ duration: 0.35, delay: index * 0.04 }}
-                  className="group relative h-[168px] overflow-hidden border border-white/[0.11] bg-black transition hover:border-white/[0.22]"
+                  className="group relative h-[168px] overflow-hidden border border-white/[0.11] bg-black"
                 >
                   <div
-                    className="absolute inset-x-0 top-0 h-[102px]"
+                    className="absolute inset-x-0 top-0 h-[102px] transition duration-300 group-hover:brightness-125"
                     style={{
                       background: `linear-gradient(to bottom, ${card.tint}, rgba(0,0,0,0.16))`,
                     }}
                   />
 
                   <div
-                    className="absolute inset-x-0 top-0 h-[102px] opacity-70"
+                    className="absolute inset-x-0 top-0 h-[102px] opacity-80"
                     style={{
                       backgroundImage: `
-                        linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px)
+                        linear-gradient(to right, ${card.line} 1px, transparent 1px),
+                        linear-gradient(to bottom, ${card.line} 1px, transparent 1px)
                       `,
-                      backgroundSize: '76px 42px',
+                      backgroundSize: '92px 44px',
                     }}
                   />
 
                   <div className="absolute right-0 top-0 h-[54px] w-[54px] border-l border-b border-white/[0.13] bg-black/30 [clip-path:polygon(0_0,100%_0,100%_100%)]" />
 
-                  <div className="absolute left-1/2 top-[54px] flex h-[56px] w-[56px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-dashed border-white/[0.14] bg-black/50">
+                  <div
+                    className="absolute left-1/2 top-[54px] flex h-[58px] w-[58px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-dashed bg-black/50 transition duration-200 group-hover:scale-105"
+                    style={{
+                      borderColor: card.line,
+                      boxShadow: `0 0 28px ${card.tint}`,
+                    }}
+                  >
                     <div
-                      className="flex h-[34px] w-[34px] items-center justify-center rounded-full border border-white/[0.22] bg-black text-[18px] font-bold"
+                      className="flex h-[36px] w-[36px] items-center justify-center rounded-full border border-white/[0.22] bg-black text-[18px] font-bold"
                       style={{ color: card.color }}
                     >
                       {card.logo}
