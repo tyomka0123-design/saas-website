@@ -16,7 +16,6 @@ const countries = [
   { flag: '🇺🇸', code: '+1', name: 'United States' },
   { flag: '🇬🇧', code: '+44', name: 'United Kingdom' },
   { flag: '🇺🇦', code: '+380', name: 'Ukraine' },
-  { flag: '🇮🇪', code: '+353', name: 'Ireland' },
   { flag: '🇩🇪', code: '+49', name: 'Germany' },
   { flag: '🇫🇷', code: '+33', name: 'France' },
   { flag: '🇮🇹', code: '+39', name: 'Italy' },
@@ -30,19 +29,42 @@ const countries = [
   { flag: '🇳🇴', code: '+47', name: 'Norway' },
   { flag: '🇩🇰', code: '+45', name: 'Denmark' },
   { flag: '🇫🇮', code: '+358', name: 'Finland' },
+  { flag: '🇮🇪', code: '+353', name: 'Ireland' },
+  { flag: '🇵🇹', code: '+351', name: 'Portugal' },
+  { flag: '🇬🇷', code: '+30', name: 'Greece' },
+  { flag: '🇨🇿', code: '+420', name: 'Czech Republic' },
+  { flag: '🇸🇰', code: '+421', name: 'Slovakia' },
+  { flag: '🇭🇺', code: '+36', name: 'Hungary' },
+  { flag: '🇷🇴', code: '+40', name: 'Romania' },
+  { flag: '🇧🇬', code: '+359', name: 'Bulgaria' },
+  { flag: '🇭🇷', code: '+385', name: 'Croatia' },
+  { flag: '🇷🇸', code: '+381', name: 'Serbia' },
+  { flag: '🇸🇮', code: '+386', name: 'Slovenia' },
+  { flag: '🇱🇹', code: '+370', name: 'Lithuania' },
+  { flag: '🇱🇻', code: '+371', name: 'Latvia' },
+  { flag: '🇪🇪', code: '+372', name: 'Estonia' },
   { flag: '🇦🇺', code: '+61', name: 'Australia' },
   { flag: '🇳🇿', code: '+64', name: 'New Zealand' },
-  { flag: '🇦🇪', code: '+971', name: 'United Arab Emirates' },
-  { flag: '🇹🇷', code: '+90', name: 'Turkey' },
-  { flag: '🇮🇱', code: '+972', name: 'Israel' },
   { flag: '🇯🇵', code: '+81', name: 'Japan' },
   { flag: '🇰🇷', code: '+82', name: 'South Korea' },
   { flag: '🇨🇳', code: '+86', name: 'China' },
   { flag: '🇮🇳', code: '+91', name: 'India' },
+  { flag: '🇸🇬', code: '+65', name: 'Singapore' },
+  { flag: '🇭🇰', code: '+852', name: 'Hong Kong' },
+  { flag: '🇦🇪', code: '+971', name: 'United Arab Emirates' },
+  { flag: '🇸🇦', code: '+966', name: 'Saudi Arabia' },
+  { flag: '🇮🇱', code: '+972', name: 'Israel' },
+  { flag: '🇹🇷', code: '+90', name: 'Turkey' },
   { flag: '🇧🇷', code: '+55', name: 'Brazil' },
   { flag: '🇲🇽', code: '+52', name: 'Mexico' },
   { flag: '🇦🇷', code: '+54', name: 'Argentina' },
+  { flag: '🇨🇱', code: '+56', name: 'Chile' },
+  { flag: '🇨🇴', code: '+57', name: 'Colombia' },
+  { flag: '🇵🇪', code: '+51', name: 'Peru' },
+  { flag: '🇿🇦', code: '+27', name: 'South Africa' },
 ]
+
+type Country = (typeof countries)[number]
 
 function CornerPlus({ className }: { className: string }) {
   return (
@@ -53,21 +75,38 @@ function CornerPlus({ className }: { className: string }) {
   )
 }
 
+function formatPhoneNumber(value: string, code: string) {
+  const digits = value.replace(/\D/g, '').slice(0, 15)
+
+  if (code === '+1') {
+    const a = digits.slice(0, 3)
+    const b = digits.slice(3, 6)
+    const c = digits.slice(6, 10)
+
+    if (digits.length <= 3) return a
+    if (digits.length <= 6) return `${a}-${b}`
+    return `${a}-${b}-${c}`
+  }
+
+  return digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim()
+}
+
 function CountryDropdown({
   value,
   onChange,
-  type = 'phone',
+  mode = 'phone',
 }: {
-  value: (typeof countries)[number]
-  onChange: (country: (typeof countries)[number]) => void
-  type?: 'phone' | 'country'
+  value: Country
+  onChange: (country: Country) => void
+  mode?: 'phone' | 'country'
 }) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 
   const filtered = useMemo(() => {
+    const query = search.toLowerCase().trim()
     return countries.filter((country) =>
-      `${country.name} ${country.code}`.toLowerCase().includes(search.toLowerCase())
+      `${country.name} ${country.code}`.toLowerCase().includes(query)
     )
   }, [search])
 
@@ -79,15 +118,23 @@ function CountryDropdown({
         className="flex h-12 w-full items-center justify-between rounded-md border border-white/[0.14] bg-black px-3 text-left text-sm text-white outline-none transition hover:border-white/[0.25]"
       >
         <span className="flex min-w-0 items-center gap-2">
-          <span>{value.flag}</span>
-          <span className="font-medium">{type === 'phone' ? value.code : value.name}</span>
-          {type === 'phone' && <span className="truncate text-white/45">{value.name}</span>}
+          <span className="shrink-0">{value.flag}</span>
+
+          {mode === 'phone' ? (
+            <>
+              <span className="shrink-0 font-semibold">{value.code}</span>
+              <span className="truncate text-white/45">{value.name}</span>
+            </>
+          ) : (
+            <span className="truncate font-medium">{value.name}</span>
+          )}
         </span>
+
         <ChevronDown className="h-4 w-4 shrink-0 text-white/45" />
       </button>
 
       {open && (
-  <div className="absolute left-0 top-[56px] z-50 w-full min-w-[280px] overflow-hidden rounded-2xl border border-white/[0.14] bg-black shadow-[0_20px_80px_rgba(0,0,0,0.8)] md:w-[340px]">
+  <div className="absolute left-0 top-[56px] z-[999] w-full min-w-[300px] overflow-hidden rounded-2xl border border-white/[0.14] bg-black shadow-[0_20px_80px_rgba(0,0,0,0.85)] md:w-full">
           <div className="border-b border-white/[0.1] p-3">
             <div className="flex h-11 items-center gap-2 rounded-xl border border-white/[0.18] px-3">
               <Search className="h-4 w-4 text-white/35" />
@@ -100,7 +147,7 @@ function CountryDropdown({
             </div>
           </div>
 
-          <div className="max-h-[290px] overflow-y-auto">
+          <div className="max-h-[300px] overflow-y-auto overscroll-contain">
             {filtered.map((country) => (
               <button
                 key={`${country.name}-${country.code}`}
@@ -110,11 +157,11 @@ function CountryDropdown({
                   setOpen(false)
                   setSearch('')
                 }}
-                className="flex w-full items-center gap-3 border-b border-white/[0.08] px-4 py-4 text-left text-sm transition hover:bg-white/[0.06]"
+                className="flex w-full items-center gap-3 border-b border-white/[0.07] px-4 py-3.5 text-left text-sm transition hover:bg-white/[0.06]"
               >
                 <span className="text-lg">{country.flag}</span>
-                <span className="font-semibold text-white">{country.code}</span>
-                <span className="text-white/70">{country.name}</span>
+                {mode === 'phone' && <span className="font-semibold text-white">{country.code}</span>}
+                <span className="text-white/75">{country.name}</span>
               </button>
             ))}
           </div>
@@ -130,6 +177,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [phoneCountry, setPhoneCountry] = useState(countries[0])
   const [selectedCountry, setSelectedCountry] = useState(countries[0])
+  const [phone, setPhone] = useState('')
 
   async function handleSubmit(formData: FormData) {
     const password = String(formData.get('password') || '')
@@ -143,6 +191,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     formData.set('phoneCode', phoneCountry.code)
+    formData.set('phone', phone.replace(/\D/g, ''))
     formData.set('country', selectedCountry.name)
 
     const result = await register(formData)
@@ -157,30 +206,36 @@ export default function RegisterPage() {
     <section className="relative min-h-screen overflow-hidden bg-black text-white">
       <AnimatedBackground />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1100px] items-center px-4 py-24">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1160px] items-center px-4 py-24">
         <div className="relative grid w-full overflow-visible border border-white/[0.12] bg-black/80 md:grid-cols-[1.05fr_0.95fr]">
-          <div className="pointer-events-none absolute left-0 top-0 hidden h-[92px] w-full border-b border-white/[0.1] md:grid md:grid-cols-12">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="border-r border-white/[0.07] last:border-r-0" />
-            ))}
-          </div>
+          <div
+  className="pointer-events-none absolute left-0 top-0 z-0 hidden h-[96px] w-full border-b border-white/[0.1] md:block"
+  style={{
+    backgroundImage:
+      'linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px)',
+    backgroundSize: '96px 96px',
+  }}
+/>
 
-          <div className="pointer-events-none absolute bottom-0 left-0 hidden h-[92px] w-full border-t border-white/[0.1] md:grid md:grid-cols-12">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="border-r border-white/[0.07] last:border-r-0" />
-            ))}
-          </div>
+          <div
+  className="pointer-events-none absolute bottom-0 left-0 z-0 hidden h-[96px] w-full border-t border-white/[0.1] md:block"
+  style={{
+    backgroundImage:
+      'linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px)',
+    backgroundSize: '96px 96px',
+  }}
+/>
 
-          <CornerPlus className="pointer-events-none absolute -left-[8px] top-[84px] z-20 hidden h-4 w-4 text-white/65 md:block" />
+          <CornerPlus className="pointer-events-none absolute -left-[8px] top-[96px] z-20 hidden h-4 w-4 text-white/65 md:block" />
           <CornerPlus className="pointer-events-none absolute -bottom-[8px] -right-[8px] z-20 hidden h-4 w-4 text-white/65 md:block" />
 
-          <div className="relative p-8 pt-28 md:min-h-[720px] md:border-r md:border-white/[0.1] md:p-12 md:pt-36">
+          <div className="relative z-10 p-8 pt-28 md:min-h-[760px] md:border-r md:border-white/[0.1] md:p-12 md:pt-36">
             <Link href="/" className="mb-10 inline-flex items-center gap-2 text-sm text-white/45 transition hover:text-white">
               <ArrowLeft className="h-4 w-4" />
               Back to home
             </Link>
 
-            <h1 className="max-w-[430px] text-[42px] font-bold leading-[0.98] tracking-[-0.055em] md:text-[56px]">
+            <h1 className="max-w-[460px] text-[42px] font-bold leading-[0.98] tracking-[-0.055em] md:text-[56px]">
               Create your
               <br />
               Apex Studio
@@ -203,7 +258,7 @@ export default function RegisterPage() {
               ))}
             </div>
 
-            <div className="mt-14 grid grid-cols-2 border-t border-white/[0.1] pt-8">
+            <div className="relative z-10 mt-14 grid grid-cols-2 border-t border-white/[0.1] bg-black pt-8">
               <div>
                 <p className="text-3xl font-semibold tracking-[-0.04em]">24/7</p>
                 <p className="mt-2 text-sm text-white/40">Dashboard access</p>
@@ -219,7 +274,7 @@ export default function RegisterPage() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="relative bg-[#050505]/90 p-8 md:min-h-[720px] md:p-12 md:pt-36"
+            className="relative z-10 bg-[#050505]/95 p-8 md:min-h-[760px] md:p-12 md:pt-36"
           >
             <div className="mb-8">
               <Link href="/" className="mb-8 inline-flex items-center gap-2">
@@ -243,63 +298,58 @@ export default function RegisterPage() {
                 <Input id="email" name="email" type="email" placeholder="you@example.com" required className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-white/85">Your name</Label>
-                  <Input id="fullName" name="fullName" type="text" placeholder="John Doe" required className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="fullName" className="text-white/85">Your name</Label>
+                <Input id="fullName" name="fullName" type="text" placeholder="John Doe" required className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+              </div>
 
-                <div className="space-y-2">
-                  <Label className="text-white/85">
-                    Phone <span className="text-white/35">(optional)</span>
-                  </Label>
-                  <div className="grid gap-3 sm:grid-cols-[150px_1fr]">
-                    <CountryDropdown value={phoneCountry} onChange={setPhoneCountry} type="phone" />
-                    <Input
-                      name="phone"
-                      type="tel"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      placeholder="Phone number"
-                      onInput={(e) => {
-                        e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '')
-                      }}
-                      className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35"
-                    />
-                  </div>
+              <div className="space-y-2">
+                <Label className="text-white/85">
+                  Phone <span className="text-white/35">(optional)</span>
+                </Label>
+
+                <div className="grid gap-3 sm:grid-cols-[210px_minmax(0,1fr)]">
+                  <CountryDropdown value={phoneCountry} onChange={setPhoneCountry} mode="phone" />
+                  <Input
+                    name="phoneDisplay"
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder={phoneCountry.code === '+1' ? '236-838-2536' : 'Phone number'}
+                    value={phone}
+                    onChange={(e) => setPhone(formatPhoneNumber(e.target.value, phoneCountry.code))}
+                    className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35"
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label className="text-white/85">Country</Label>
-                <CountryDropdown value={selectedCountry} onChange={setSelectedCountry} type="country" />
+                <CountryDropdown value={selectedCountry} onChange={setSelectedCountry} mode="country" />
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-white/85">Password</Label>
-                  <div className="relative">
-                    <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Create password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-white/85">Password</Label>
+                <div className="relative">
+                  <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Create password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-white/85">Confirm password</Label>
-                  <div className="relative">
-                    <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Repeat password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
-                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-white/85">Confirm password</Label>
+                <div className="relative">
+                  <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Repeat password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
               </div>
 
               <p className="text-xs text-white/35">Password must be at least 8 characters</p>
 
-              <Button type="submit" disabled={isLoading} className="h-12 w-full rounded-full bg-white font-semibold text-black hover:bg-white/90">
+              <Button type="submit" disabled={isLoading} className="h-12 w-full rounded-full bg-white font-semibold text-black transition hover:bg-white/90">
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
