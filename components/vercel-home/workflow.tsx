@@ -188,20 +188,7 @@ function DashedGridCard({ card, index }: { card: typeof cards[0]; index: number 
 export function Workflow() {
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
-      {/* Background grid lines */}
-<div className="pointer-events-none absolute inset-0">
-  <div className="mx-auto h-full max-w-[1200px] border-x border-white/[0.08]">
-    {/* Vertical lines */}
-    <div className="absolute left-[calc(50%-600px+340px)] top-0 hidden h-full w-px bg-white/[0.08] md:block" />
-    <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/[0.045] md:block" />
-
-    {/* Horizontal lines */}
-    <div className="absolute left-1/2 top-20 h-px w-screen -translate-x-1/2 bg-white/[0.055]" />
-    <div className="absolute left-1/2 bottom-20 h-px w-screen -translate-x-1/2 bg-white/[0.055]" />
-  </div>
-</div>
-
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6">
+            <div className="relative z-10 mx-auto max-w-[1200px] border border-white/[0.08] px-6 py-8 md:px-8 md:py-10">
         <div className="grid gap-16 md:grid-cols-[340px_1fr] md:gap-8">
           {/* Left column - Title and features */}
           <div className="md:border-r md:border-white/[0.08] md:pr-12">
@@ -308,7 +295,7 @@ export function Workflow() {
                 >
                   Talk to an Expert
                 </a>
-                <a
+                                <a
                   href="#"
                   className="flex h-11 items-center justify-center rounded-full border border-white/10 text-[14px] font-medium text-white/70 transition-colors hover:border-white/20 hover:text-white"
                 >
