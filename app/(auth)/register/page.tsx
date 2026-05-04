@@ -95,12 +95,15 @@ function CountryDropdown({
   value,
   onChange,
   mode = 'phone',
+  open,
+  setOpen,
 }: {
   value: Country
   onChange: (country: Country) => void
   mode?: 'phone' | 'country'
+  open: boolean
+  setOpen: (open: boolean) => void
 }) {
-  const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 
   const filtered = useMemo(() => {
@@ -114,7 +117,7 @@ function CountryDropdown({
     <div className="relative">
       <button
         type="button"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => setOpen(!open)}
         className="flex h-12 w-full items-center justify-between rounded-md border border-white/[0.14] bg-black px-3 text-left text-sm text-white outline-none transition hover:border-white/[0.25]"
       >
         <span className="flex min-w-0 items-center gap-2">
@@ -134,7 +137,7 @@ function CountryDropdown({
       </button>
 
       {open && (
-  <div className="absolute left-0 top-[56px] z-[999] w-full min-w-[300px] overflow-hidden rounded-2xl border border-white/[0.14] bg-black shadow-[0_20px_80px_rgba(0,0,0,0.85)] md:w-full">
+  <div className="absolute left-0 top-[56px] z-[999] w-full min-w-[300px] overflow-hidden rounded-2xl border border-white/[0.14] bg-black shadow-xl md:w-full">
           <div className="border-b border-white/[0.1] p-3">
             <div className="flex h-11 items-center gap-2 rounded-xl border border-white/[0.18] px-3">
               <Search className="h-4 w-4 text-white/35" />
@@ -147,7 +150,7 @@ function CountryDropdown({
             </div>
           </div>
 
-          <div className="max-h-[300px] overflow-y-auto overscroll-contain">
+          <div className="max-h-[300px] overflow-y-auto overscroll-contain scroll-smooth will-change-scroll">
             {filtered.map((country) => (
               <button
                 key={`${country.name}-${country.code}`}
@@ -178,6 +181,7 @@ export default function RegisterPage() {
   const [phoneCountry, setPhoneCountry] = useState(countries[0])
   const [selectedCountry, setSelectedCountry] = useState(countries[0])
   const [phone, setPhone] = useState('')
+  const [openDropdown, setOpenDropdown] = useState<'phone' | 'country' | null>(null)
 
   async function handleSubmit(formData: FormData) {
     const password = String(formData.get('password') || '')
@@ -203,7 +207,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+    <section className="relative min-h-screen overflow-x-hidden bg-black text-white">
       <AnimatedBackground />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1160px] items-center px-4 py-24">
@@ -211,8 +215,10 @@ export default function RegisterPage() {
           <div
   className="pointer-events-none absolute left-0 top-0 z-0 hidden h-[96px] w-full border-b border-white/[0.1] md:block"
   style={{
-    backgroundImage:
-      'linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px)',
+    backgroundImage: `
+      linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px)
+    `,
     backgroundSize: '96px 96px',
   }}
 />
@@ -220,8 +226,10 @@ export default function RegisterPage() {
           <div
   className="pointer-events-none absolute bottom-0 left-0 z-0 hidden h-[96px] w-full border-t border-white/[0.1] md:block"
   style={{
-    backgroundImage:
-      'linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px)',
+    backgroundImage: `
+      linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.07) 1px, transparent 1px)
+    `,
     backgroundSize: '96px 96px',
   }}
 />
@@ -258,7 +266,7 @@ export default function RegisterPage() {
               ))}
             </div>
 
-            <div className="relative z-10 mt-14 grid grid-cols-2 border-t border-white/[0.1] bg-black pt-8">
+            <div className="relative z-10 mt-14 grid grid-cols-2 pt-8 before:absolute before:left-0 before:right-0 before:top-0 before:h-px before:bg-white/[0.1]">
               <div>
                 <p className="text-3xl font-semibold tracking-[-0.04em]">24/7</p>
                 <p className="mt-2 text-sm text-white/40">Dashboard access</p>
@@ -309,7 +317,13 @@ export default function RegisterPage() {
                 </Label>
 
                 <div className="grid gap-3 sm:grid-cols-[210px_minmax(0,1fr)]">
-                  <CountryDropdown value={phoneCountry} onChange={setPhoneCountry} mode="phone" />
+                  <CountryDropdown
+  value={phoneCountry}
+  onChange={setPhoneCountry}
+  mode="phone"
+  open={openDropdown === 'phone'}
+  setOpen={(isOpen) => setOpenDropdown(isOpen ? 'phone' : null)}
+/>
                   <Input
                     name="phoneDisplay"
                     type="tel"
@@ -324,7 +338,13 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <Label className="text-white/85">Country</Label>
-                <CountryDropdown value={selectedCountry} onChange={setSelectedCountry} mode="country" />
+                <CountryDropdown
+  value={selectedCountry}
+  onChange={setSelectedCountry}
+  mode="country"
+  open={openDropdown === 'country'}
+  setOpen={(isOpen) => setOpenDropdown(isOpen ? 'country' : null)}
+/>
               </div>
 
               <div className="space-y-2">
