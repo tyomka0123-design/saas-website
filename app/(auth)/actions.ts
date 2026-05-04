@@ -24,52 +24,39 @@ export async function register(formData: FormData) {
     return { error: 'Password must be at least 8 characters' }
   }
 
-  const { data: existingUser } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('email', email)
-    .maybeSingle()
-
-  if (existingUser) {
-    return { error: 'Account with this email already exists' }
-  }
-
-  const { error } = await supabase.from('profiles').insert({
-    full_name: fullName,
+  const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
     email,
     password,
+    email_confirm: true,
+  })
+
+  if (signUpError) {
+    return { error: signUpError.message }
+  }
+
+  const user = signUpData.user
+
+  if (!user) {
+    return { error: 'User was not created' }
+  }
+
+  const { error: profileError } = await supabase.from('profiles').insert({
+    id: user.id,
+    full_name: fullName,
+    email,
     phone_code: phoneCode,
     phone,
     country,
-    role: 'client',
   })
 
-  if (error) {
-    return { error: error.message }
+  if (profileError) {
+    return { error: profileError.message }
   }
 
   redirect('/login')
 }
 
 export async function login(formData: FormData) {
-  const email = String(formData.get('email') || '').trim().toLowerCase()
-  const password = String(formData.get('password') || '')
-
-  if (!email || !password) {
-    return { error: 'Email and password are required' }
-  }
-
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('email', email)
-    .eq('password', password)
-    .maybeSingle()
-
-  if (error || !data) {
-    return { error: 'Invalid email or password' }
-  }
-
   redirect('/dashboard')
 }
 
