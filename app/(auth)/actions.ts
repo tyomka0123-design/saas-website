@@ -40,14 +40,16 @@ export async function register(formData: FormData) {
     return { error: 'User was not created' }
   }
 
-  const { error: profileError } = await supabase.from('profiles').insert({
-    id: user.id,
+  const { error: profileError } = await supabase
+  .from('profiles')
+  .update({
     full_name: fullName,
     email,
     phone_code: phoneCode,
     phone,
     country,
   })
+  .eq('id', user.id)
 
   if (profileError) {
     return { error: profileError.message }
