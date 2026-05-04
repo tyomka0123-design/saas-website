@@ -24,11 +24,12 @@ export async function register(formData: FormData) {
     return { error: 'Password must be at least 8 characters' }
   }
 
-  const { data: signUpData, error: signUpError } = await supabase.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-  })
+  const { data: signUpData, error: signUpError } =
+    await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    })
 
   if (signUpError) {
     return { error: signUpError.message }
@@ -41,15 +42,15 @@ export async function register(formData: FormData) {
   }
 
   const { error: profileError } = await supabase
-  .from('profiles')
-  .update({
-    full_name: fullName,
-    email,
-    phone_code: phoneCode,
-    phone,
-    country,
-  })
-  .eq('id', user.id)
+    .from('profiles')
+    .update({
+      full_name: fullName,
+      email,
+      phone_code: phoneCode,
+      phone,
+      country,
+    })
+    .eq('id', user.id)
 
   if (profileError) {
     return { error: profileError.message }
@@ -59,6 +60,22 @@ export async function register(formData: FormData) {
 }
 
 export async function login(formData: FormData) {
+  const email = String(formData.get('email') || '').trim().toLowerCase()
+  const password = String(formData.get('password') || '')
+
+  if (!email || !password) {
+    return { error: 'Email and password are required' }
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    return { error: 'Invalid email or password' }
+  }
+
   redirect('/dashboard')
 }
 
