@@ -188,10 +188,10 @@ function DashedGridCard({ card, index }: { card: typeof cards[0]; index: number 
 export function Workflow() {
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
-            <div className="relative z-10 mx-auto max-w-[1200px] border border-white/[0.08] px-6 py-8 md:px-8 md:py-10">
+            <div className="relative z-10 mx-auto max-w-[1200px] border border-white/[0.12] px-6 py-8 md:px-8 md:py-10">
         <div className="grid gap-16 md:grid-cols-[340px_1fr] md:gap-8">
           {/* Left column - Title and features */}
-          <div className="md:border-r md:border-white/[0.08] md:pr-12">
+          <div className="md:min-h-full md:border-r md:border-white/[0.12] md:pr-12">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
