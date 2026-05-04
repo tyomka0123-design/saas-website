@@ -200,7 +200,6 @@ export function Workflow() {
     <div className="absolute left-1/2 bottom-20 h-px w-screen -translate-x-1/2 bg-white/[0.055]" />
   </div>
 </div>
-      </div>
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-6">
         <div className="grid gap-16 md:grid-cols-[340px_1fr] md:gap-8">
