@@ -188,14 +188,23 @@ function DashedGridCard({ card, index }: { card: typeof cards[0]; index: number 
 
 export function Workflow() {
   const [flipped, setFlipped] = useState(false)
+const [direction, setDirection] = useState<'forward' | 'backward'>('forward')
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFlipped((prev) => !prev)
-    }, 15000)
+const text = 'Start Deploying'
 
-    return () => clearInterval(interval)
-  }, [])
+const flipText = () => {
+  setDirection((prev) => (prev === 'forward' ? 'backward' : 'forward'))
+  setFlipped((prev) => !prev)
+}
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setDirection((prev) => (prev === 'forward' ? 'backward' : 'forward'))
+    setFlipped((prev) => !prev)
+  }, 15000)
+
+  return () => clearInterval(interval)
+}, [])
 
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
@@ -305,24 +314,40 @@ export function Workflow() {
   whileInView={{ opacity: 1, y: 0 }}
   viewport={{ once: true }}
   transition={{ duration: 0.4, delay: 0.3 }}
-  onMouseEnter={() => setFlipped((prev) => !prev)}
+  onMouseEnter={flipText}
   className="group relative flex h-[88px] items-center justify-between overflow-hidden rounded-full border border-white/10 bg-black px-8 transition-colors hover:border-white/20"
 >
-  <motion.span
-    animate={{ rotateX: flipped ? 180 : 0 }}
-    transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-    className="relative block text-[36px] font-bold tracking-[-0.04em] text-white [transform-style:preserve-3d] md:text-[40px]"
-  >
-    <span className="block [backface-visibility:hidden]">
-      Start Deploying
-    </span>
-    <span className="absolute inset-0 block [transform:rotateX(180deg)] [backface-visibility:hidden]">
-      Start Deploying
-    </span>
-  </motion.span>
+  <span className="relative flex text-[36px] font-bold tracking-[-0.04em] text-white md:text-[40px]">
+  {text.split('').map((char, i) => {
+    const delay =
+      direction === 'forward'
+        ? i * 0.035
+        : (text.length - i) * 0.035
+
+    return (
+      <motion.span
+        key={`${char}-${i}`}
+        animate={{ rotateX: flipped ? 180 : 0 }}
+        transition={{
+          duration: 0.55,
+          delay,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="relative inline-block [transform-style:preserve-3d]"
+      >
+        <span className="block [backface-visibility:hidden]">
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+        <span className="absolute inset-0 block [transform:rotateX(180deg)] [backface-visibility:hidden]">
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      </motion.span>
+    )
+  })}
+</span>
 
   <motion.span
-    animate={{ rotate: flipped ? 360 : 0 }}
+    animate={{ rotate: flipped ? 180 : 0 }}
     transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
     className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black transition-transform duration-200 group-hover:scale-105"
   >
