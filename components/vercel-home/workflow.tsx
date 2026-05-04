@@ -1,5 +1,6 @@
 'use client'
 import { ArrowRight, Lock, Monitor, Eye } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 // Framework icons as SVG components matching Vercel's exact icons
@@ -186,6 +187,16 @@ function DashedGridCard({ card, index }: { card: typeof cards[0]; index: number 
 }
 
 export function Workflow() {
+  const [flipped, setFlipped] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFlipped((prev) => !prev)
+    }, 15000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
             <div className="relative z-10 mx-auto max-w-[1200px] border border-white/[0.12] px-6 py-8 md:px-8 md:py-10">
@@ -289,20 +300,35 @@ export function Workflow() {
             {/* CTA buttons */}
             <div className="mt-20 grid gap-5 md:grid-cols-[1fr_280px]">
               <motion.a
-                href="#"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 }}
-                className="group flex h-[88px] items-center justify-between rounded-full border border-white/10 bg-black px-8 transition-colors hover:border-white/20"
-              >
-                <span className="text-[36px] font-bold tracking-[-0.04em] text-white md:text-[40px]">
-                  Start Deploying
-                </span>
-                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black transition-transform duration-200 group-hover:scale-105">
-                  <ArrowRight className="h-6 w-6" />
-                </span>
-              </motion.a>
+  href="#"
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.4, delay: 0.3 }}
+  onMouseEnter={() => setFlipped((prev) => !prev)}
+  className="group relative flex h-[88px] items-center justify-between overflow-hidden rounded-full border border-white/10 bg-black px-8 transition-colors hover:border-white/20"
+>
+  <motion.span
+    animate={{ rotateX: flipped ? 180 : 0 }}
+    transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    className="relative block text-[36px] font-bold tracking-[-0.04em] text-white [transform-style:preserve-3d] md:text-[40px]"
+  >
+    <span className="block [backface-visibility:hidden]">
+      Start Deploying
+    </span>
+    <span className="absolute inset-0 block [transform:rotateX(180deg)] [backface-visibility:hidden]">
+      Start Deploying
+    </span>
+  </motion.span>
+
+  <motion.span
+    animate={{ rotate: flipped ? 360 : 0 }}
+    transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black transition-transform duration-200 group-hover:scale-105"
+  >
+    <ArrowRight className="h-6 w-6" />
+  </motion.span>
+</motion.a>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
