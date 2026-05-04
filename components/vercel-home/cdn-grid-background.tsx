@@ -14,18 +14,19 @@ interface FloatingChevronProps {
 function FloatingChevron({ color, size, rotation, position, delay, duration }: FloatingChevronProps) {
   return (
     <motion.div
-      className="pointer-events-none absolute"
+      className="pointer-events-none absolute z-10"
       style={{
         left: position.x,
         top: position.y,
         width: size,
-        height: size * 0.4,
+        height: size * 0.35,
       }}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0 }}
       animate={{
-        opacity: [0, 0.9, 0.9, 0],
-        y: [20, 0, -20, -40],
-        x: [0, 10, -5, 0],
+        opacity: [0, 0.85, 0.85, 0],
+        y: [30, 0, -30, -60],
+        x: [0, 15, -10, 5],
+        rotate: [rotation - 5, rotation, rotation + 5, rotation],
       }}
       transition={{
         duration,
@@ -34,57 +35,51 @@ function FloatingChevron({ color, size, rotation, position, delay, duration }: F
         delay,
       }}
     >
-      <svg
-        viewBox="0 0 100 40"
-        fill="none"
+      {/* Parallelogram/chevron shape */}
+      <div
+        className="h-full w-full"
         style={{
-          transform: `rotate(${rotation}deg)`,
-          width: '100%',
-          height: '100%',
+          background: `linear-gradient(135deg, ${color} 0%, ${color}aa 100%)`,
+          clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)',
+          boxShadow: `0 0 30px ${color}66`,
         }}
-      >
-        <defs>
-          <linearGradient id={`grad-${color.replace('#', '')}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={color} stopOpacity="0.9" />
-            <stop offset="100%" stopColor={color} stopOpacity="0.6" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M0 20 L40 0 L100 0 L60 20 L100 40 L40 40 Z"
-          fill={`url(#grad-${color.replace('#', '')})`}
-        />
-      </svg>
+      />
     </motion.div>
   )
 }
 
 export function CdnGridBackground() {
+  // Generate grid lines
+  const horizontalLines = 25
+  const verticalLines = 20
+
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black">
-      {/* Perspective grid container */}
+      {/* Main perspective grid */}
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0"
         style={{
-          perspective: '1200px',
-          perspectiveOrigin: '50% 40%',
+          perspective: '800px',
+          perspectiveOrigin: '50% 50%',
         }}
       >
-        {/* Grid plane */}
         <div
-          className="absolute left-1/2 top-1/2 h-[200vh] w-[200vw] -translate-x-1/2 -translate-y-1/2"
+          className="absolute inset-x-[-50%] top-[15%] h-[150%]"
           style={{
-            transform: 'translateX(-50%) translateY(-30%) rotateX(75deg)',
-            transformStyle: 'preserve-3d',
+            transform: 'rotateX(65deg)',
+            transformOrigin: 'center top',
           }}
         >
-          {/* Horizontal lines */}
+          {/* Grid SVG */}
           <svg
             className="absolute inset-0 h-full w-full"
             preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            {Array.from({ length: 40 }).map((_, i) => {
-              const y = (i / 40) * 100
-              const opacity = Math.max(0.08, 0.25 - (Math.abs(y - 50) / 50) * 0.2)
+            {/* Horizontal lines */}
+            {Array.from({ length: horizontalLines }).map((_, i) => {
+              const y = (i / (horizontalLines - 1)) * 100
+              const opacity = 0.15 + (i / horizontalLines) * 0.1
               return (
                 <line
                   key={`h-${i}`}
@@ -92,32 +87,27 @@ export function CdnGridBackground() {
                   y1={`${y}%`}
                   x2="100%"
                   y2={`${y}%`}
-                  stroke="rgba(255,255,255,0.2)"
+                  stroke="white"
                   strokeWidth="0.5"
-                  opacity={opacity}
+                  strokeOpacity={opacity}
                 />
               )
             })}
-          </svg>
 
-          {/* Vertical lines (converging to center) */}
-          <svg
-            className="absolute inset-0 h-full w-full"
-            preserveAspectRatio="none"
-          >
-            {Array.from({ length: 30 }).map((_, i) => {
-              const x = ((i - 15) / 15) * 60 + 50
-              const opacity = Math.max(0.06, 0.2 - Math.abs((i - 15) / 15) * 0.15)
+            {/* Vertical lines converging to horizon */}
+            {Array.from({ length: verticalLines }).map((_, i) => {
+              const startX = (i / (verticalLines - 1)) * 100
+              const opacity = 0.1 + Math.abs(i - verticalLines / 2) / verticalLines * 0.15
               return (
                 <line
                   key={`v-${i}`}
-                  x1={`${x}%`}
+                  x1={`${startX}%`}
                   y1="0%"
-                  x2="50%"
+                  x2={`${startX}%`}
                   y2="100%"
-                  stroke="rgba(255,255,255,0.2)"
+                  stroke="white"
                   strokeWidth="0.5"
-                  opacity={opacity}
+                  strokeOpacity={opacity}
                 />
               )
             })}
@@ -125,93 +115,115 @@ export function CdnGridBackground() {
         </div>
       </div>
 
-      {/* Curved horizon lines - outer arcs */}
+      {/* Corner arc lines */}
       <svg
         className="absolute inset-0 h-full w-full"
-        preserveAspectRatio="none"
         viewBox="0 0 1440 900"
+        preserveAspectRatio="xMidYMid slice"
+        fill="none"
       >
-        {/* Top left arc */}
+        {/* Top left corner arc */}
         <path
-          d="M 0 200 Q 200 300 400 350"
-          stroke="rgba(255,255,255,0.1)"
-          strokeWidth="0.5"
+          d="M -100 0 Q 150 150, 450 250"
+          stroke="rgba(255,255,255,0.12)"
+          strokeWidth="1"
           fill="none"
         />
-        {/* Top right arc */}
         <path
-          d="M 1440 200 Q 1240 300 1040 350"
-          stroke="rgba(255,255,255,0.1)"
-          strokeWidth="0.5"
-          fill="none"
-        />
-        {/* Bottom curves */}
-        <path
-          d="M 0 700 Q 300 650 600 680"
+          d="M 0 -50 Q 200 100, 500 180"
           stroke="rgba(255,255,255,0.08)"
-          strokeWidth="0.5"
+          strokeWidth="1"
+          fill="none"
+        />
+
+        {/* Top right corner arc */}
+        <path
+          d="M 1540 0 Q 1290 150, 990 250"
+          stroke="rgba(255,255,255,0.12)"
+          strokeWidth="1"
           fill="none"
         />
         <path
-          d="M 1440 700 Q 1140 650 840 680"
+          d="M 1440 -50 Q 1240 100, 940 180"
           stroke="rgba(255,255,255,0.08)"
-          strokeWidth="0.5"
+          strokeWidth="1"
+          fill="none"
+        />
+
+        {/* Bottom left corner arc */}
+        <path
+          d="M -100 900 Q 150 750, 450 650"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="1"
+          fill="none"
+        />
+
+        {/* Bottom right corner arc */}
+        <path
+          d="M 1540 900 Q 1290 750, 990 650"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="1"
           fill="none"
         />
       </svg>
 
-      {/* Floating chevrons */}
+      {/* Floating chevrons - positioned away from center */}
       <FloatingChevron
         color="#5eead4"
-        size={80}
-        rotation={-30}
-        position={{ x: '25%', y: '70%' }}
+        size={90}
+        rotation={-35}
+        position={{ x: '18%', y: '65%' }}
         delay={0}
-        duration={8}
-      />
-      <FloatingChevron
-        color="#38bdf8"
-        size={100}
-        rotation={45}
-        position={{ x: '80%', y: '30%' }}
-        delay={1.5}
-        duration={9}
-      />
-      <FloatingChevron
-        color="#67e8f9"
-        size={70}
-        rotation={15}
-        position={{ x: '55%', y: '75%' }}
-        delay={3}
-        duration={7}
-      />
-      <FloatingChevron
-        color="#6366f1"
-        size={60}
-        rotation={-45}
-        position={{ x: '15%', y: '35%' }}
-        delay={2}
         duration={10}
       />
       <FloatingChevron
-        color="#22d3ee"
-        size={90}
-        rotation={20}
-        position={{ x: '70%', y: '60%' }}
+        color="#38bdf8"
+        size={110}
+        rotation={40}
+        position={{ x: '78%', y: '22%' }}
+        delay={2}
+        duration={11}
+      />
+      <FloatingChevron
+        color="#67e8f9"
+        size={75}
+        rotation={25}
+        position={{ x: '60%', y: '72%' }}
         delay={4}
-        duration={8.5}
+        duration={9}
+      />
+      <FloatingChevron
+        color="#22d3ee"
+        size={65}
+        rotation={-25}
+        position={{ x: '12%', y: '28%' }}
+        delay={1}
+        duration={12}
+      />
+      <FloatingChevron
+        color="#06b6d4"
+        size={85}
+        rotation={50}
+        position={{ x: '85%', y: '58%' }}
+        delay={3}
+        duration={10}
       />
 
-      {/* Center fade for text readability */}
+      {/* Center darkening for text readability */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 80%)',
+          background: 'radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
         }}
       />
 
       {/* Edge vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.3)_70%,#000_100%)]" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 100%)',
+        }}
+      />
     </div>
   )
 }
