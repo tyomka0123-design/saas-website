@@ -2,23 +2,30 @@
 
 import { motion } from 'framer-motion'
 
-interface LightBeamProps {
-  delay?: number
-  duration?: number
-  path: { x: string[]; y: string[] }
+interface FloatingChevronProps {
   color: string
-  className?: string
+  size: number
+  rotation: number
+  position: { x: string; y: string }
+  delay: number
+  duration: number
 }
 
-function LightBeam({ delay = 0, duration = 4, path, color, className = '' }: LightBeamProps) {
+function FloatingChevron({ color, size, rotation, position, delay, duration }: FloatingChevronProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
+      className="pointer-events-none absolute"
+      style={{
+        left: position.x,
+        top: position.y,
+        width: size,
+        height: size * 0.4,
+      }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{
-        x: path.x,
-        y: path.y,
-        opacity: [0, 0.75, 0.75, 0],
-        scale: [0.75, 1, 1, 0.75],
+        opacity: [0, 0.9, 0.9, 0],
+        y: [20, 0, -20, -40],
+        x: [0, 10, -5, 0],
       }}
       transition={{
         duration,
@@ -26,20 +33,27 @@ function LightBeam({ delay = 0, duration = 4, path, color, className = '' }: Lig
         ease: 'easeInOut',
         delay,
       }}
-      className={`pointer-events-none absolute z-10 h-[2px] w-[150px] ${className}`}
     >
-      <div
-        className="h-full w-full rounded-full"
+      <svg
+        viewBox="0 0 100 40"
+        fill="none"
         style={{
-          background: `linear-gradient(90deg, transparent, ${color}, white, ${color}, transparent)`,
-          boxShadow: `0 0 18px 1px ${color}`,
-          filter: 'blur(0.35px)',
+          transform: `rotate(${rotation}deg)`,
+          width: '100%',
+          height: '100%',
         }}
-      />
-      <div
-        className="absolute inset-0 h-full w-full rounded-full blur-[10px] opacity-30"
-        style={{ backgroundColor: color }}
-      />
+      >
+        <defs>
+          <linearGradient id={`grad-${color.replace('#', '')}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={color} stopOpacity="0.9" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.6" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0 20 L40 0 L100 0 L60 20 L100 40 L40 40 Z"
+          fill={`url(#grad-${color.replace('#', '')})`}
+        />
+      </svg>
     </motion.div>
   )
 }
@@ -47,56 +61,157 @@ function LightBeam({ delay = 0, duration = 4, path, color, className = '' }: Lig
 export function CdnGridBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black">
+      {/* Perspective grid container */}
       <div
-        className="absolute inset-0 overflow-hidden [perspective:1000px]"
+        className="absolute inset-0 overflow-hidden"
         style={{
-          maskImage: 'radial-gradient(circle at 50% 50%, black 20%, transparent 88%)',
-          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 20%, transparent 88%)',
+          perspective: '1200px',
+          perspectiveOrigin: '50% 40%',
         }}
       >
-        <div className="absolute left-1/2 top-[50%] h-[850px] w-[1450px] -translate-x-1/2 -translate-y-1/2 [transform:rotateX(58deg)] [transform-style:preserve-3d] max-md:h-[720px] max-md:w-[980px]">
-          <div
-            className="absolute inset-[-35%] opacity-[0.34] max-md:opacity-[0.42]"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(255,255,255,0.34) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.34) 1px, transparent 1px)
-              `,
-              backgroundSize: '72px 72px',
-            }}
-          />
+        {/* Grid plane */}
+        <div
+          className="absolute left-1/2 top-1/2 h-[200vh] w-[200vw] -translate-x-1/2 -translate-y-1/2"
+          style={{
+            transform: 'translateX(-50%) translateY(-30%) rotateX(75deg)',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          {/* Horizontal lines */}
+          <svg
+            className="absolute inset-0 h-full w-full"
+            preserveAspectRatio="none"
+          >
+            {Array.from({ length: 40 }).map((_, i) => {
+              const y = (i / 40) * 100
+              const opacity = Math.max(0.08, 0.25 - (Math.abs(y - 50) / 50) * 0.2)
+              return (
+                <line
+                  key={`h-${i}`}
+                  x1="0%"
+                  y1={`${y}%`}
+                  x2="100%"
+                  y2={`${y}%`}
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="0.5"
+                  opacity={opacity}
+                />
+              )
+            })}
+          </svg>
 
-          <div className="absolute inset-0 mix-blend-screen">
-            <LightBeam
-              color="#38bdf8"
-              path={{ x: ['8%', '45%', '75%'], y: ['78%', '50%', '28%'] }}
-              duration={4.2}
-              delay={0}
-              className="-skew-x-[24deg]"
-            />
-
-            <LightBeam
-              color="#34d399"
-              path={{ x: ['78%', '55%', '28%'], y: ['20%', '40%', '62%'] }}
-              duration={4.8}
-              delay={0.8}
-              className="-skew-x-[24deg]"
-            />
-
-            <LightBeam
-              color="#60a5fa"
-              path={{ x: ['86%', '62%', '38%'], y: ['48%', '52%', '58%'] }}
-              duration={4.4}
-              delay={1.6}
-              className="-skew-x-[24deg]"
-            />
-          </div>
+          {/* Vertical lines (converging to center) */}
+          <svg
+            className="absolute inset-0 h-full w-full"
+            preserveAspectRatio="none"
+          >
+            {Array.from({ length: 30 }).map((_, i) => {
+              const x = ((i - 15) / 15) * 60 + 50
+              const opacity = Math.max(0.06, 0.2 - Math.abs((i - 15) / 15) * 0.15)
+              return (
+                <line
+                  key={`v-${i}`}
+                  x1={`${x}%`}
+                  y1="0%"
+                  x2="50%"
+                  y2="100%"
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="0.5"
+                  opacity={opacity}
+                />
+              )
+            })}
+          </svg>
         </div>
       </div>
 
-      <div className="absolute left-1/2 top-[49%] h-[440px] w-[780px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.92)_48%,transparent_72%)] max-md:h-[500px] max-md:w-[92vw]" />
+      {/* Curved horizon lines - outer arcs */}
+      <svg
+        className="absolute inset-0 h-full w-full"
+        preserveAspectRatio="none"
+        viewBox="0 0 1440 900"
+      >
+        {/* Top left arc */}
+        <path
+          d="M 0 200 Q 200 300 400 350"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="0.5"
+          fill="none"
+        />
+        {/* Top right arc */}
+        <path
+          d="M 1440 200 Q 1240 300 1040 350"
+          stroke="rgba(255,255,255,0.1)"
+          strokeWidth="0.5"
+          fill="none"
+        />
+        {/* Bottom curves */}
+        <path
+          d="M 0 700 Q 300 650 600 680"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="0.5"
+          fill="none"
+        />
+        <path
+          d="M 1440 700 Q 1140 650 840 680"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="0.5"
+          fill="none"
+        />
+      </svg>
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.18)_58%,#000_100%)]" />
+      {/* Floating chevrons */}
+      <FloatingChevron
+        color="#5eead4"
+        size={80}
+        rotation={-30}
+        position={{ x: '25%', y: '70%' }}
+        delay={0}
+        duration={8}
+      />
+      <FloatingChevron
+        color="#38bdf8"
+        size={100}
+        rotation={45}
+        position={{ x: '80%', y: '30%' }}
+        delay={1.5}
+        duration={9}
+      />
+      <FloatingChevron
+        color="#67e8f9"
+        size={70}
+        rotation={15}
+        position={{ x: '55%', y: '75%' }}
+        delay={3}
+        duration={7}
+      />
+      <FloatingChevron
+        color="#6366f1"
+        size={60}
+        rotation={-45}
+        position={{ x: '15%', y: '35%' }}
+        delay={2}
+        duration={10}
+      />
+      <FloatingChevron
+        color="#22d3ee"
+        size={90}
+        rotation={20}
+        position={{ x: '70%', y: '60%' }}
+        delay={4}
+        duration={8.5}
+      />
+
+      {/* Center fade for text readability */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 80%)',
+        }}
+      />
+
+      {/* Edge vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(0,0,0,0.3)_70%,#000_100%)]" />
     </div>
   )
 }
