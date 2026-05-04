@@ -1,66 +1,49 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
-
-export async function login(formData: FormData) {
-  const supabase = await createClient()
-
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
-
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
-}
 
 export async function register(formData: FormData) {
-  const supabase = await createClient()
+  const fullName = String(formData.get('fullName') || '')
+  const email = String(formData.get('email') || '')
+  const password = String(formData.get('password') || '')
+  const phoneCode = String(formData.get('phoneCode') || '')
+  const phone = String(formData.get('phone') || '')
+  const country = String(formData.get('country') || '')
 
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const fullName = formData.get('fullName') as string
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
-  const { data, error } = await supabase.auth.signUp({
+  // 🔐 створюємо юзера
+  const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
-    options: {
-      data: {
-        full_name: fullName,
-      },
+    email_confirm: true,
+    user_metadata: {
+      full_name: fullName,
     },
   })
 
-  if (error) {
-    return { error: error.message }
+  if (error || !data.user) {
+    return { error: error?.message || 'Could not create account' }
   }
 
-  // 🔥 ОЦЕ ГОЛОВНИЙ ФІКС
-  if (data.user) {
-    await supabase.from('profiles').upsert({
-      id: data.user.id,
-      email: data.user.email,
-      full_name: fullName,
-      role: 'user',
-    })
+  // 👤 запис у profiles
+  const { error: profileError } = await supabase.from('profiles').insert({
+    id: data.user.id,
+    full_name: fullName,
+    email,
+    phone_code: phoneCode,
+    phone,
+    country,
+  })
+
+  if (profileError) {
+    return { error: profileError.message }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
-}
-
-export async function logout() {
-  const supabase = await createClient()
-  await supabase.auth.signOut()
-  revalidatePath('/', 'layout')
-  redirect('/')
+  // 🚀 редірект
+  redirect('/login')
 }
