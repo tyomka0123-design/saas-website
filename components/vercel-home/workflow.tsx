@@ -188,16 +188,18 @@ function DashedGridCard({ card, index }: { card: typeof cards[0]; index: number 
 export function Workflow() {
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
-      {/* Background vertical dotted lines */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="mx-auto h-full max-w-[1200px]">
-          {/* Left border line */}
-          <div className="absolute left-0 top-0 h-full w-px bg-white/[0.08]" />
-          {/* Right border line */}
-          <div className="absolute right-0 top-0 h-full w-px bg-white/[0.08]" />
-          {/* Center line */}
-          <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/[0.05] md:block" />
-        </div>
+      {/* Background grid lines */}
+<div className="pointer-events-none absolute inset-0">
+  <div className="mx-auto h-full max-w-[1200px] border-x border-white/[0.08]">
+    {/* Vertical lines */}
+    <div className="absolute left-[calc(50%-600px+340px)] top-0 hidden h-full w-px bg-white/[0.08] md:block" />
+    <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-white/[0.045] md:block" />
+
+    {/* Horizontal lines */}
+    <div className="absolute left-1/2 top-20 h-px w-screen -translate-x-1/2 bg-white/[0.055]" />
+    <div className="absolute left-1/2 bottom-20 h-px w-screen -translate-x-1/2 bg-white/[0.055]" />
+  </div>
+</div>
       </div>
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-6">
