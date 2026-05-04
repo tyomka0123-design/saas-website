@@ -1,12 +1,35 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-const supabase = createClient(
+const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+
+async function createSupabaseClient() {
+  const cookieStore = await cookies()
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+}
 
 export async function register(formData: FormData) {
   const fullName = String(formData.get('fullName') || '').trim()
@@ -24,24 +47,23 @@ export async function register(formData: FormData) {
     return { error: 'Password must be at least 8 characters' }
   }
 
-  const { data: signUpData, error: signUpError } =
-    await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    })
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  })
 
-  if (signUpError) {
-    return { error: signUpError.message }
+  if (error) {
+    return { error: error.message }
   }
 
-  const user = signUpData.user
+  const user = data.user
 
   if (!user) {
     return { error: 'User was not created' }
   }
 
-  const { error: profileError } = await supabase
+  const { error: profileError } = await supabaseAdmin
     .from('profiles')
     .update({
       full_name: fullName,
@@ -67,6 +89,8 @@ export async function login(formData: FormData) {
     return { error: 'Email and password are required' }
   }
 
+  const supabase = await createSupabaseClient()
+
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -80,5 +104,8 @@ export async function login(formData: FormData) {
 }
 
 export async function logout() {
+  const supabase = await createSupabaseClient()
+  await supabase.auth.signOut()
+
   redirect('/login')
 }
