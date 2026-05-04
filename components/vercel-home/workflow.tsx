@@ -189,15 +189,25 @@ export function Workflow() {
   return (
     <section id="workflow" className="relative overflow-hidden bg-black py-20 text-white md:py-28">
             <div className="relative z-10 mx-auto max-w-[1200px] border border-white/[0.12] px-6 py-8 md:px-8 md:py-10">
-              <div className="pointer-events-none absolute left-0 top-0 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 md:block">
-  <div className="absolute left-1/2 top-0 h-full w-px bg-white/[0.22]" />
-  <div className="absolute left-0 top-1/2 h-px w-full bg-white/[0.22]" />
-</div>
+              <svg
+  className="pointer-events-none absolute -left-[8px] -top-[8px] z-[999] hidden h-4 w-4 text-white/75 md:block"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
 
-<div className="pointer-events-none absolute bottom-0 right-0 hidden h-4 w-4 translate-x-1/2 translate-y-1/2 md:block">
-  <div className="absolute left-1/2 top-0 h-full w-px bg-white/[0.22]" />
-  <div className="absolute left-0 top-1/2 h-px w-full bg-white/[0.22]" />
-</div>
+<svg
+  className="pointer-events-none absolute -bottom-[8px] -right-[8px] z-[999] hidden h-4 w-4 text-white/75 md:block"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
         <div className="relative grid gap-16 md:grid-cols-[340px_1fr] md:gap-8">
   
   {/* Perfect vertical line */}
