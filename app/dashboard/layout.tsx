@@ -22,7 +22,8 @@ export default async function DashboardLayout({
     user.user_metadata?.name ||
     'Artem Pasieka'
 
-  const isAdmin = user.email === 'artpas01@gmail.com'
+  const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL?.toLowerCase()
+  const isAdmin = user.email?.toLowerCase() === founderEmail
 
   return (
     <div className="min-h-screen bg-background">
