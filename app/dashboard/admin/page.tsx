@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAuth } from '@/lib/auth-context'
-import { AdminPanelClient } from './admin-panel-client'
+import AdminPanelClient from './admin-panel-client'
 
 export default function DashboardAdminPage() {
   const router = useRouter()
