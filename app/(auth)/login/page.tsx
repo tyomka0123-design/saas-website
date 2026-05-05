@@ -4,6 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { AnimatedBackground } from '@/components/animated-background'
 import { login } from '../actions'
 import { toast } from 'sonner'
@@ -14,9 +17,7 @@ export default function LoginPage() {
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true)
-
     const result = await login(formData)
-
     if (result?.error) {
       toast.error(result.error)
       setIsLoading(false)
@@ -26,7 +27,6 @@ export default function LoginPage() {
   return (
     <>
       <AnimatedBackground />
-
       <div className="min-h-screen flex items-center justify-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -34,110 +34,99 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
+          {/* Back link */}
           <Link
             href="/"
-            className="mb-8 inline-flex items-center gap-2 text-sm text-white/50 transition-colors hover:text-white"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Back to home</span>
           </Link>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-black/50 p-8 backdrop-blur-xl">
-            <div className="mb-8 text-center">
-              <Link href="/" className="mb-6 inline-flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
-                  <svg viewBox="0 0 76 65" className="h-5 w-5 text-black" fill="currentColor">
-                    <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
-                  </svg>
+          {/* Card */}
+          <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-8">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <Link href="/" className="inline-flex items-center gap-2 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-xl">A</span>
                 </div>
-
-                <span className="text-xl font-semibold tracking-tight text-white">
-                  Apex Studio
-                </span>
+                <span className="font-semibold text-xl tracking-tight">Apex Studio</span>
               </Link>
-
-              <h1 className="mb-2 text-2xl font-bold text-white">Welcome back</h1>
-              <p className="text-white/50">Sign in to access your dashboard</p>
+              <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
+              <p className="text-muted-foreground">Sign in to access your dashboard</p>
             </div>
 
-            <form action={handleSubmit} className="space-y-5">
+            {/* Form */}
+            <form action={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-white">
-                  Email
-                </label>
-
-                <input
+                <Label htmlFor="email">Email</Label>
+                <Input
                   id="email"
                   name="email"
                   type="email"
                   placeholder="you@example.com"
                   required
                   autoComplete="email"
-                  className="h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-white placeholder:text-white/30 transition-colors focus:border-white/30 focus:outline-none"
+                  className="h-12"
                 />
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-medium text-white">
-                    Password
-                  </label>
-
+                  <Label htmlFor="password">Password</Label>
                   <Link
                     href="#"
-                    className="text-sm text-white/50 transition-colors hover:text-white"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Forgot password?
                   </Link>
                 </div>
-
                 <div className="relative">
-                  <input
+                  <Input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     required
                     autoComplete="current-password"
-                    className="h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 pr-12 text-white placeholder:text-white/30 transition-colors focus:border-white/30 focus:outline-none"
+                    className="h-12 pr-10"
                   />
-
                   <button
                     type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="w-5 h-5" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="w-5 h-5" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <motion.button
+              <Button
                 type="submit"
+                className="w-full h-12 glow"
                 disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-white font-semibold text-black disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
                     Signing in...
                   </>
                 ) : (
                   'Sign in'
                 )}
-              </motion.button>
+              </Button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-white/50">
+            {/* Footer */}
+            <p className="text-center text-sm text-muted-foreground mt-6">
               {"Don't have an account? "}
-              <Link href="/register" className="text-white hover:underline">
+              <Link href="/register" className="text-foreground hover:underline">
                 Create account
               </Link>
             </p>
