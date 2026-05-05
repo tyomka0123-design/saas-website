@@ -2,14 +2,13 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check, ChevronDown, Eye, EyeOff, Loader2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AnimatedBackground } from '@/components/animated-background'
-import { useAuth } from '@/lib/auth-context'
+import { register } from '../actions'
 import { toast } from 'sonner'
 
 const countries = [
@@ -190,20 +189,25 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSubmit(formData: FormData) {
+  if (password !== confirmPassword) {
+    toast.error('Passwords do not match')
+    return
+  }
 
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match')
-      return
-    }
+  setIsLoading(true)
 
-    if (password.length < 8) {
-      toast.error('Password must be at least 8 characters')
-      return
-    }
+  formData.set('phoneCode', phoneCountry.code)
+  formData.set('phone', phone.replace(/\D/g, ''))
+  formData.set('country', selectedCountry.name)
 
-    setIsLoading(true)
+  const result = await register(formData)
+
+  if (result?.error) {
+    toast.error(result.error)
+    setIsLoading(false)
+  }
+}
 
     try {
       // In demo mode, login directly creates the user
@@ -315,7 +319,7 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form action={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-white/85">Email address</Label>
                 <Input id="email" name="email" type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
