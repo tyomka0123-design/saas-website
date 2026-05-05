@@ -179,9 +179,13 @@ export function Navbar() {
                   <ChevronDown className="w-3 h-3 opacity-60" />
                 </button>
               ) : (
-                <a
-                  key={item.label}
-                  href={item.label === 'Pricing' ? '#pricing' : '#testimonials'}
+                <Link
+  key={item.label}
+  href={item.label === 'Pricing' ? '/pricing' : '#testimonials'}
+  className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
+>
+  {item.label}
+</Link>
                   className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
                 >
                   {item.label}
@@ -374,13 +378,13 @@ export function Navbar() {
                   </div>
                 ))}
 
-                <a
-                  href="#pricing"
-                  onClick={() => setMobileOpen(false)}
-                  className="block text-[20px] leading-none text-white/55"
-                >
-                  Pricing
-                </a>
+                <Link
+  href="/pricing"
+  onClick={() => setMobileOpen(false)}
+  className="block text-[20px] leading-none text-white/55"
+>
+  Pricing
+</Link>
 
                 <a
                   href="#testimonials"
