@@ -1,5 +1,6 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import { Github, Triangle, Twitter } from 'lucide-react'
+import { Github, Twitter } from 'lucide-react'
 
 const footerLinks = {
   Product: ['Landing Pages', 'Dashboards', 'E-commerce', 'Bookings', 'Client Portals', 'Automation'],
@@ -39,10 +40,15 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-5">
-              <Triangle className="w-5 h-5 fill-white text-white" />
-              <span className="font-semibold text-white text-[15px]">Apex Studio</span>
-            </div>
+            <Link href="/" className="mb-5 inline-flex items-center">
+  <Image
+    src="/koryx-logo.png"
+    alt="Koryx logo"
+    width={140}
+    height={36}
+    className="h-auto w-[120px] object-contain"
+  />
+</Link>
             <p className="text-[13px] text-white/35 leading-relaxed mb-5">
               Premium web experiences for ambitious brands that want to look serious online.
             </p>
@@ -73,7 +79,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between pt-10 mt-10 border-t border-white/[0.06] gap-4">
-          <p className="text-[12px] text-white/25">© {new Date().getFullYear()} Apex Studio. All rights reserved.</p>
+          <p className="text-[12px] text-white/25">© {new Date().getFullYear()} Koryx. All rights reserved.</p>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
             <span className="text-[12px] text-white/25">All systems operational</span>
