@@ -1,132 +1,130 @@
-'use client'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { User, Mail, Calendar } from 'lucide-react'
 
-import { User, Mail, Calendar, Shield } from 'lucide-react'
-import { useAuth } from '@/lib/auth-context'
-import { ROLE_COLORS, UserRole } from '@/lib/types'
+export default async function SettingsPage() {
+  const supabase = await createClient()
 
-function RoleBadge({ role }: { role: UserRole }) {
-  const colors = ROLE_COLORS[role]
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide ${colors.bg} ${colors.text}`}>
-      {role}
-    </span>
-  )
-}
+  const { data: { user } } = await supabase.auth.getUser()
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-lg bg-neutral-900 border border-neutral-800">
-      <div className="px-5 py-4 border-b border-neutral-800">
-        <h2 className="text-sm font-medium text-white">{title}</h2>
-      </div>
-      <div className="p-5">{children}</div>
-    </div>
-  )
-}
+  if (!user) {
+    redirect('/login')
+  }
 
-export default function SettingsPage() {
-  const { user, orders } = useAuth()
-  const userOrders = orders.filter(o => o.userId === user?.id)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('email', user.email)
+    .maybeSingle()
 
   return (
-    <div className="p-6 max-w-2xl space-y-6">
+    <div className="space-y-8 max-w-2xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-white">Settings</h1>
-        <p className="text-sm text-neutral-500 mt-0.5">Manage your account</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">Settings</h1>
+        <p className="text-muted-foreground mt-1">
+          Manage your account settings and preferences
+        </p>
       </div>
 
-      {/* Profile */}
-      <Section title="Profile">
-        <div className="flex items-center gap-4 mb-5">
-          <div className="h-14 w-14 rounded-lg bg-neutral-800 flex items-center justify-center">
-            {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="h-full w-full rounded-lg object-cover" />
-            ) : (
-              <User className="h-6 w-6 text-neutral-400" />
-            )}
-          </div>
-          <div>
-            <h3 className="text-base font-medium text-white">{user?.name || 'User'}</h3>
-            <RoleBadge role={user?.role || 'user'} />
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="text-xs text-neutral-500 mb-1.5 block">Name</label>
-            <div className="h-10 px-3 rounded-md bg-neutral-800 border border-neutral-700 flex items-center text-sm text-neutral-300">
-              {user?.name || 'Not set'}
-            </div>
+      {/* Profile Card */}
+      <Card className="bg-card/50 border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="w-5 h-5" />
+            Profile Information
+          </CardTitle>
+          <CardDescription>
+            Your personal information associated with this account
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input
+              id="fullName"
+              defaultValue={profile?.full_name || user.user_metadata?.full_name || 'Artem Pasieka'}
+              disabled
+              className="h-12"
+            />
           </div>
           
-          <div>
-            <label className="text-xs text-neutral-500 mb-1.5 block">Email</label>
-            <div className="h-10 px-3 rounded-md bg-neutral-800 border border-neutral-700 flex items-center text-sm text-neutral-300">
-              {user?.email || 'Not set'}
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              defaultValue={user.email || ''}
+              disabled
+              className="h-12"
+            />
+          </div>
+          
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50">
+            <Calendar className="w-5 h-5 text-muted-foreground" />
+            <div>
+              <p className="text-sm text-muted-foreground">Member since</p>
+              <p className="font-medium">
+                {new Date(profile?.created_at || user.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 pt-2 text-xs text-neutral-500">
-            <Calendar className="w-3.5 h-3.5" />
-            Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric', month: 'long', day: 'numeric'
-            }) : 'Unknown'}
-          </div>
-        </div>
-      </Section>
-
-      {/* Stats */}
-      <Section title="Statistics">
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 rounded-md bg-neutral-800 text-center">
-            <p className="text-xl font-semibold text-white">{userOrders.length}</p>
-            <p className="text-xs text-neutral-500 mt-0.5">Total</p>
-          </div>
-          <div className="p-3 rounded-md bg-neutral-800 text-center">
-            <p className="text-xl font-semibold text-green-400">{userOrders.filter(o => o.status === 'completed').length}</p>
-            <p className="text-xs text-neutral-500 mt-0.5">Completed</p>
-          </div>
-          <div className="p-3 rounded-md bg-neutral-800 text-center">
-            <p className="text-xl font-semibold text-blue-400">{userOrders.filter(o => o.status === 'in_progress').length}</p>
-            <p className="text-xs text-neutral-500 mt-0.5">In Progress</p>
-          </div>
-        </div>
-      </Section>
+          <p className="text-sm text-muted-foreground">
+            To update your profile information or change your password, please contact our support team.
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Account Status */}
-      <Section title="Account Status">
-        <div className="flex items-center justify-between p-3 rounded-md bg-green-500/10 border border-green-500/20">
-          <div className="flex items-center gap-2.5">
-            <Shield className="h-4 w-4 text-green-500" />
+      <Card className="bg-card/50 border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="w-5 h-5" />
+            Account Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between p-4 rounded-xl bg-success/10 border border-success/20">
             <div>
-              <p className="text-sm font-medium text-green-400">Active</p>
-              <p className="text-xs text-neutral-500">Account in good standing</p>
+              <p className="font-medium text-success">Active Account</p>
+              <p className="text-sm text-muted-foreground">Your account is in good standing</p>
             </div>
+            <div className="w-3 h-3 rounded-full bg-success animate-pulse" />
           </div>
-          <div className="w-2 h-2 rounded-full bg-green-500" />
-        </div>
-      </Section>
+        </CardContent>
+      </Card>
 
-      {/* Notifications */}
-      <Section title="Notifications">
-        <div className="space-y-2">
-          {[
-            { label: 'Order Updates', enabled: true },
-            { label: 'Email Notifications', enabled: true },
-            { label: 'Marketing Emails', enabled: false },
-          ].map((item, index) => (
-            <div key={index} className="flex items-center justify-between py-2">
-              <span className="text-sm text-neutral-300">{item.label}</span>
-              <button
-                className={`relative w-9 h-5 rounded-full transition-colors ${item.enabled ? 'bg-blue-500' : 'bg-neutral-700'}`}
-              >
-                <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${item.enabled ? 'left-4' : 'left-0.5'}`} />
-              </button>
+      {/* Danger Zone */}
+      <Card className="bg-card/50 border-destructive/20">
+        <CardHeader>
+          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardDescription>
+            Irreversible actions for your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-destructive/20">
+            <div>
+              <p className="font-medium">Delete Account</p>
+              <p className="text-sm text-muted-foreground">
+                Permanently delete your account and all associated data
+              </p>
             </div>
-          ))}
-        </div>
-      </Section>
+            <Button variant="destructive" disabled>
+              Delete Account
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
