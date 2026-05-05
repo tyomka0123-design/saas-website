@@ -2,358 +2,526 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Check } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { createOrder } from './actions'
+import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  ArrowLeft, 
+  Loader2, 
+  Check, 
+  Briefcase,
+  Palette,
+  FileText,
+  Sparkles,
+  ChevronRight,
+  Layers,
+  ShoppingCart,
+  LayoutDashboard,
+  Rocket,
+  Globe,
+  Zap,
+} from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
 import { toast } from 'sonner'
 
+const steps = [
+  { id: 1, title: 'Project Type', icon: Briefcase },
+  { id: 2, title: 'Details', icon: FileText },
+  { id: 3, title: 'Design', icon: Palette },
+  { id: 4, title: 'Review', icon: Sparkles },
+]
+
 const websiteTypes = [
-  'Business Website',
-  'E-Commerce Store',
-  'Portfolio',
-  'Landing Page',
-  'Blog',
-  'Web Application',
-  'Restaurant Website',
-  'Booking Platform',
-  'Other',
+  { id: 'landing', label: 'Landing Page', icon: Layers, description: 'Single page to showcase your product or service' },
+  { id: 'portfolio', label: 'Portfolio', icon: Briefcase, description: 'Showcase your work and projects' },
+  { id: 'ecommerce', label: 'E-commerce', icon: ShoppingCart, description: 'Online store with products and checkout' },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, description: 'Admin panel or analytics dashboard' },
+  { id: 'saas', label: 'SaaS Platform', icon: Rocket, description: 'Full-featured web application' },
+  { id: 'other', label: 'Other', icon: Globe, description: 'Something unique and custom' },
 ]
 
 const budgetRanges = [
-  '$1,000 - $2,500',
-  '$2,500 - $5,000',
-  '$5,000 - $10,000',
-  '$10,000 - $25,000',
-  '$25,000+',
+  { value: '$500 - $1,000', label: 'Starter', description: 'Simple landing page or portfolio' },
+  { value: '$1,000 - $2,500', label: 'Basic', description: 'Multi-page website with forms' },
+  { value: '$2,500 - $5,000', label: 'Standard', description: 'Custom design with animations' },
+  { value: '$5,000 - $10,000', label: 'Premium', description: 'Complex functionality & integrations' },
+  { value: '$10,000+', label: 'Enterprise', description: 'Full-scale platform development' },
 ]
 
-const designStyles = [
-  'Minimal & Clean',
-  'Bold & Colorful',
-  'Dark & Modern',
-  'Corporate & Professional',
-  'Creative & Artistic',
-  'Luxury & Premium',
-  'Playful & Fun',
-  'Not sure - Need guidance',
+const priorityOptions = [
+  { value: 'low', label: 'Low', description: 'Flexible timeline', color: 'bg-gray-500/20 text-gray-400 border-gray-500/30' },
+  { value: 'medium', label: 'Medium', description: 'Standard delivery', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+  { value: 'high', label: 'High', description: 'Priority support', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+  { value: 'urgent', label: 'Urgent', description: 'Rush delivery', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
 ]
 
 const featuresList = [
-  { id: 'booking', label: 'Booking System' },
-  { id: 'payments', label: 'Payment Processing' },
-  { id: 'login', label: 'User Login System' },
-  { id: 'admin', label: 'Admin Panel' },
-  { id: 'database', label: 'Database Integration' },
-  { id: 'animations', label: 'Custom Animations' },
-  { id: 'seo', label: 'SEO Optimization' },
-  { id: 'contact', label: 'Contact Form' },
-  { id: 'ecommerce', label: 'E-Commerce Features' },
-  { id: 'blog', label: 'Blog System' },
-  { id: 'newsletter', label: 'Newsletter Signup' },
-  { id: 'analytics', label: 'Analytics Integration' },
+  { id: 'animations', label: 'Custom Animations', icon: Sparkles },
+  { id: 'seo', label: 'SEO Optimization', icon: Zap },
+  { id: 'responsive', label: 'Responsive Design', icon: LayoutDashboard },
+  { id: 'cms', label: 'Content Management', icon: FileText },
+  { id: 'auth', label: 'User Authentication', icon: Briefcase },
+  { id: 'payments', label: 'Payment Integration', icon: ShoppingCart },
+  { id: 'analytics', label: 'Analytics Setup', icon: Rocket },
+  { id: 'hosting', label: 'Hosting & Domain', icon: Globe },
 ]
 
 export default function NewOrderPage() {
+  const router = useRouter()
+  const { addOrder } = useAuth()
+  const [currentStep, setCurrentStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+  
+  const [formData, setFormData] = useState({
+    websiteType: '' as 'landing' | 'portfolio' | 'ecommerce' | 'dashboard' | 'saas' | 'other' | '',
+    title: '',
+    description: '',
+    budget: '',
+    deadline: '',
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
+    features: [] as string[],
+    designNotes: '',
+  })
 
-  function toggleFeature(featureId: string) {
-    setSelectedFeatures(prev =>
-      prev.includes(featureId)
-        ? prev.filter(f => f !== featureId)
-        : [...prev, featureId]
-    )
+  const updateForm = (field: string, value: string | string[]) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setIsLoading(true)
+  const toggleFeature = (featureId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.includes(featureId)
+        ? prev.features.filter(f => f !== featureId)
+        : [...prev.features, featureId]
+    }))
+  }
 
-    const formData = new FormData(e.currentTarget)
-
-    const data = {
-      businessName: formData.get('businessName') as string,
-      websiteType: formData.get('websiteType') as string,
-      budget: formData.get('budget') as string,
-      deadline: formData.get('deadline') as string,
-      pages: formData.get('pages') as string,
-      designStyle: formData.get('designStyle') as string,
-      features: selectedFeatures.map(id => 
-        featuresList.find(f => f.id === id)?.label || id
-      ),
-      description: formData.get('description') as string,
-      contactEmail: formData.get('contactEmail') as string,
-      phone: formData.get('phone') as string,
-      references: formData.get('references') as string,
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1: return formData.websiteType !== ''
+      case 2: return formData.title !== '' && formData.description !== '' && formData.budget !== ''
+      case 3: return true
+      case 4: return true
+      default: return false
     }
+  }
 
-    const result = await createOrder(data)
+  const handleSubmit = async () => {
+    if (!formData.websiteType) return
+    
+    setIsLoading(true)
+    
+    try {
+      const order = addOrder({
+        title: formData.title,
+        description: formData.description,
+        websiteType: formData.websiteType as 'landing' | 'portfolio' | 'ecommerce' | 'dashboard' | 'saas' | 'other',
+        budget: formData.budget,
+        deadline: formData.deadline ? new Date(formData.deadline) : undefined,
+        priority: formData.priority,
+        status: 'pending',
+        notes: formData.designNotes,
+      })
 
-    if (result?.error) {
-      toast.error(result.error)
+      if (order) {
+        toast.success('Order submitted successfully!')
+        router.push('/dashboard/orders')
+      } else {
+        toast.error('Failed to create order')
+      }
+    } catch {
+      toast.error('Something went wrong')
+    } finally {
       setIsLoading(false)
-    } else {
-      toast.success('Order submitted successfully!')
     }
   }
 
   return (
-    <div className="space-y-8 max-w-3xl">
+    <div className="p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-8"
+      >
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
+          className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors mb-4 text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to dashboard</span>
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-bold">Create New Order</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-2xl md:text-3xl font-bold text-white">Create New Order</h1>
+        <p className="text-white/50 mt-1">
           Tell us about your project and we&apos;ll get back to you within 24 hours
         </p>
-      </div>
+      </motion.div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Business Information */}
-        <Card className="bg-card/50 border-border">
-          <CardHeader>
-            <CardTitle>Business Information</CardTitle>
-            <CardDescription>
-              Basic details about your business or brand
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="businessName">Business / Brand Name *</Label>
-              <Input
-                id="businessName"
-                name="businessName"
-                placeholder="Enter your business name"
-                required
-                className="h-12"
-              />
+      {/* Progress Steps */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-10"
+      >
+        <div className="flex items-center justify-between">
+          {steps.map((step, index) => (
+            <div key={step.id} className="flex items-center flex-1">
+              <div className="flex flex-col items-center">
+                <motion.div
+                  className={`
+                    relative flex items-center justify-center w-12 h-12 rounded-xl border-2 transition-all
+                    ${currentStep >= step.id 
+                      ? 'bg-white border-white text-black' 
+                      : 'bg-white/[0.03] border-white/[0.1] text-white/40'
+                    }
+                  `}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {currentStep > step.id ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <step.icon className="h-5 w-5" />
+                  )}
+                </motion.div>
+                <span className={`mt-2 text-xs font-medium hidden sm:block ${currentStep >= step.id ? 'text-white' : 'text-white/40'}`}>
+                  {step.title}
+                </span>
+              </div>
+              {index < steps.length - 1 && (
+                <div className="flex-1 mx-3 h-0.5 rounded-full bg-white/[0.1] overflow-hidden">
+                  <motion.div
+                    className="h-full bg-white"
+                    initial={{ width: 0 }}
+                    animate={{ width: currentStep > step.id ? '100%' : '0%' }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Step Content */}
+      <AnimatePresence mode="wait">
+        {/* Step 1: Project Type */}
+        {currentStep === 1 && (
+          <motion.div
+            key="step1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">What type of website do you need?</h2>
+              <p className="text-white/50 text-sm">Select the option that best describes your project</p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {websiteTypes.map((type) => (
+                <motion.button
+                  key={type.id}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => updateForm('websiteType', type.id)}
+                  className={`
+                    p-5 rounded-2xl border text-left transition-all
+                    ${formData.websiteType === type.id
+                      ? 'bg-white/[0.08] border-white/30'
+                      : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15]'
+                    }
+                  `}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-xl ${formData.websiteType === type.id ? 'bg-white text-black' : 'bg-white/[0.05] text-white/60'}`}>
+                      <type.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-white">{type.label}</h3>
+                      <p className="text-sm text-white/40 mt-1">{type.description}</p>
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 2: Details */}
+        {currentStep === 2 && (
+          <motion.div
+            key="step2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Project Details</h2>
+              <p className="text-white/50 text-sm">Tell us more about your project requirements</p>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="websiteType">Type of Website *</Label>
-                <Select name="websiteType" required>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {websiteTypes.map(type => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="budget">Budget Range *</Label>
-                <Select name="budget" required>
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Select budget" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {budgetRanges.map(range => (
-                      <SelectItem key={range} value={range}>
-                        {range}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="deadline">Preferred Deadline</Label>
-                <Input
-                  id="deadline"
-                  name="deadline"
-                  type="date"
-                  className="h-12"
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Project Title *</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => updateForm('title', e.target.value)}
+                  placeholder="e.g., E-commerce Website for Fashion Brand"
+                  className="w-full h-12 px-4 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="pages">Number of Pages</Label>
-                <Input
-                  id="pages"
-                  name="pages"
-                  placeholder="e.g., 5-10 pages"
-                  className="h-12"
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">Description *</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => updateForm('description', e.target.value)}
+                  placeholder="Describe your project goals, target audience, and any specific requirements..."
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors resize-none"
                 />
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Design Preferences */}
-        <Card className="bg-card/50 border-border">
-          <CardHeader>
-            <CardTitle>Design Preferences</CardTitle>
-            <CardDescription>
-              Help us understand your visual style
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="designStyle">Design Style</Label>
-              <Select name="designStyle">
-                <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Select style" />
-                </SelectTrigger>
-                <SelectContent>
-                  {designStyles.map(style => (
-                    <SelectItem key={style} value={style}>
-                      {style}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">Budget Range *</label>
+                  <div className="space-y-2">
+                    {budgetRanges.map((budget) => (
+                      <button
+                        key={budget.value}
+                        onClick={() => updateForm('budget', budget.value)}
+                        className={`
+                          w-full p-3 rounded-xl border text-left transition-all
+                          ${formData.budget === budget.value
+                            ? 'bg-white/[0.08] border-white/30'
+                            : 'bg-white/[0.02] border-white/[0.06] hover:border-white/[0.15]'
+                          }
+                        `}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-white">{budget.label}</p>
+                            <p className="text-xs text-white/40">{budget.description}</p>
+                          </div>
+                          <span className="text-xs text-white/60">{budget.value}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="space-y-3">
-              <Label>Features Needed</Label>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {featuresList.map(feature => (
-                  <label
-                    key={feature.id}
-                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                      selectedFeatures.includes(feature.id)
-                        ? 'border-accent bg-accent/10'
-                        : 'border-border hover:border-muted-foreground'
-                    }`}
-                  >
-                    <Checkbox
-                      id={feature.id}
-                      checked={selectedFeatures.includes(feature.id)}
-                      onCheckedChange={() => toggleFeature(feature.id)}
+                <div className="space-y-5">
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">Deadline (Optional)</label>
+                    <input
+                      type="date"
+                      value={formData.deadline}
+                      onChange={(e) => updateForm('deadline', e.target.value)}
+                      className="w-full h-12 px-4 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white focus:outline-none focus:border-white/30 transition-colors"
                     />
-                    <span className="text-sm">{feature.label}</span>
-                  </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">Priority</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {priorityOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => updateForm('priority', option.value)}
+                          className={`
+                            p-2.5 rounded-xl border text-center transition-all text-xs
+                            ${formData.priority === option.value
+                              ? option.color
+                              : 'bg-white/[0.02] border-white/[0.06] text-white/60 hover:border-white/[0.15]'
+                            }
+                          `}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 3: Design */}
+        {currentStep === 3 && (
+          <motion.div
+            key="step3"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Design & Features</h2>
+              <p className="text-white/50 text-sm">Select the features you need for your project</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-white mb-3">Features Needed</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {featuresList.map((feature) => (
+                  <motion.button
+                    key={feature.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => toggleFeature(feature.id)}
+                    className={`
+                      p-4 rounded-xl border text-center transition-all
+                      ${formData.features.includes(feature.id)
+                        ? 'bg-blue-500/20 border-blue-500/50 text-blue-400'
+                        : 'bg-white/[0.02] border-white/[0.06] text-white/60 hover:border-white/[0.15]'
+                      }
+                    `}
+                  >
+                    <feature.icon className="h-5 w-5 mx-auto mb-2" />
+                    <span className="text-xs font-medium">{feature.label}</span>
+                  </motion.button>
                 ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Project Details */}
-        <Card className="bg-card/50 border-border">
-          <CardHeader>
-            <CardTitle>Project Details</CardTitle>
-            <CardDescription>
-              Describe your project in detail
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="description">Project Description *</Label>
-              <Textarea
-                id="description"
-                name="description"
-                placeholder="Describe your project, goals, target audience, and any specific requirements..."
-                required
-                rows={6}
-                className="resize-none"
+            <div>
+              <label className="block text-sm font-medium text-white mb-2">Design Notes (Optional)</label>
+              <textarea
+                value={formData.designNotes}
+                onChange={(e) => updateForm('designNotes', e.target.value)}
+                placeholder="Any specific design preferences, color schemes, or reference websites..."
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors resize-none"
               />
             </div>
+          </motion.div>
+        )}
 
-            <div className="space-y-2">
-              <Label htmlFor="references">Reference Links / Inspiration</Label>
-              <Textarea
-                id="references"
-                name="references"
-                placeholder="Share any website links that inspire you or represent the style you're looking for..."
-                rows={3}
-                className="resize-none"
-              />
+        {/* Step 4: Review */}
+        {currentStep === 4 && (
+          <motion.div
+            key="step4"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Review Your Order</h2>
+              <p className="text-white/50 text-sm">Make sure everything looks correct before submitting</p>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Contact Information */}
-        <Card className="bg-card/50 border-border">
-          <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
-            <CardDescription>
-              How can we reach you about this project?
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="contactEmail">Contact Email *</Label>
-                <Input
-                  id="contactEmail"
-                  name="contactEmail"
-                  type="email"
-                  placeholder="you@example.com"
-                  required
-                  className="h-12"
-                />
+            <div className="space-y-4">
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                <h3 className="text-sm font-medium text-white/50 mb-3">Project Type</h3>
+                <p className="text-lg font-semibold text-white capitalize">
+                  {websiteTypes.find(t => t.id === formData.websiteType)?.label}
+                </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  className="h-12"
-                />
+              <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                <h3 className="text-sm font-medium text-white/50 mb-3">Project Details</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs text-white/40">Title</p>
+                    <p className="text-white font-medium">{formData.title}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-white/40">Description</p>
+                    <p className="text-white/70 text-sm">{formData.description}</p>
+                  </div>
+                  <div className="flex gap-6">
+                    <div>
+                      <p className="text-xs text-white/40">Budget</p>
+                      <p className="text-white font-medium">{formData.budget}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-white/40">Priority</p>
+                      <p className="text-white font-medium capitalize">{formData.priority}</p>
+                    </div>
+                    {formData.deadline && (
+                      <div>
+                        <p className="text-xs text-white/40">Deadline</p>
+                        <p className="text-white font-medium">{new Date(formData.deadline).toLocaleDateString()}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Submit */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button
-            type="submit"
-            className="glow min-h-[48px] flex-1 sm:flex-none sm:px-12"
+              {formData.features.length > 0 && (
+                <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                  <h3 className="text-sm font-medium text-white/50 mb-3">Selected Features</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.features.map(featureId => {
+                      const feature = featuresList.find(f => f.id === featureId)
+                      return feature ? (
+                        <span key={featureId} className="px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-400 text-xs font-medium">
+                          {feature.label}
+                        </span>
+                      ) : null
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation Buttons */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="flex justify-between mt-10 pt-6 border-t border-white/[0.06]"
+      >
+        <button
+          onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+          disabled={currentStep === 1}
+          className="flex items-center gap-2 px-5 py-3 rounded-xl text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
+
+        {currentStep < 4 ? (
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setCurrentStep(prev => Math.min(4, prev + 1))}
+            disabled={!canProceed()}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Continue
+            <ChevronRight className="h-4 w-4" />
+          </motion.button>
+        ) : (
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={handleSubmit}
             disabled={isLoading}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium text-sm disabled:opacity-50"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Submitting...
               </>
             ) : (
               <>
-                <Check className="w-5 h-5 mr-2" />
+                <Check className="h-4 w-4" />
                 Submit Order
               </>
             )}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="min-h-[48px]"
-            asChild
-          >
-            <Link href="/dashboard">Cancel</Link>
-          </Button>
-        </div>
-      </form>
+          </motion.button>
+        )}
+      </motion.div>
     </div>
   )
 }
