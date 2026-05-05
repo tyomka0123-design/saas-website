@@ -3,19 +3,6 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Check, Cloud, Globe, Rocket, Shield } from 'lucide-react'
-import {
-  ArrowRight,
-  Check,
-  CircleDollarSign,
-  Cloud,
-  Gauge,
-  Globe,
-  Rocket,
-  Shield,
-  Zap,
-} from 'lucide-react'
-
-type PlanKey = 'hobby' | 'pro' | 'enterprise'
 
 type FeatureRow = {
   label: string
@@ -211,7 +198,11 @@ function CellValue({ value }: { value: string | boolean }) {
     return <span className="text-white/20">—</span>
   }
 
-  return <span className="text-center text-sm leading-6 text-white/70">{value}</span>
+  return (
+    <span className="text-center text-sm leading-6 text-white/70">
+      {value}
+    </span>
+  )
 }
 
 function PlanButton({
@@ -236,14 +227,14 @@ function PlanButton({
 
 export function Pricing() {
   return (
-    <section id="pricing" className="bg-black px-4 pb-28 pt-12 text-white">
+    <section id="pricing" className="bg-black px-4 pb-20 pt-12 text-white md:pb-28">
       <div className="mx-auto max-w-[1100px] border-x border-white/[0.08]">
         <div className="border-b border-t border-white/[0.08] px-6 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-[42px] font-semibold tracking-[-0.06em] md:text-[64px] md:leading-[1.02]">
+            <h2 className="text-[36px] font-semibold tracking-[-0.06em] md:text-[64px] md:leading-[1.02]">
               Find the right build for your business.
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-[17px] leading-8 text-white/50">
+            <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-7 text-white/50 md:text-[17px] md:leading-8">
               Same Vercel-style structure, but adapted for Apex Studio packages and custom web development systems.
             </p>
           </div>
@@ -253,7 +244,7 @@ export function Pricing() {
           {topPlans.map((plan, index) => (
             <div
               key={plan.key}
-              className={`relative border-white/[0.08] px-8 pb-8 pt-10 ${
+              className={`relative border-white/[0.08] px-6 pb-8 pt-10 md:px-8 ${
                 index !== topPlans.length - 1 ? 'md:border-r' : ''
               } ${plan.key === 'pro' ? 'bg-white/[0.02]' : ''}`}
             >
@@ -279,10 +270,7 @@ export function Pricing() {
               </div>
 
               <div className="mt-8 flex flex-col gap-3">
-                <PlanButton
-                  href={plan.key === 'enterprise' ? '/register' : '/register'}
-                  className={plan.buttonStyle}
-                >
+                <PlanButton href="/register" className={plan.buttonStyle}>
                   {plan.button}
                 </PlanButton>
 
@@ -299,7 +287,7 @@ export function Pricing() {
           ))}
         </div>
 
-        <div className="border-b border-white/[0.08] px-8 py-12 md:px-10">
+        <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
             <div>
               <h3 className="text-[18px] font-semibold tracking-[-0.03em] md:text-[22px]">
@@ -310,7 +298,7 @@ export function Pricing() {
                 </span>
               </h3>
 
-                            <Link
+              <Link
                 href="/register"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/[0.12] bg-black px-5 text-[15px] font-medium text-white/80 transition hover:bg-white/[0.04] md:w-fit"
               >
@@ -325,102 +313,83 @@ export function Pricing() {
               </div>
 
               <div className="absolute bottom-6 left-6 right-6 flex items-end gap-3">
-  {[22, 44, 78, 112, 132, 148, 148, 148].map((height, i) => (
-    <motion.div
-      key={i}
-      className={`flex-1 rounded-t-md border ${
-        i >= 5
-          ? 'border-[#0A84FF] bg-[#0A84FF]/10'
-          : 'border-white/[0.18] bg-white/[0.03]'
-      }`}
-      initial={{ height: 10, opacity: 0.5 }}
-      animate={{
-        height: [18, height, Math.max(height - 18, 24), height],
-        opacity: [0.5, 1, 0.75, 1],
-      }}
-      transition={{
-        duration: 2.8,
-        repeat: Infinity,
-        delay: i * 0.08,
-        ease: 'easeInOut',
-      }}
-    />
-  ))}
-</div>
+                {[22, 44, 78, 112, 132, 148, 148, 148].map((height, i) => (
+                  <motion.div
+                    key={i}
+                    className={`flex-1 rounded-t-md border ${
+                      i >= 5
+                        ? 'border-[#0A84FF] bg-[#0A84FF]/10'
+                        : 'border-white/[0.18] bg-white/[0.03]'
+                    }`}
+                    initial={{ height: 10, opacity: 0.5 }}
+                    animate={{
+                      height: [18, height, Math.max(height - 18, 24), height],
+                      opacity: [0.5, 1, 0.75, 1],
+                    }}
+                    transition={{
+                      duration: 2.8,
+                      repeat: Infinity,
+                      delay: i * 0.08,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-b border-white/[0.08] px-8 py-12 md:px-10">
+        <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="grid gap-8 md:grid-cols-[0.95fr_1.05fr] md:items-center">
             <div className="relative h-[180px] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:52px_52px]" />
 
-              <div className="relative flex h-full items-end gap-6">
+              <div className="relative flex h-full items-end gap-4 md:gap-6">
                 {[
-  { labels: ['3s', '2.6s', '3.2s'], active: true, h: 116 },
-  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-  { labels: ['2s', '1.7s', '2.2s'], active: true, h: 86 },
-  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-  { labels: ['1.5s', '1.2s', '1.8s'], active: true, h: 58 },
-  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-  { labels: ['3s', '2.4s', '3.1s'], active: true, h: 40 },
-].map((item, i) => (
-  <motion.div
-    key={i}
-    className={`relative flex w-full items-end justify-center rounded-md border ${
-      item.active
-        ? 'border-[#0A84FF] bg-[#0A84FF]/10'
-        : 'border-white/[0.08] bg-white/[0.03]'
-    }`}
-    initial={{ height: 30, opacity: 0.65 }}
-    animate={{
-      height: [Math.max(item.h - 18, 28), item.h, Math.max(item.h - 10, 28), item.h],
-      opacity: [0.65, 1, 0.8, 1],
-    }}
-    transition={{
-      duration: 2.4,
-      repeat: Infinity,
-      delay: i * 0.12,
-      ease: 'easeInOut',
-    }}
-    style={{ height: item.h }}
-  >
-    <motion.span
-      className={`mb-3 rounded-md px-2 py-1 text-xs ${
-        item.active
-          ? 'border border-[#0A84FF] bg-[#0A84FF]/10 text-[#72AEFF]'
-          : 'text-white/30'
-      }`}
-      animate={item.active ? { opacity: [1, 0.8, 1] } : { opacity: 1 }}
-      transition={{
-        duration: 2.4,
-        repeat: Infinity,
-        delay: i * 0.12,
-      }}
-    >
-      {item.labels[i % item.labels.length]}
-    </motion.span>
-  </motion.div>
-))}
+                  { labels: ['3s', '2.6s', '3.2s'], active: true, h: 116 },
+                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+                  { labels: ['2s', '1.7s', '2.2s'], active: true, h: 86 },
+                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+                  { labels: ['1.5s', '1.2s', '1.8s'], active: true, h: 58 },
+                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+                  { labels: ['3s', '2.4s', '3.1s'], active: true, h: 40 },
+                ].map((item, i) => (
+                  <motion.div
                     key={i}
                     className={`relative flex w-full items-end justify-center rounded-md border ${
                       item.active
                         ? 'border-[#0A84FF] bg-[#0A84FF]/10'
                         : 'border-white/[0.08] bg-white/[0.03]'
                     }`}
+                    initial={{ height: 30, opacity: 0.65 }}
+                    animate={{
+                      height: [Math.max(item.h - 18, 28), item.h, Math.max(item.h - 10, 28), item.h],
+                      opacity: [0.65, 1, 0.8, 1],
+                    }}
+                    transition={{
+                      duration: 2.4,
+                      repeat: Infinity,
+                      delay: i * 0.12,
+                      ease: 'easeInOut',
+                    }}
                     style={{ height: item.h }}
                   >
-                    <span
+                    <motion.span
                       className={`mb-3 rounded-md px-2 py-1 text-xs ${
                         item.active
                           ? 'border border-[#0A84FF] bg-[#0A84FF]/10 text-[#72AEFF]'
                           : 'text-white/30'
                       }`}
+                      animate={item.active ? { opacity: [1, 0.8, 1] } : { opacity: 1 }}
+                      transition={{
+                        duration: 2.4,
+                        repeat: Infinity,
+                        delay: i * 0.12,
+                      }}
                     >
-                      {item.label}
-                    </span>
-                  </div>
+                      {item.labels[0]}
+                    </motion.span>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -444,142 +413,146 @@ export function Pricing() {
           </div>
         </div>
 
-        <div className="sticky top-14 z-20 border-b border-white/[0.08] bg-black/95 backdrop-blur">
-          <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
-            <div className="border-r border-white/[0.08] px-6 py-5 text-[14px] text-white/55">
-              Features
-            </div>
-
-            <div className="border-r border-white/[0.08] px-6 py-5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-[15px] font-semibold">Basic</span>
-                <Link
-                  href="/register"
-                  className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
-                >
-                  Start Project
-                </Link>
-              </div>
-            </div>
-
-            <div className="border-r border-white/[0.08] px-6 py-5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-[15px] font-semibold">Pro</span>
-                <Link
-                  href="/register"
-                  className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
-                >
-                  Start a free trial
-                </Link>
-              </div>
-            </div>
-
-            <div className="px-6 py-5">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-[15px] font-semibold">Enterprise</span>
-                <Link
-                  href="/register"
-                  className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
-                >
-                  Get a demo
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {sections.map((section) => (
-          <div key={section.title} className="border-b border-white/[0.08]">
-            <div className="border-b border-white/[0.08] px-8 py-12 md:px-10">
-              <p className="font-mono text-[13px] text-white/35">{section.eyebrow}</p>
-              <h3 className="mt-3 flex items-center gap-2 text-[22px] font-semibold tracking-[-0.03em]">
-                {section.title === 'Vercel Delivery Network' && <Globe className="h-5 w-5 text-white/70" />}
-                {section.title === 'Vercel Firewall' && <Shield className="h-5 w-5 text-white/70" />}
-                {section.title === 'Content, Caching & Optimization' && <Cloud className="h-5 w-5 text-white/70" />}
-                {section.title === 'Vercel Compute' && <Rocket className="h-5 w-5 text-white/70" />}
-                {section.title}
-              </h3>
-              <p className="mt-3 max-w-2xl text-[17px] leading-8 text-white/50">
-                {section.description}
-              </p>
-            </div>
-
-            {section.groups.map((group) => (
-              <div key={group.title}>
-                <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] border-b border-white/[0.08]">
-                  <div className="border-r border-white/[0.08] px-6 py-5">
-                    <p className="text-[15px] font-semibold text-white">{group.title}</p>
-                  </div>
-                  <div className="border-r border-white/[0.08]" />
-                  <div className="border-r border-white/[0.08]" />
-                  <div />
+        <div className="overflow-x-auto">
+          <div className="min-w-[880px]">
+            <div className="sticky top-14 z-20 border-b border-white/[0.08] bg-black/95 backdrop-blur">
+              <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
+                <div className="border-r border-white/[0.08] px-6 py-5 text-[14px] text-white/55">
+                  Features
                 </div>
 
-                {group.rows.map((row) => (
-                  <div
-                    key={row.label}
-                    className="grid grid-cols-[1.2fr_1fr_1fr_1fr] border-b border-white/[0.08] last:border-b-0"
-                  >
-                    <div className="border-r border-white/[0.08] px-6 py-4">
-                      <p className="text-[15px] leading-7 text-white/82">{row.label}</p>
+                <div className="border-r border-white/[0.08] px-6 py-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[15px] font-semibold">Basic</span>
+                    <Link
+                      href="/register"
+                      className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
+                    >
+                      Start Project
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="border-r border-white/[0.08] px-6 py-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[15px] font-semibold">Pro</span>
+                    <Link
+                      href="/register"
+                      className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
+                    >
+                      Start a free trial
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="px-6 py-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-[15px] font-semibold">Enterprise</span>
+                    <Link
+                      href="/register"
+                      className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
+                    >
+                      Get a demo
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {sections.map((section) => (
+              <div key={section.title} className="border-b border-white/[0.08]">
+                <div className="border-b border-white/[0.08] px-8 py-12 md:px-10">
+                  <p className="font-mono text-[13px] text-white/35">{section.eyebrow}</p>
+                  <h3 className="mt-3 flex items-center gap-2 text-[22px] font-semibold tracking-[-0.03em]">
+                    {section.title === 'Vercel Delivery Network' && <Globe className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Vercel Firewall' && <Shield className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Content, Caching & Optimization' && <Cloud className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Vercel Compute' && <Rocket className="h-5 w-5 text-white/70" />}
+                    {section.title}
+                  </h3>
+                  <p className="mt-3 max-w-2xl text-[17px] leading-8 text-white/50">
+                    {section.description}
+                  </p>
+                </div>
+
+                {section.groups.map((group) => (
+                  <div key={group.title}>
+                    <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] border-b border-white/[0.08]">
+                      <div className="border-r border-white/[0.08] px-6 py-5">
+                        <p className="text-[15px] font-semibold text-white">{group.title}</p>
+                      </div>
+                      <div className="border-r border-white/[0.08]" />
+                      <div className="border-r border-white/[0.08]" />
+                      <div />
                     </div>
 
-                    <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
-                      <CellValue value={row.hobby} />
-                    </div>
+                    {group.rows.map((row) => (
+                      <div
+                        key={row.label}
+                        className="grid grid-cols-[1.2fr_1fr_1fr_1fr] border-b border-white/[0.08] last:border-b-0"
+                      >
+                        <div className="border-r border-white/[0.08] px-6 py-4">
+                          <p className="text-[15px] leading-7 text-white/82">{row.label}</p>
+                        </div>
 
-                    <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
-                      <CellValue value={row.pro} />
-                    </div>
+                        <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
+                          <CellValue value={row.hobby} />
+                        </div>
 
-                    <div className="flex items-center justify-center px-6 py-4 text-center">
-                      <CellValue value={row.enterprise} />
-                    </div>
+                        <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
+                          <CellValue value={row.pro} />
+                        </div>
+
+                        <div className="flex items-center justify-center px-6 py-4 text-center">
+                          <CellValue value={row.enterprise} />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
             ))}
-          </div>
-        ))}
 
-        <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
-          <div className="border-r border-white/[0.08] px-6 py-5 text-[15px] text-white/55">
-            Features
-          </div>
+            <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
+              <div className="border-r border-white/[0.08] px-6 py-5 text-[15px] text-white/55">
+                Features
+              </div>
 
-          <div className="border-r border-white/[0.08] px-6 py-5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-[15px] font-semibold">Basic</span>
-              <Link
-                href="/register"
-                className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
-              >
-                Start Project
-              </Link>
-            </div>
-          </div>
+              <div className="border-r border-white/[0.08] px-6 py-5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[15px] font-semibold">Basic</span>
+                  <Link
+                    href="/register"
+                    className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
+                  >
+                    Start Project
+                  </Link>
+                </div>
+              </div>
 
-          <div className="border-r border-white/[0.08] px-6 py-5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-[15px] font-semibold">Pro</span>
-              <Link
-                href="/register"
-                className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
-              >
-                Start a free trial
-              </Link>
-            </div>
-          </div>
+              <div className="border-r border-white/[0.08] px-6 py-5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[15px] font-semibold">Pro</span>
+                  <Link
+                    href="/register"
+                    className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
+                  >
+                    Start a free trial
+                  </Link>
+                </div>
+              </div>
 
-          <div className="px-6 py-5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-[15px] font-semibold">Enterprise</span>
-              <Link
-                href="/register"
-                className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
-              >
-                Get a demo
-              </Link>
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[15px] font-semibold">Enterprise</span>
+                  <Link
+                    href="/register"
+                    className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
+                  >
+                    Get a demo
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
