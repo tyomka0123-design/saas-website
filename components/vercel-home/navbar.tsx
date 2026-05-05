@@ -191,14 +191,28 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div className="hidden lg:flex items-center gap-3">
-          <Link href="/login" className="text-white/70 text-[13px]">
-            Log In
-          </Link>
-          <Link href="/register" className="bg-white text-black px-4 py-1.5 rounded-md text-[13px] font-medium">
-            Start Project
-          </Link>
-        </div>
+        <div className="hidden lg:flex items-center gap-2">
+  <Link
+    href="/ai"
+    className="flex h-8 items-center justify-center rounded-md border border-white/[0.16] bg-black px-3 text-[13px] font-medium text-white/80 hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white"
+  >
+    Ask AI
+  </Link>
+
+  <Link
+    href="/login"
+    className="flex h-8 items-center justify-center rounded-md border border-white/[0.16] bg-black px-3 text-[13px] font-medium text-white/80 hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white"
+  >
+    Log In
+  </Link>
+
+  <Link
+    href="/register"
+    className="flex h-8 items-center justify-center rounded-md bg-white px-3 text-[13px] font-medium text-black hover:bg-white/90"
+  >
+    Sign Up
+  </Link>
+</div>
 
         <button
   className="lg:hidden z-[1001] relative h-7 w-7"
@@ -294,13 +308,12 @@ export function Navbar() {
             <div className="min-h-screen px-[23px] pt-[118px] pb-24">
               <div className="space-y-[12px] mb-[42px]">
                 <Link
-                  href="/register"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex h-[48px] items-center justify-center rounded-[9px] bg-white text-[15px] font-semibold text-black"
-                >
-                  Sign Up
-                </Link>
-
+  href="/ai"
+  onClick={() => setMobileOpen(false)}
+  className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
+>
+  Ask AI
+</Link>
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
