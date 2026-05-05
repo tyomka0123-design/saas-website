@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import {
   BarChart3,
@@ -157,10 +158,16 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <Triangle className="w-5 h-5 fill-white text-white" />
-            <span className="font-semibold text-white text-[15px]">Apex Studio</span>
-          </Link>
+          <Link href="/" className="flex items-center">
+  <Image
+    src="/koryx-logo.png"
+    alt="Koryx logo"
+    width={160}
+    height={40}
+    className="h-auto w-[140px] object-contain"
+    priority
+  />
+</Link>
 
           <nav className="hidden lg:flex items-center gap-1">
   {navItems.map((item) =>
