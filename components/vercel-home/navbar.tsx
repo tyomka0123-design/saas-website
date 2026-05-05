@@ -153,9 +153,7 @@ export function Navbar() {
         setActiveMenu(null)
         setHoveredItem(null)
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/80 border-b border-white/[0.07]' : 'bg-transparent'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/[0.08]"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-8">
