@@ -5,23 +5,25 @@ import { MessageSquare, Eye, Settings, Upload, Menu, GitBranch, Globe, Shield, Z
 
 // Grid background with plus signs at intersections
 function GridBackground() {
-  // Define exact grid positions for perfect alignment
-  const verticalPositions = [10, 30, 50, 70, 90] // percentage
-  const horizontalPositions = [10, 36.67, 63.33, 90] // percentage
+  // 5 vertical lines with equal spacing (0%, 25%, 50%, 75%, 100% of inner area with 15% padding)
+  const verticalPositions = [15, 32.5, 50, 67.5, 85]
+  // 4 horizontal lines with equal spacing
+  const horizontalPositions = [15, 38.33, 61.67, 85]
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
         {/* Vertical lines */}
         {verticalPositions.map((x) => (
           <line
             key={`v-${x}`}
             x1={`${x}%`}
-            y1="0%"
+            y1="0"
             x2={`${x}%`}
             y2="100%"
-            stroke="rgba(255,255,255,0.06)"
+            stroke="rgba(255,255,255,0.05)"
             strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
           />
         ))}
 
@@ -29,34 +31,39 @@ function GridBackground() {
         {horizontalPositions.map((y) => (
           <line
             key={`h-${y}`}
-            x1="0%"
+            x1="0"
             y1={`${y}%`}
             x2="100%"
             y2={`${y}%`}
-            stroke="rgba(255,255,255,0.06)"
+            stroke="rgba(255,255,255,0.05)"
             strokeWidth="1"
+            vectorEffect="non-scaling-stroke"
           />
         ))}
 
-        {/* Plus signs at intersections */}
+        {/* Plus signs at each intersection */}
         {verticalPositions.map((x) =>
           horizontalPositions.map((y) => (
             <g key={`plus-${x}-${y}`}>
+              {/* Horizontal stroke of plus */}
               <line
-                x1={`calc(${x}% - 5px)`}
+                x1={`calc(${x}% - 4px)`}
                 y1={`${y}%`}
-                x2={`calc(${x}% + 5px)`}
+                x2={`calc(${x}% + 4px)`}
                 y2={`${y}%`}
-                stroke="rgba(255,255,255,0.2)"
+                stroke="rgba(255,255,255,0.15)"
                 strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
               />
+              {/* Vertical stroke of plus */}
               <line
                 x1={`${x}%`}
-                y1={`calc(${y}% - 5px)`}
+                y1={`calc(${y}% - 4px)`}
                 x2={`${x}%`}
-                y2={`calc(${y}% + 5px)`}
-                stroke="rgba(255,255,255,0.2)"
+                y2={`calc(${y}% + 4px)`}
+                stroke="rgba(255,255,255,0.15)"
                 strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
               />
             </g>
           ))
