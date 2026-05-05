@@ -102,6 +102,11 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{userName || 'User'}</p>
             <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+            {role && (
+  <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.16em] text-white/40">
+    {role}
+  </p>
+)}
           </div>
         </div>
         <form action={logout}>
