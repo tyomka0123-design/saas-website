@@ -5,6 +5,7 @@ import { Hero } from '@/components/vercel-home/hero'
 import { LogoCloud } from '@/components/vercel-home/logo-cloud'
 import { Navbar } from '@/components/vercel-home/navbar'
 import { Testimonials } from '@/components/vercel-home/testimonials'
+import { Pricing } from '@/components/vercel-home/pricing'
 import { Workflow } from '@/components/vercel-home/workflow'
 
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
       <Features />
       <Deploy />
       <Workflow />
+      <Pricing />
       <Testimonials />
       <Footer />
     </div>
