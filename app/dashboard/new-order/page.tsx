@@ -2,237 +2,356 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { 
-  ArrowLeft, 
-  Loader2, 
-  Check, 
-  Briefcase,
-  FileText,
-  ShoppingCart,
-  LayoutDashboard,
-  Globe,
-  Layers,
-  Rocket,
-} from 'lucide-react'
-import { useAuth } from '@/lib/auth-context'
+import { ArrowLeft, Loader2, Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { createOrder } from './actions'
 import { toast } from 'sonner'
 
 const websiteTypes = [
-  { id: 'landing', label: 'Landing Page', icon: Layers },
-  { id: 'portfolio', label: 'Portfolio', icon: Briefcase },
-  { id: 'ecommerce', label: 'E-commerce', icon: ShoppingCart },
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'saas', label: 'SaaS Platform', icon: Rocket },
-  { id: 'other', label: 'Other', icon: Globe },
+  'Business Website',
+  'E-Commerce Store',
+  'Portfolio',
+  'Landing Page',
+  'Blog',
+  'Web Application',
+  'Restaurant Website',
+  'Booking Platform',
+  'Other',
 ]
 
 const budgetRanges = [
-  '$500 - $1,000',
   '$1,000 - $2,500',
   '$2,500 - $5,000',
   '$5,000 - $10,000',
-  '$10,000+',
+  '$10,000 - $25,000',
+  '$25,000+',
 ]
 
-const priorityOptions = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'urgent', label: 'Urgent' },
+const designStyles = [
+  'Minimal & Clean',
+  'Bold & Colorful',
+  'Dark & Modern',
+  'Corporate & Professional',
+  'Creative & Artistic',
+  'Luxury & Premium',
+  'Playful & Fun',
+  'Not sure - Need guidance',
+]
+
+const featuresList = [
+  { id: 'booking', label: 'Booking System' },
+  { id: 'payments', label: 'Payment Processing' },
+  { id: 'login', label: 'User Login System' },
+  { id: 'admin', label: 'Admin Panel' },
+  { id: 'database', label: 'Database Integration' },
+  { id: 'animations', label: 'Custom Animations' },
+  { id: 'seo', label: 'SEO Optimization' },
+  { id: 'contact', label: 'Contact Form' },
+  { id: 'ecommerce', label: 'E-Commerce Features' },
+  { id: 'blog', label: 'Blog System' },
+  { id: 'newsletter', label: 'Newsletter Signup' },
+  { id: 'analytics', label: 'Analytics Integration' },
 ]
 
 export default function NewOrderPage() {
-  const router = useRouter()
-  const { addOrder } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
-  
-  const [formData, setFormData] = useState({
-    websiteType: '' as 'landing' | 'portfolio' | 'ecommerce' | 'dashboard' | 'saas' | 'other' | '',
-    title: '',
-    description: '',
-    budget: '',
-    deadline: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
-  })
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
 
-  const updateForm = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+  function toggleFeature(featureId: string) {
+    setSelectedFeatures(prev =>
+      prev.includes(featureId)
+        ? prev.filter(f => f !== featureId)
+        : [...prev, featureId]
+    )
   }
 
-  const isValid = formData.websiteType && formData.title && formData.description && formData.budget
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!isValid) return
-    
     setIsLoading(true)
-    
-    try {
-      const order = addOrder({
-        title: formData.title,
-        description: formData.description,
-        websiteType: formData.websiteType as 'landing' | 'portfolio' | 'ecommerce' | 'dashboard' | 'saas' | 'other',
-        budget: formData.budget,
-        deadline: formData.deadline ? new Date(formData.deadline) : undefined,
-        priority: formData.priority,
-        status: 'pending',
-      })
 
-      if (order) {
-        toast.success('Order created successfully')
-        router.push('/dashboard/orders')
-      } else {
-        toast.error('Failed to create order')
-      }
-    } catch {
-      toast.error('Something went wrong')
-    } finally {
+    const formData = new FormData(e.currentTarget)
+
+    const data = {
+      businessName: formData.get('businessName') as string,
+      websiteType: formData.get('websiteType') as string,
+      budget: formData.get('budget') as string,
+      deadline: formData.get('deadline') as string,
+      pages: formData.get('pages') as string,
+      designStyle: formData.get('designStyle') as string,
+      features: selectedFeatures.map(id => 
+        featuresList.find(f => f.id === id)?.label || id
+      ),
+      description: formData.get('description') as string,
+      contactEmail: formData.get('contactEmail') as string,
+      phone: formData.get('phone') as string,
+      references: formData.get('references') as string,
+    }
+
+    const result = await createOrder(data)
+
+    if (result?.error) {
+      toast.error(result.error)
       setIsLoading(false)
+    } else {
+      toast.success('Order submitted successfully!')
     }
   }
 
   return (
-    <div className="p-6 max-w-2xl">
+    <div className="space-y-8 max-w-3xl">
       {/* Header */}
-      <div className="mb-6">
+      <div>
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-neutral-500 hover:text-white transition-colors mb-4 text-sm"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          <span>Back to dashboard</span>
         </Link>
-        <h1 className="text-xl font-semibold text-white">New Order</h1>
-        <p className="text-sm text-neutral-500 mt-0.5">Create a new project request</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">Create New Order</h1>
+        <p className="text-muted-foreground mt-1">
+          Tell us about your project and we&apos;ll get back to you within 24 hours
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Website Type */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-3">Project Type</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {websiteTypes.map((type) => (
-              <button
-                key={type.id}
-                type="button"
-                onClick={() => updateForm('websiteType', type.id)}
-                className={`
-                  flex items-center gap-2.5 p-3 rounded-md border text-left transition-colors text-sm
-                  ${formData.websiteType === type.id
-                    ? 'bg-neutral-800 border-neutral-700 text-white'
-                    : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:border-neutral-700'
-                  }
-                `}
-              >
-                <type.icon className="h-4 w-4 flex-shrink-0" />
-                <span>{type.label}</span>
-                {formData.websiteType === type.id && (
-                  <Check className="h-3.5 w-3.5 ml-auto text-green-500" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Business Information */}
+        <Card className="bg-card/50 border-border">
+          <CardHeader>
+            <CardTitle>Business Information</CardTitle>
+            <CardDescription>
+              Basic details about your business or brand
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="businessName">Business / Brand Name *</Label>
+              <Input
+                id="businessName"
+                name="businessName"
+                placeholder="Enter your business name"
+                required
+                className="h-12"
+              />
+            </div>
 
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">Project Title</label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => updateForm('title', e.target.value)}
-            placeholder="e.g., E-commerce Website for Fashion Brand"
-            className="w-full h-10 px-3 rounded-md bg-neutral-900 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:border-neutral-700 text-sm"
-          />
-        </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="websiteType">Type of Website *</Label>
+                <Select name="websiteType" required>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {websiteTypes.map(type => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">Description</label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => updateForm('description', e.target.value)}
-            placeholder="Describe your project goals and requirements..."
-            rows={4}
-            className="w-full px-3 py-2.5 rounded-md bg-neutral-900 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:border-neutral-700 resize-none text-sm"
-          />
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="budget">Budget Range *</Label>
+                <Select name="budget" required>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Select budget" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {budgetRanges.map(range => (
+                      <SelectItem key={range} value={range}>
+                        {range}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-        {/* Budget & Deadline */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">Budget</label>
-            <select
-              value={formData.budget}
-              onChange={(e) => updateForm('budget', e.target.value)}
-              className="w-full h-10 px-3 rounded-md bg-neutral-900 border border-neutral-800 text-white focus:outline-none focus:border-neutral-700 text-sm appearance-none cursor-pointer"
-            >
-              <option value="">Select budget</option>
-              {budgetRanges.map((budget) => (
-                <option key={budget} value={budget}>{budget}</option>
-              ))}
-            </select>
-          </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="deadline">Preferred Deadline</Label>
+                <Input
+                  id="deadline"
+                  name="deadline"
+                  type="date"
+                  className="h-12"
+                />
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">Deadline (Optional)</label>
-            <input
-              type="date"
-              value={formData.deadline}
-              onChange={(e) => updateForm('deadline', e.target.value)}
-              className="w-full h-10 px-3 rounded-md bg-neutral-900 border border-neutral-800 text-white focus:outline-none focus:border-neutral-700 text-sm"
-            />
-          </div>
-        </div>
+              <div className="space-y-2">
+                <Label htmlFor="pages">Number of Pages</Label>
+                <Input
+                  id="pages"
+                  name="pages"
+                  placeholder="e.g., 5-10 pages"
+                  className="h-12"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Priority */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">Priority</label>
-          <div className="flex gap-2">
-            {priorityOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => updateForm('priority', option.value)}
-                className={`
-                  flex-1 py-2 rounded-md border text-sm font-medium transition-colors
-                  ${formData.priority === option.value
-                    ? 'bg-neutral-800 border-neutral-700 text-white'
-                    : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:border-neutral-700'
-                  }
-                `}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Design Preferences */}
+        <Card className="bg-card/50 border-border">
+          <CardHeader>
+            <CardTitle>Design Preferences</CardTitle>
+            <CardDescription>
+              Help us understand your visual style
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="designStyle">Design Style</Label>
+              <Select name="designStyle">
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Select style" />
+                </SelectTrigger>
+                <SelectContent>
+                  {designStyles.map(style => (
+                    <SelectItem key={style} value={style}>
+                      {style}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-3">
+              <Label>Features Needed</Label>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {featuresList.map(feature => (
+                  <label
+                    key={feature.id}
+                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedFeatures.includes(feature.id)
+                        ? 'border-accent bg-accent/10'
+                        : 'border-border hover:border-muted-foreground'
+                    }`}
+                  >
+                    <Checkbox
+                      id={feature.id}
+                      checked={selectedFeatures.includes(feature.id)}
+                      onCheckedChange={() => toggleFeature(feature.id)}
+                    />
+                    <span className="text-sm">{feature.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Project Details */}
+        <Card className="bg-card/50 border-border">
+          <CardHeader>
+            <CardTitle>Project Details</CardTitle>
+            <CardDescription>
+              Describe your project in detail
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="description">Project Description *</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Describe your project, goals, target audience, and any specific requirements..."
+                required
+                rows={6}
+                className="resize-none"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="references">Reference Links / Inspiration</Label>
+              <Textarea
+                id="references"
+                name="references"
+                placeholder="Share any website links that inspire you or represent the style you're looking for..."
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact Information */}
+        <Card className="bg-card/50 border-border">
+          <CardHeader>
+            <CardTitle>Contact Information</CardTitle>
+            <CardDescription>
+              How can we reach you about this project?
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="contactEmail">Contact Email *</Label>
+                <Input
+                  id="contactEmail"
+                  name="contactEmail"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  className="h-12"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  className="h-12"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Submit */}
-        <div className="flex items-center gap-3 pt-4">
-          <Link href="/dashboard">
-            <button
-              type="button"
-              className="px-4 py-2 rounded-md border border-neutral-800 text-neutral-400 text-sm font-medium hover:text-white hover:border-neutral-700 transition-colors"
-            >
-              Cancel
-            </button>
-          </Link>
-          <button
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button
             type="submit"
-            disabled={!isValid || isLoading}
-            className="flex items-center gap-2 px-4 py-2 rounded-md bg-white text-black text-sm font-medium hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="glow min-h-[48px] flex-1 sm:flex-none sm:px-12"
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Creating...
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                Submitting...
               </>
             ) : (
-              'Create Order'
+              <>
+                <Check className="w-5 h-5 mr-2" />
+                Submit Order
+              </>
             )}
-          </button>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-[48px]"
+            asChild
+          >
+            <Link href="/dashboard">Cancel</Link>
+          </Button>
         </div>
       </form>
     </div>
