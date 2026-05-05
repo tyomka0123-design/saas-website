@@ -163,36 +163,34 @@ export function Navbar() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) =>
-              item.dropdown ? (
-                <button
-                  key={item.label}
-                  onMouseEnter={() => {
-                    setHoveredItem(null)
-                    setActiveMenu(item.label as keyof typeof menus)
-                  }}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                    activeMenu === item.label ? 'bg-white/[0.12] text-white' : 'text-white/65 hover:text-white'
-                  }`}
-                >
-                  {item.label}
-                  <ChevronDown className="w-3 h-3 opacity-60" />
-                </button>
-              ) : (
-                <Link
-  key={item.label}
-  href={item.label === 'Pricing' ? '/pricing' : '#testimonials'}
-  className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
->
-  {item.label}
-</Link>
-                  className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
-                >
-                  {item.label}
-                </a>
-              )
-            )}
-          </nav>
+  {navItems.map((item) =>
+    item.dropdown ? (
+      <button
+        key={item.label}
+        onMouseEnter={() => {
+          setHoveredItem(null)
+          setActiveMenu(item.label as keyof typeof menus)
+        }}
+        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
+          activeMenu === item.label
+            ? 'bg-white/[0.12] text-white'
+            : 'text-white/65 hover:text-white'
+        }`}
+      >
+        {item.label}
+        <ChevronDown className="w-3 h-3 opacity-60" />
+      </button>
+    ) : (
+      <Link
+        key={item.label}
+        href={item.label === 'Pricing' ? '/pricing' : '#testimonials'}
+        className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-white/65 hover:text-white"
+      >
+        {item.label}
+      </Link>
+    )
+  )}
+</nav>
         </div>
 
         <div className="hidden lg:flex items-center gap-2">
