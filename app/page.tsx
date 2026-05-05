@@ -17,7 +17,6 @@ export default function HomePage() {
       <Features />
       <Deploy />
       <Workflow />
-      <Pricing />
       <Testimonials />
       <Footer />
     </div>
