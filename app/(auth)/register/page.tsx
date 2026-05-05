@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check, ChevronDown, Eye, EyeOff, Loader2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AnimatedBackground } from '@/components/animated-background'
-import { register } from '../actions'
+import { useAuth } from '@/lib/auth-context'
 import { toast } from 'sonner'
 
 const countries = [
@@ -175,6 +176,8 @@ function CountryDropdown({
 }
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -182,26 +185,38 @@ export default function RegisterPage() {
   const [selectedCountry, setSelectedCountry] = useState(countries[0])
   const [phone, setPhone] = useState('')
   const [openDropdown, setOpenDropdown] = useState<'phone' | 'country' | null>(null)
+  const [email, setEmail] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  async function handleSubmit(formData: FormData) {
-    const password = String(formData.get('password') || '')
-    const confirmPassword = String(formData.get('confirmPassword') || '')
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
 
     if (password !== confirmPassword) {
       toast.error('Passwords do not match')
       return
     }
 
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters')
+      return
+    }
+
     setIsLoading(true)
 
-    formData.set('phoneCode', phoneCountry.code)
-    formData.set('phone', phone.replace(/\D/g, ''))
-    formData.set('country', selectedCountry.name)
-
-    const result = await register(formData)
-
-    if (result?.error) {
-      toast.error(result.error)
+    try {
+      // In demo mode, login directly creates the user
+      const success = await login(email, password)
+      if (success) {
+        toast.success('Account created successfully!')
+        router.push('/dashboard')
+      } else {
+        toast.error('Failed to create account')
+      }
+    } catch {
+      toast.error('Something went wrong')
+    } finally {
       setIsLoading(false)
     }
   }
@@ -300,15 +315,15 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <form action={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-white/85">Email address</Label>
-                <Input id="email" name="email" type="email" placeholder="you@example.com" required className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                <Input id="email" name="email" type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-white/85">Your name</Label>
-                <Input id="fullName" name="fullName" type="text" placeholder="John Doe" required className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                <Input id="fullName" name="fullName" type="text" placeholder="John Doe" required value={fullName} onChange={(e) => setFullName(e.target.value)} className="h-12 border-white/[0.14] bg-black text-white placeholder:text-white/30 focus-visible:ring-white/35" />
               </div>
 
               <div className="space-y-2">
@@ -350,7 +365,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white/85">Password</Label>
                 <div className="relative">
-                  <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Create password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                  <Input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Create password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -360,7 +375,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-white/85">Confirm password</Label>
                 <div className="relative">
-                  <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Repeat password" required minLength={8} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
+                  <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} placeholder="Repeat password" required minLength={8} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="h-12 border-white/[0.14] bg-black pr-10 text-white placeholder:text-white/30 focus-visible:ring-white/35" />
                   <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
