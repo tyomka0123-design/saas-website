@@ -5,27 +5,59 @@ import { MessageSquare, Eye, Settings, Upload, Menu, GitBranch, Globe, Shield, Z
 
 // Grid background with plus signs at intersections
 function GridBackground() {
+  // Define exact grid positions for perfect alignment
+  const verticalPositions = [10, 30, 50, 70, 90] // percentage
+  const horizontalPositions = [10, 36.67, 63.33, 90] // percentage
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Vertical lines */}
-      <div className="absolute inset-0 flex justify-between px-[10%]">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-full w-px bg-white/[0.06]" />
+      <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        {/* Vertical lines */}
+        {verticalPositions.map((x) => (
+          <line
+            key={`v-${x}`}
+            x1={`${x}%`}
+            y1="0%"
+            x2={`${x}%`}
+            y2="100%"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="1"
+          />
         ))}
-      </div>
-      {/* Horizontal lines */}
-      <div className="absolute inset-0 flex flex-col justify-between py-[10%]">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="w-full h-px bg-white/[0.06]" />
+
+        {/* Horizontal lines */}
+        {horizontalPositions.map((y) => (
+          <line
+            key={`h-${y}`}
+            x1="0%"
+            y1={`${y}%`}
+            x2="100%"
+            y2={`${y}%`}
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="1"
+          />
         ))}
-      </div>
-      {/* Plus signs at intersections */}
-      <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-        {[0.1, 0.3, 0.5, 0.7, 0.9].map((x) =>
-          [0.1, 0.37, 0.63, 0.9].map((y) => (
-            <g key={`${x}-${y}`} transform={`translate(${x * 100}%, ${y * 100}%)`}>
-              <line x1="-4" y1="0" x2="4" y2="0" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-              <line x1="0" y1="-4" x2="0" y2="4" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+
+        {/* Plus signs at intersections */}
+        {verticalPositions.map((x) =>
+          horizontalPositions.map((y) => (
+            <g key={`plus-${x}-${y}`}>
+              <line
+                x1={`calc(${x}% - 5px)`}
+                y1={`${y}%`}
+                x2={`calc(${x}% + 5px)`}
+                y2={`${y}%`}
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1"
+              />
+              <line
+                x1={`${x}%`}
+                y1={`calc(${y}% - 5px)`}
+                x2={`${x}%`}
+                y2={`calc(${y}% + 5px)`}
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1"
+              />
             </g>
           ))
         )}
