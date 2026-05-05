@@ -1,18 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { 
   Plus, 
   ShoppingCart, 
   Search,
-  Filter,
   ArrowRight,
   Calendar,
-  DollarSign,
-  LayoutGrid,
-  List,
   ChevronDown,
 } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
@@ -21,22 +16,8 @@ import { ORDER_STATUS_CONFIG, WEBSITE_TYPES, OrderStatus } from '@/lib/types'
 function StatusBadge({ status }: { status: OrderStatus }) {
   const config = ORDER_STATUS_CONFIG[status]
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${config.color}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${config.color}`}>
       {config.label}
-    </span>
-  )
-}
-
-function PriorityBadge({ priority }: { priority: string }) {
-  const colors = {
-    low: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
-    medium: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    urgent: 'bg-red-500/20 text-red-400 border-red-500/30',
-  }
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase border ${colors[priority as keyof typeof colors] || colors.low}`}>
-      {priority}
     </span>
   )
 }
@@ -45,10 +26,8 @@ export default function OrdersPage() {
   const { user, orders } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-  // Filter user's orders
   const userOrders = orders.filter(o => o.userId === user?.id)
   
   const filteredOrders = userOrders.filter(order => {
@@ -67,210 +46,123 @@ export default function OrdersPage() {
   ]
 
   return (
-    <div className="p-6 md:p-8 space-y-6">
+    <div className="p-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="text-2xl md:text-3xl font-bold text-white">My Orders</h1>
-          <p className="text-white/50 mt-1">
-            Track and manage all your website projects
-          </p>
-        </motion.div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-semibold text-white">My Orders</h1>
+          <p className="text-sm text-neutral-500 mt-0.5">Track and manage your projects</p>
+        </div>
         
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Link href="/dashboard/new-order">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-black font-medium text-sm hover:bg-white/90 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              New Order
-            </motion.button>
-          </Link>
-        </motion.div>
+        <Link href="/dashboard/new-order">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-md bg-white text-black text-sm font-medium hover:bg-neutral-200 transition-colors">
+            <Plus className="h-4 w-4" />
+            New Order
+          </button>
+        </Link>
       </div>
 
-      {/* Filters & Search */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="flex flex-col sm:flex-row gap-3"
-      >
-        {/* Search */}
+      {/* Filters */}
+      <div className="flex gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
           <input
             type="text"
             placeholder="Search orders..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 pl-10 pr-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder:text-white/30 focus:outline-none focus:border-white/20 transition-colors"
+            className="w-full h-10 pl-10 pr-4 rounded-md bg-neutral-900 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:border-neutral-700 transition-colors text-sm"
           />
         </div>
 
-        {/* Status Filter */}
         <div className="relative">
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="flex items-center gap-2 h-11 px-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white/70 hover:text-white hover:border-white/20 transition-colors"
+            className="flex items-center gap-2 h-10 px-3 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-colors text-sm"
           >
-            <Filter className="h-4 w-4" />
-            <span className="text-sm">{statusOptions.find(o => o.value === statusFilter)?.label}</span>
+            <span>{statusOptions.find(o => o.value === statusFilter)?.label}</span>
             <ChevronDown className={`h-4 w-4 transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
           </button>
           
-          <AnimatePresence>
-            {isFilterOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                className="absolute top-full mt-2 right-0 w-48 p-1 rounded-xl bg-[#151515] border border-white/[0.08] shadow-2xl z-20"
-              >
-                {statusOptions.map(option => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setStatusFilter(option.value)
-                      setIsFilterOpen(false)
-                    }}
-                    className={`w-full flex items-center px-3 py-2 rounded-lg text-sm transition-colors ${
-                      statusFilter === option.value
-                        ? 'bg-white/[0.08] text-white'
-                        : 'text-white/60 hover:text-white hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {isFilterOpen && (
+            <div className="absolute top-full mt-1 right-0 w-44 p-1 rounded-md bg-neutral-900 border border-neutral-800 shadow-xl z-20">
+              {statusOptions.map(option => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setStatusFilter(option.value)
+                    setIsFilterOpen(false)
+                  }}
+                  className={`w-full flex items-center px-3 py-2 rounded text-sm transition-colors ${
+                    statusFilter === option.value
+                      ? 'bg-neutral-800 text-white'
+                      : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* View Toggle */}
-        <div className="flex items-center rounded-xl bg-white/[0.03] border border-white/[0.06] p-1">
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white/[0.1] text-white' : 'text-white/40 hover:text-white'}`}
-          >
-            <List className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white/[0.1] text-white' : 'text-white/40 hover:text-white'}`}
-          >
-            <LayoutGrid className="h-4 w-4" />
-          </button>
-        </div>
-      </motion.div>
-
-      {/* Orders List/Grid */}
+      {/* Orders */}
       {filteredOrders.length > 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-3'}
-        >
-          {filteredOrders.map((order, index) => (
-            <motion.div
-              key={order.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 + index * 0.05 }}
-            >
-              <Link href={`/dashboard/orders/${order.id}`}>
-                <div className="group p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all cursor-pointer">
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
-                        <ShoppingCart className="h-5 w-5 text-blue-400" />
-                      </div>
-                      <div>
-                        <h3 className="text-base font-semibold text-white group-hover:text-blue-400 transition-colors">
-                          {order.title}
-                        </h3>
-                        <p className="text-sm text-white/40 capitalize">
-                          {WEBSITE_TYPES[order.websiteType]?.label || order.websiteType}
-                        </p>
-                      </div>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-1 transition-all flex-shrink-0" />
+        <div className="rounded-lg bg-neutral-900 border border-neutral-800 divide-y divide-neutral-800">
+          {filteredOrders.map((order) => (
+            <Link key={order.id} href={`/dashboard/orders/${order.id}`}>
+              <div className="flex items-center justify-between p-4 hover:bg-neutral-800/50 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-10 w-10 rounded-md bg-neutral-800 flex items-center justify-center flex-shrink-0">
+                    <ShoppingCart className="h-4 w-4 text-neutral-400" />
                   </div>
-                  
-                  <p className="text-sm text-white/50 mb-4 line-clamp-2">
-                    {order.description}
-                  </p>
-                  
-                  <div className="flex flex-wrap items-center gap-2 mb-4">
-                    <StatusBadge status={order.status} />
-                    <PriorityBadge priority={order.priority} />
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
-                    <div className="flex items-center gap-4 text-xs text-white/40">
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-medium text-white truncate group-hover:text-blue-400 transition-colors">
+                      {order.title}
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs text-neutral-500 mt-0.5">
+                      <span>{WEBSITE_TYPES[order.websiteType]?.label || order.websiteType}</span>
+                      <span>·</span>
                       <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
+                        <Calendar className="h-3 w-3" />
                         {new Date(order.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <DollarSign className="h-3.5 w-3.5" />
-                        {order.budget}
-                      </span>
                     </div>
-                    {order.deadline && (
-                      <span className="text-xs text-orange-400">
-                        Due: {new Date(order.deadline).toLocaleDateString()}
-                      </span>
-                    )}
                   </div>
                 </div>
-              </Link>
-            </motion.div>
+                
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <StatusBadge status={order.status} />
+                  <ArrowRight className="h-4 w-4 text-neutral-600 group-hover:text-neutral-400 transition-colors" />
+                </div>
+              </div>
+            </Link>
           ))}
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-center py-16 rounded-2xl bg-white/[0.02] border border-white/[0.06]"
-        >
-          <div className="w-20 h-20 rounded-2xl bg-white/[0.05] flex items-center justify-center mx-auto mb-5">
-            <ShoppingCart className="w-10 h-10 text-white/30" />
+        <div className="text-center py-16 rounded-lg bg-neutral-900 border border-neutral-800">
+          <div className="w-12 h-12 rounded-lg bg-neutral-800 flex items-center justify-center mx-auto mb-3">
+            <ShoppingCart className="w-5 h-5 text-neutral-500" />
           </div>
-          <h3 className="font-semibold text-lg text-white mb-2">
+          <p className="text-sm font-medium text-white mb-1">
             {searchQuery || statusFilter !== 'all' ? 'No orders found' : 'No orders yet'}
-          </h3>
-          <p className="text-white/40 mb-6 max-w-sm mx-auto">
+          </p>
+          <p className="text-xs text-neutral-500 mb-4">
             {searchQuery || statusFilter !== 'all' 
-              ? 'Try adjusting your search or filters'
-              : 'Ready to start your project? Create your first order and we\'ll bring your vision to life.'
+              ? 'Try adjusting your filters'
+              : 'Create your first order to get started'
             }
           </p>
           {!searchQuery && statusFilter === 'all' && (
             <Link href="/dashboard/new-order">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-medium text-sm"
-              >
-                <Plus className="h-4 w-4" />
-                Create Your First Order
-              </motion.button>
+              <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white text-black text-sm font-medium">
+                <Plus className="h-3.5 w-3.5" />
+                Create Order
+              </button>
             </Link>
           )}
-        </motion.div>
+        </div>
       )}
     </div>
   )
