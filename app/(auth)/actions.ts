@@ -10,7 +10,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-async function createSupabaseServerClient() {
+async function createSupabaseClient() {
   const cookieStore = await cookies()
 
   return createServerClient(
@@ -36,7 +36,7 @@ export async function register(formData: FormData) {
   const email = String(formData.get('email') || '').trim().toLowerCase()
   const password = String(formData.get('password') || '')
   const phoneCode = String(formData.get('phoneCode') || '')
-  const phone = String(formData.get('phone') || '').replace(/\D/g, '')
+  const phone = String(formData.get('phone') || '')
   const country = String(formData.get('country') || '')
 
   if (!fullName || !email || !password) {
@@ -53,10 +53,15 @@ export async function register(formData: FormData) {
     email_confirm: true,
   })
 
-  if (error) return { error: error.message }
+  if (error) {
+    return { error: error.message }
+  }
 
   const user = data.user
-  if (!user) return { error: 'User was not created' }
+
+  if (!user) {
+    return { error: 'User was not created' }
+  }
 
   const { error: profileError } = await supabaseAdmin
     .from('profiles')
@@ -69,7 +74,9 @@ export async function register(formData: FormData) {
     })
     .eq('id', user.id)
 
-  if (profileError) return { error: profileError.message }
+  if (profileError) {
+    return { error: profileError.message }
+  }
 
   redirect('/login')
 }
@@ -82,20 +89,22 @@ export async function login(formData: FormData) {
     return { error: 'Email and password are required' }
   }
 
-  const supabase = await createSupabaseServerClient()
+  const supabase = await createSupabaseClient()
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
-  if (error) return { error: error.message }
+  if (error) {
+    return { error: 'Invalid email or password' }
+  }
 
   redirect('/dashboard')
 }
 
 export async function logout() {
-  const supabase = await createSupabaseServerClient()
+  const supabase = await createSupabaseClient()
   await supabase.auth.signOut()
 
   redirect('/login')
