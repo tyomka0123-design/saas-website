@@ -28,10 +28,11 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen bg-background">
       <Sidebar
-        isAdmin={isAdmin}
-        userName={fullName}
-        userEmail={user.email}
-      />
+  isAdmin={isAdmin}
+  userName={fullName}
+  userEmail={user.email}
+  role={isAdmin ? 'Founder' : 'Client'}
+/>
       <main className="lg:pl-72 pt-16 lg:pt-0">
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
