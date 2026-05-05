@@ -21,6 +21,7 @@ interface SidebarProps {
   isAdmin?: boolean
   userName?: string
   userEmail?: string
+  role?: string
 }
 
 const navItems = [
@@ -30,7 +31,7 @@ const navItems = [
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
 
-export function Sidebar({ isAdmin, userName, userEmail }: SidebarProps) {
+export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
 
