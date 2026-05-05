@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -73,11 +73,41 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   const [archivedNotifications, setArchivedNotifications] = useState<typeof initialNotifications>([])
   const [notificationTab, setNotificationTab] = useState<'inbox' | 'archive' | 'comments'>('inbox')
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+  const notificationsRef = useRef<HTMLDivElement | null>(null)
+  const accountMenuRef = useRef<HTMLDivElement | null>(null)
 
   const unreadCount = useMemo(
     () => notifications.filter((item) => item.unread).length,
     [notifications]
   )
+
+  useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    const target = event.target as Node
+
+    if (
+      notificationsOpen &&
+      notificationsRef.current &&
+      !notificationsRef.current.contains(target)
+    ) {
+      setNotificationsOpen(false)
+    }
+
+    if (
+      accountMenuOpen &&
+      accountMenuRef.current &&
+      !accountMenuRef.current.contains(target)
+    ) {
+      setAccountMenuOpen(false)
+    }
+  }
+
+  document.addEventListener('mousedown', handleClickOutside)
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside)
+  }
+}, [notificationsOpen, accountMenuOpen])
 
   function archiveNotification(id: number) {
   setNotifications((current) => {
@@ -211,7 +241,10 @@ function archiveAll() {
     </button>
 
     {accountMenuOpen && (
-      <div className="absolute bottom-11 left-0 z-50 w-[292px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]">
+  <div
+    ref={accountMenuRef}
+    className="absolute bottom-11 left-0 z-50 w-[292px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+  >
         <div className="border-b border-white/[0.08] p-4">
           <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
           <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
@@ -251,7 +284,10 @@ function archiveAll() {
     )}
 
     {notificationsOpen && (
-      <div className="absolute bottom-11 left-0 z-50 w-[408px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]">
+  <div
+    ref={notificationsRef}
+    className="absolute bottom-11 left-0 z-50 w-[408px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+  >
         <div className="flex h-11 items-center border-b border-white/[0.08]">
           <button
             onClick={() => setNotificationTab('inbox')}
