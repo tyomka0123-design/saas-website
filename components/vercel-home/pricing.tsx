@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { ArrowRight, Check, Cloud, Globe, Rocket, Shield } from 'lucide-react'
 import {
   ArrowRight,
   Check,
@@ -323,18 +325,28 @@ export function Pricing() {
               </div>
 
               <div className="absolute bottom-6 left-6 right-6 flex items-end gap-3">
-                {[22, 44, 78, 112, 132, 148, 148, 148].map((height, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 rounded-t-md border ${
-                      i >= 5
-                        ? 'border-[#0A84FF] bg-[#0A84FF]/10'
-                        : 'border-white/[0.18] bg-white/[0.03]'
-                    }`}
-                    style={{ height }}
-                  />
-                ))}
-              </div>
+  {[22, 44, 78, 112, 132, 148, 148, 148].map((height, i) => (
+    <motion.div
+      key={i}
+      className={`flex-1 rounded-t-md border ${
+        i >= 5
+          ? 'border-[#0A84FF] bg-[#0A84FF]/10'
+          : 'border-white/[0.18] bg-white/[0.03]'
+      }`}
+      initial={{ height: 10, opacity: 0.5 }}
+      animate={{
+        height: [18, height, Math.max(height - 18, 24), height],
+        opacity: [0.5, 1, 0.75, 1],
+      }}
+      transition={{
+        duration: 2.8,
+        repeat: Infinity,
+        delay: i * 0.08,
+        ease: 'easeInOut',
+      }}
+    />
+  ))}
+</div>
             </div>
           </div>
         </div>
@@ -346,15 +358,51 @@ export function Pricing() {
 
               <div className="relative flex h-full items-end gap-6">
                 {[
-                  { label: '3s', active: true, h: 116 },
-                  { label: 'idle', active: false, h: 150 },
-                  { label: '2s', active: true, h: 86 },
-                  { label: 'idle', active: false, h: 150 },
-                  { label: '1.5s', active: true, h: 58 },
-                  { label: 'idle', active: false, h: 150 },
-                  { label: '3s', active: true, h: 40 },
-                ].map((item, i) => (
-                  <div
+  { labels: ['3s', '2.6s', '3.2s'], active: true, h: 116 },
+  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+  { labels: ['2s', '1.7s', '2.2s'], active: true, h: 86 },
+  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+  { labels: ['1.5s', '1.2s', '1.8s'], active: true, h: 58 },
+  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
+  { labels: ['3s', '2.4s', '3.1s'], active: true, h: 40 },
+].map((item, i) => (
+  <motion.div
+    key={i}
+    className={`relative flex w-full items-end justify-center rounded-md border ${
+      item.active
+        ? 'border-[#0A84FF] bg-[#0A84FF]/10'
+        : 'border-white/[0.08] bg-white/[0.03]'
+    }`}
+    initial={{ height: 30, opacity: 0.65 }}
+    animate={{
+      height: [Math.max(item.h - 18, 28), item.h, Math.max(item.h - 10, 28), item.h],
+      opacity: [0.65, 1, 0.8, 1],
+    }}
+    transition={{
+      duration: 2.4,
+      repeat: Infinity,
+      delay: i * 0.12,
+      ease: 'easeInOut',
+    }}
+    style={{ height: item.h }}
+  >
+    <motion.span
+      className={`mb-3 rounded-md px-2 py-1 text-xs ${
+        item.active
+          ? 'border border-[#0A84FF] bg-[#0A84FF]/10 text-[#72AEFF]'
+          : 'text-white/30'
+      }`}
+      animate={item.active ? { opacity: [1, 0.8, 1] } : { opacity: 1 }}
+      transition={{
+        duration: 2.4,
+        repeat: Infinity,
+        delay: i * 0.12,
+      }}
+    >
+      {item.labels[i % item.labels.length]}
+    </motion.span>
+  </motion.div>
+))}
                     key={i}
                     className={`relative flex w-full items-end justify-center rounded-md border ${
                       item.active
