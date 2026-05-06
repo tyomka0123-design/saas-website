@@ -211,6 +211,15 @@ export function Pricing() {
       </div>
 
       <div className="relative mx-auto max-w-[1100px] border-x border-white/[0.08]">
+        <svg
+  className="pointer-events-none absolute -left-[8px] -top-[8px] z-20 h-4 w-4 text-white/75"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
         <div className="border-b border-t border-white/[0.08] px-6 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-[36px] font-semibold tracking-[-0.06em] md:text-[64px] md:leading-[1.02]">
