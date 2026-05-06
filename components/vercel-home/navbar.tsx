@@ -371,18 +371,21 @@ export function Navbar() {
                               const Icon = item.icon
 
                               return (
-                                <motion.a
-                                  href="#"
-                                  key={`${menuKey}-${item.label}`}
-                                  onClick={() => setMobileOpen(false)}
-                                  initial={{ opacity: 0, x: -8 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ duration: 0.18, delay: index * 0.015 }}
-                                  className="flex items-center gap-4 text-white/65"
-                                >
-                                  <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
-                                  <span className="text-[15px] leading-none">{item.label}</span>
-                                </motion.a>
+                                <motion.div
+  key={`${menuKey}-${item.label}`}
+  initial={{ opacity: 0, x: -8 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.18, delay: index * 0.015 }}
+>
+  <Link
+    href={item.href || '#'}
+    onClick={() => setMobileOpen(false)}
+    className="flex items-center gap-4 text-white/65"
+  >
+    <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
+    <span className="text-[15px] leading-none">{item.label}</span>
+  </Link>
+</motion.div>
                               )
                             })}
                           </div>
