@@ -32,6 +32,16 @@ export function Hero() {
   <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
 </svg>
 
+          <svg
+  className="pointer-events-none absolute -left-[8px] -top-[8px] z-[999] h-4 w-4 text-white/75"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
+
           <motion.h1
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
