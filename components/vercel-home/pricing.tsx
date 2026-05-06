@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowRight, Check, Cloud, Globe, Rocket, Shield } from 'lucide-react'
+import { ArrowRight, Check, Code, Layout, Rocket } from 'lucide-react'
 
 type FeatureRow = {
   label: string
-  hobby: string | boolean
-  pro: string | boolean
+  starter: string | boolean
+  business: string | boolean
   enterprise: string | boolean
 }
 
@@ -23,166 +23,134 @@ type FeatureSection = {
 
 const topPlans = [
   {
-    key: 'hobby' as const,
-    title: 'Hobby',
-    subtitle: 'The perfect starting place for your web app or personal project.',
-    price: 'Free forever.',
+    key: 'starter' as const,
+    title: 'Starter',
+    subtitle: 'Perfect for landing pages, portfolios, and small business websites.',
+    price: 'from $800',
     button: 'Start Project',
     buttonStyle:
       'border border-white/[0.12] bg-black text-white hover:bg-white/[0.04]',
     features: [
-      'Import your repo, deploy in seconds',
-      'Automatic CI/CD',
-      'Web Application Firewall',
-      'Global, automated CDN',
-      'Fluid compute',
-      'DDoS Mitigation',
-      'Traffic & performance insights',
+      'Modern responsive design',
+      'Up to 5 pages',
+      'Basic SEO optimization',
+      'Contact form',
+      'Mobile-first approach',
+      'Fast delivery in 7-14 days',
     ],
   },
   {
-    key: 'pro' as const,
-    title: 'Pro',
+    key: 'business' as const,
+    title: 'Business',
     badge: 'Popular',
-    subtitle: 'Everything you need to build and scale your app.',
-    price: '$20/mo + additional usage',
-    button: 'Start a free trial',
+    subtitle: 'Full-featured website with CMS, blog, and advanced functionality.',
+    price: 'from $2,500',
+    button: 'Discuss Project',
     buttonStyle: 'bg-[#0A84FF] text-white hover:bg-[#117df0]',
     features: [
-      '$20 of included usage credit',
-      'Advanced spend management',
-      'Team collaboration',
-      'Faster builds + no queues',
-      'Cold start prevention',
-      'Enterprise add-ons',
+      'Everything in Starter',
+      'Up to 15 pages',
+      'CMS for content management',
+      'Blog with categories',
+      'Analytics integration',
+      'Advanced SEO optimization',
     ],
   },
   {
     key: 'enterprise' as const,
     title: 'Enterprise',
     subtitle:
-      'Critical security, performance, observability, platform SLAs, and support.',
-    price: 'Custom',
-    button: 'Get a demo',
-    secondaryButton: 'Request Trial',
+      'Complex SaaS solutions, custom platforms, and full business process automation.',
+    price: 'from $8,000',
+    button: 'Get Consultation',
+    secondaryButton: 'Request Demo',
     buttonStyle: 'bg-white text-black hover:bg-white/90',
     features: [
-      'Guest & Team access controls',
-      'SCIM & Directory Sync',
-      'Managed WAF Rulesets',
-      'Multi-region compute & failover',
-      '99.99% SLA',
-      'Advanced Support',
+      'Everything in Business',
+      'Unlimited pages',
+      'Custom database',
+      'User dashboard / admin panel',
+      'Payment integrations',
+      'Dedicated support',
     ],
   },
 ]
 
 const sections: FeatureSection[] = [
   {
-    eyebrow: 'Managed Infrastructure',
-    title: 'Vercel Delivery Network',
-    description: 'Ultra-fast, secure by default global application delivery.',
+    eyebrow: 'Development',
+    title: 'Design & UI/UX',
+    description: 'Modern design that sets you apart from competitors.',
     groups: [
       {
-        title: 'Vercel Network',
+        title: 'Visual Design',
         rows: [
-          { label: 'Global Points of Presence', hobby: true, pro: true, enterprise: true },
-          { label: 'Vercel Regions', hobby: true, pro: true, enterprise: true },
-          { label: 'Automatic Routing', hobby: true, pro: true, enterprise: true },
-          { label: 'HTTPS Certificates', hobby: true, pro: true, enterprise: true },
-          { label: 'TLS/SSL Encryption', hobby: true, pro: true, enterprise: true },
-          { label: 'Traffic Load Balancing', hobby: true, pro: true, enterprise: true },
-          { label: 'Private Inter-Region Network', hobby: true, pro: true, enterprise: true },
-          { label: 'Automatic Region Failover', hobby: true, pro: true, enterprise: true },
+          { label: 'Unique design', starter: true, business: true, enterprise: true },
+          { label: 'Responsive (mobile-first)', starter: true, business: true, enterprise: true },
+          { label: 'Animations & micro-interactions', starter: 'Basic', business: 'Advanced', enterprise: 'Premium' },
+          { label: 'Custom illustrations', starter: '—', business: 'Up to 5', enterprise: 'Unlimited' },
+          { label: 'Figma prototyping', starter: true, business: true, enterprise: true },
+          { label: 'Design system / UI Kit', starter: '—', business: true, enterprise: true },
         ],
       },
       {
-        title: 'Configurable Routing',
+        title: 'UX & Accessibility',
         rows: [
-          { label: 'Reverse Proxy', hobby: true, pro: true, enterprise: true },
-          { label: 'Rewrites', hobby: true, pro: true, enterprise: true },
-          { label: 'Redirects', hobby: true, pro: true, enterprise: true },
-          { label: 'Middleware Support', hobby: true, pro: true, enterprise: true },
-          { label: 'Edge Requests', hobby: '1M / month included', pro: '10M / month included', enterprise: 'Custom' },
-          { label: 'Fast Data Transfer', hobby: '100 GB / month included', pro: '1TB / month included', enterprise: 'Custom' },
+          { label: 'Conversion optimization', starter: 'Basic', business: 'Advanced', enterprise: 'Full' },
+          { label: 'A/B testing', starter: '—', business: '—', enterprise: true },
+          { label: 'WCAG accessibility', starter: 'AA', business: 'AA', enterprise: 'AAA' },
+          { label: 'Performance audit', starter: true, business: true, enterprise: true },
         ],
       },
     ],
   },
   {
-    eyebrow: 'Managed Infrastructure',
-    title: 'Vercel Firewall',
-    description: 'Customizable security to protect your applications.',
+    eyebrow: 'Technologies',
+    title: 'Development & Integrations',
+    description: 'Cutting-edge tech stack for fast and reliable solutions.',
     groups: [
       {
-        title: 'Web Application Firewall',
+        title: 'Frontend',
         rows: [
-          { label: 'Custom Firewall Rules', hobby: 'Up to 3', pro: 'Up to 40', enterprise: 'Up to 1,000' },
-          { label: 'IP Blocking', hobby: 'Up to 3', pro: 'Up to 100', enterprise: 'Up to 1,000' },
-          { label: 'System Bypass Rules', hobby: '—', pro: 'Up to 25', enterprise: 'Up to 100' },
-          { label: 'Rate Limiting', hobby: '1M allowed requests included / month', pro: 'Starting at $0.50 per 1M', enterprise: 'Custom' },
-          { label: 'OWASP Core Ruleset (managed)', hobby: '—', pro: '—', enterprise: 'Custom' },
+          { label: 'Next.js / React', starter: true, business: true, enterprise: true },
+          { label: 'TypeScript', starter: true, business: true, enterprise: true },
+          { label: 'Tailwind CSS', starter: true, business: true, enterprise: true },
+          { label: 'Framer Motion animations', starter: 'Basic', business: 'Advanced', enterprise: 'Custom' },
         ],
       },
       {
-        title: 'Bot Management',
+        title: 'Backend & Database',
         rows: [
-          { label: 'Automated DDoS Mitigation', hobby: true, pro: true, enterprise: true },
-          { label: 'AI Bots (managed ruleset)', hobby: true, pro: true, enterprise: true },
-          { label: 'Bot Protection (managed ruleset)', hobby: true, pro: true, enterprise: true },
-          { label: 'BotID', hobby: 'Basic checks included', pro: '$1 per 1,000 Deep Analysis checks', enterprise: 'Custom' },
-          { label: 'Attack Challenge Mode', hobby: true, pro: true, enterprise: true },
+          { label: 'Headless CMS', starter: '—', business: true, enterprise: true },
+          { label: 'Custom backend', starter: '—', business: '—', enterprise: true },
+          { label: 'Database', starter: '—', business: 'Supabase / Firebase', enterprise: 'Any' },
+          { label: 'API integrations', starter: 'Up to 2', business: 'Up to 5', enterprise: 'Unlimited' },
+          { label: 'Payment systems', starter: '—', business: 'Stripe / PayPal', enterprise: 'Any' },
         ],
       },
     ],
   },
   {
-    eyebrow: 'Managed Infrastructure',
-    title: 'Content, Caching & Optimization',
-    description: 'Store and cache content close to your customers.',
+    eyebrow: 'Support',
+    title: 'Hosting & Maintenance',
+    description: 'Reliable hosting and support for your project.',
     groups: [
       {
-        title: 'Content Delivery',
+        title: 'Infrastructure',
         rows: [
-          { label: 'Zero-config CDN cache', hobby: true, pro: true, enterprise: true },
-          { label: 'Automated Compression', hobby: true, pro: true, enterprise: true },
-          { label: 'Background Revalidation', hobby: true, pro: true, enterprise: true },
-          { label: 'Stale-While-Revalidate', hobby: true, pro: true, enterprise: true },
+          { label: 'Vercel / cloud hosting', starter: true, business: true, enterprise: true },
+          { label: 'SSL certificate', starter: true, business: true, enterprise: true },
+          { label: 'Global CDN', starter: true, business: true, enterprise: true },
+          { label: 'Automatic backups', starter: '—', business: 'Weekly', enterprise: 'Daily' },
         ],
       },
       {
-        title: 'Optimization',
+        title: 'Support',
         rows: [
-          { label: 'ISR Reads', hobby: '1M / month included', pro: 'Starting at $0.40 per 1M', enterprise: 'Custom' },
-          { label: 'ISR Writes', hobby: '200,000 / month included', pro: 'Starting at $4 per 1M', enterprise: 'Custom' },
-          { label: 'Image Transformations', hobby: '5,000 / month included', pro: 'Starting at $0.05 per 1K', enterprise: 'Custom' },
-          { label: 'Image Cache Reads', hobby: '300,000 / month included', pro: 'Starting at $0.40 per 1M', enterprise: 'Custom' },
-          { label: 'Image Cache Writes', hobby: '100,000 / month included', pro: 'Starting at $4.00 per 1M', enterprise: 'Custom' },
-        ],
-      },
-    ],
-  },
-  {
-    eyebrow: 'Managed Infrastructure',
-    title: 'Vercel Compute',
-    description: 'Dynamic, scalable functions to power your application.',
-    groups: [
-      {
-        title: 'Vercel Functions',
-        rows: [
-          { label: 'Active CPU', hobby: '4 hours / month included', pro: 'Starting at $0.128 per hour', enterprise: 'Custom' },
-          { label: 'Provisioned Memory', hobby: '360 GB-hrs / month included', pro: 'Starting at $0.0106 per GB-hour', enterprise: 'Custom' },
-          { label: 'Invocations', hobby: '1M / month included', pro: 'Starting at $0.60 per 1M', enterprise: 'Custom' },
-        ],
-      },
-      {
-        title: 'Vercel Sandbox',
-        rows: [
-          { label: 'Active CPU', hobby: '5 hours / month included', pro: 'Starting at $0.128 per hour', enterprise: 'Custom' },
-          { label: 'Provisioned Memory', hobby: '420 GB-hours / month included', pro: 'Starting at $0.0212 per GB-hr', enterprise: 'Custom' },
-          { label: 'Creation', hobby: '5,000 / month included', pro: 'Starting at $0.60 per 1M', enterprise: 'Custom' },
-          { label: 'Network', hobby: '20 GB / month included', pro: 'Starting at $0.15 per GB', enterprise: 'Custom' },
-          { label: 'Concurrent Sandboxes', hobby: '10', pro: '2000', enterprise: 'Custom' },
+          { label: 'Technical support', starter: 'Email', business: 'Priority', enterprise: '24/7' },
+          { label: 'Response time', starter: '48 hours', business: '24 hours', enterprise: '4 hours' },
+          { label: 'Updates & patches', starter: '30 days', business: '90 days', enterprise: '12 months' },
+          { label: 'Training & onboarding', starter: '1 hour', business: '3 hours', enterprise: 'Unlimited' },
         ],
       },
     ],
@@ -194,7 +162,7 @@ function CellValue({ value }: { value: string | boolean }) {
     return <Check className="h-4 w-4 text-white/70" />
   }
 
-  if (value === false) {
+  if (value === false || value === '—') {
     return <span className="text-white/20">—</span>
   }
 
@@ -227,15 +195,29 @@ function PlanButton({
 
 export function Pricing() {
   return (
-    <section id="pricing" className="bg-black px-4 pb-20 pt-12 text-white md:pb-28">
-      <div className="mx-auto max-w-[1100px] border-x border-white/[0.08]">
+    <section id="pricing" className="relative bg-black px-4 pb-20 pt-12 text-white md:pb-28">
+      {/* Vercel-style grid background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-[1100px] border-x border-white/[0.08]">
         <div className="border-b border-t border-white/[0.08] px-6 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-[36px] font-semibold tracking-[-0.06em] md:text-[64px] md:leading-[1.02]">
-              Find the right build for your business.
+              Transparent pricing for your project.
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-7 text-white/50 md:text-[17px] md:leading-8">
-              Same Vercel-style structure, but adapted for Apex Studio packages and custom web development systems.
+              From simple landing pages to complex SaaS platforms — choose the plan that fits your needs.
             </p>
           </div>
         </div>
@@ -246,7 +228,7 @@ export function Pricing() {
               key={plan.key}
               className={`relative border-white/[0.08] px-6 pb-8 pt-10 md:px-8 ${
                 index !== topPlans.length - 1 ? 'md:border-r' : ''
-              } ${plan.key === 'pro' ? 'bg-white/[0.02]' : ''}`}
+              } ${plan.key === 'business' ? 'bg-white/[0.02]' : ''}`}
             >
               {plan.badge && (
                 <div className="absolute left-0 top-0 rounded-br-lg bg-white px-4 py-2 text-sm font-medium text-black">
@@ -270,13 +252,13 @@ export function Pricing() {
               </div>
 
               <div className="mt-8 flex flex-col gap-3">
-                <PlanButton href="/register" className={plan.buttonStyle}>
+                <PlanButton href="/contact" className={plan.buttonStyle}>
                   {plan.button}
                 </PlanButton>
 
                 {plan.secondaryButton && (
                   <Link
-                    href="/register"
+                    href="/contact"
                     className="inline-flex h-12 items-center justify-center rounded-full border border-white/[0.12] bg-black px-5 text-[15px] font-medium text-white/80 transition hover:bg-white/[0.04]"
                   >
                     {plan.secondaryButton}
@@ -287,49 +269,68 @@ export function Pricing() {
           ))}
         </div>
 
+        {/* Flexible Payment Section */}
         <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
             <div>
               <h3 className="text-[18px] font-semibold tracking-[-0.03em] md:text-[22px]">
-                Stay in control of your spending.
+                Flexible payment terms.
                 <span className="font-normal text-white/55">
                   {' '}
-                  Choose the package that fits now, then scale into portals, payments, automations, and custom logic later.
+                  50% upfront, 50% on completion. Option to split payments into milestones for larger projects.
                 </span>
               </h3>
 
               <Link
-                href="/register"
+                href="/contact"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/[0.12] bg-black px-5 text-[15px] font-medium text-white/80 transition hover:bg-white/[0.04] md:w-fit"
               >
-                Learn about scaling
+                Learn more
               </Link>
             </div>
 
-            <div className="relative h-[180px] rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
-              <div className="absolute inset-x-6 top-6 h-[2px] rounded-full bg-[#0A84FF]" />
-              <div className="absolute left-6 top-4 rounded-full border border-[#0A84FF] bg-[#0A84FF]/10 px-2 py-0.5 text-[10px] font-medium text-[#72AEFF]">
-                LIMIT
+            {/* Budget Visualization - Clean Vercel-style bars */}
+            <div className="relative h-[200px] overflow-hidden rounded-2xl border border-white/[0.08] bg-black">
+              {/* Grid background */}
+              <div 
+                className="absolute inset-0" 
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)
+                  `,
+                  backgroundSize: '40px 40px',
+                }}
+              />
+              
+              {/* Top line with label */}
+              <div className="absolute left-6 right-6 top-6">
+                <div className="h-[1px] w-full bg-[#0A84FF]" />
+                <div className="absolute -top-3 left-0 rounded-full border border-[#0A84FF] bg-[#0A84FF]/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-[#72AEFF]">
+                  Budget
+                </div>
               </div>
 
-              <div className="absolute bottom-6 left-6 right-6 flex items-end gap-3">
-                {[22, 44, 78, 112, 132, 148, 148, 148].map((height, i) => (
+              {/* Bars - evenly spaced */}
+              <div className="absolute bottom-6 left-6 right-6 flex h-[120px] items-end justify-between gap-2">
+                {[30, 50, 70, 90, 100, 100, 100, 100].map((heightPercent, i) => (
                   <motion.div
                     key={i}
-                    className={`flex-1 rounded-t-md border ${
-                      i >= 5
+                    className={`w-full rounded-t-lg border ${
+                      i >= 4
                         ? 'border-[#0A84FF] bg-[#0A84FF]/10'
-                        : 'border-white/[0.18] bg-white/[0.03]'
+                        : 'border-white/[0.12] bg-white/[0.02]'
                     }`}
-                    initial={{ height: 10, opacity: 0.5 }}
+                    style={{ height: `${heightPercent}%` }}
+                    initial={{ height: '20%', opacity: 0.5 }}
                     animate={{
-                      height: [18, height, Math.max(height - 18, 24), height],
-                      opacity: [0.5, 1, 0.75, 1],
+                      height: [`${heightPercent * 0.3}%`, `${heightPercent}%`, `${heightPercent * 0.85}%`, `${heightPercent}%`],
+                      opacity: [0.5, 1, 0.8, 1],
                     }}
                     transition={{
-                      duration: 2.8,
+                      duration: 3,
                       repeat: Infinity,
-                      delay: i * 0.08,
+                      delay: i * 0.1,
                       ease: 'easeInOut',
                     }}
                   />
@@ -339,108 +340,104 @@ export function Pricing() {
           </div>
         </div>
 
+        {/* Development Process Section */}
         <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="grid gap-8 md:grid-cols-[0.95fr_1.05fr] md:items-center">
-            <div className="relative h-[180px] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:52px_52px]" />
+            {/* Process Visualization - Clean 4 steps */}
+            <div className="relative h-[200px] overflow-hidden rounded-2xl border border-white/[0.08] bg-black">
+              {/* Grid background */}
+              <div 
+                className="absolute inset-0" 
+                style={{
+                  backgroundImage: `
+                    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)
+                  `,
+                  backgroundSize: '40px 40px',
+                }}
+              />
 
-              <div className="relative flex h-full items-end gap-4 md:gap-6">
+              {/* Process steps - 4 equal columns */}
+              <div className="absolute inset-6 flex items-end gap-4">
                 {[
-                  { labels: ['3s', '2.6s', '3.2s'], active: true, h: 116 },
-                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-                  { labels: ['2s', '1.7s', '2.2s'], active: true, h: 86 },
-                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-                  { labels: ['1.5s', '1.2s', '1.8s'], active: true, h: 58 },
-                  { labels: ['idle', 'idle', 'idle'], active: false, h: 150 },
-                  { labels: ['3s', '2.4s', '3.1s'], active: true, h: 40 },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className={`relative flex w-full items-end justify-center rounded-md border ${
-                      item.active
-                        ? 'border-[#0A84FF] bg-[#0A84FF]/10'
-                        : 'border-white/[0.08] bg-white/[0.03]'
-                    }`}
-                    initial={{ height: 30, opacity: 0.65 }}
-                    animate={{
-                      height: [Math.max(item.h - 18, 28), item.h, Math.max(item.h - 10, 28), item.h],
-                      opacity: [0.65, 1, 0.8, 1],
-                    }}
-                    transition={{
-                      duration: 2.4,
-                      repeat: Infinity,
-                      delay: i * 0.12,
-                      ease: 'easeInOut',
-                    }}
-                    style={{ height: item.h }}
-                  >
-                    <motion.span
-                      className={`mb-3 rounded-md px-2 py-1 text-xs ${
-                        item.active
-                          ? 'border border-[#0A84FF] bg-[#0A84FF]/10 text-[#72AEFF]'
-                          : 'text-white/30'
-                      }`}
-                      animate={item.active ? { opacity: [1, 0.8, 1] } : { opacity: 1 }}
+                  { label: 'Design', height: 100 },
+                  { label: 'Code', height: 75 },
+                  { label: 'Test', height: 50 },
+                  { label: 'Launch', height: 30 },
+                ].map((step, i) => (
+                  <div key={step.label} className="flex h-full flex-1 flex-col justify-end">
+                    <motion.div
+                      className="relative flex w-full items-end justify-center rounded-lg border border-[#0A84FF] bg-[#0A84FF]/10"
+                      style={{ height: `${step.height}%` }}
+                      initial={{ height: '20%', opacity: 0.5 }}
+                      animate={{
+                        height: [`${step.height * 0.4}%`, `${step.height}%`, `${step.height * 0.8}%`, `${step.height}%`],
+                        opacity: [0.5, 1, 0.8, 1],
+                      }}
                       transition={{
-                        duration: 2.4,
+                        duration: 2.5,
                         repeat: Infinity,
-                        delay: i * 0.12,
+                        delay: i * 0.15,
+                        ease: 'easeInOut',
                       }}
                     >
-                      {item.labels[0]}
-                    </motion.span>
-                  </motion.div>
+                      <span className="absolute bottom-3 rounded border border-[#0A84FF] bg-[#0A84FF]/20 px-2 py-1 text-[11px] font-medium text-[#72AEFF]">
+                        {step.label}
+                      </span>
+                    </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
 
             <div>
               <h3 className="text-[18px] font-semibold tracking-[-0.03em] md:text-[22px]">
-                No idle time. No wasted spend.
+                Clear development process.
                 <span className="font-normal text-white/55">
                   {' '}
-                  Pay for the package and functionality you actually need — from clean websites to advanced systems with dashboards and automation.
+                  From brief to launch — you always know exactly where your project stands.
                 </span>
               </h3>
 
               <Link
-                href="/register"
+                href="/contact"
                 className="mt-8 inline-flex h-12 items-center justify-center rounded-full border border-white/[0.12] bg-black px-5 text-[15px] font-medium text-white/80 transition hover:bg-white/[0.04] md:w-fit"
               >
-                Learn about advanced builds
+                Learn about process
               </Link>
             </div>
           </div>
         </div>
 
+        {/* Comparison Table */}
         <div className="overflow-x-auto">
           <div className="min-w-[880px]">
             <div className="sticky top-14 z-20 border-b border-white/[0.08] bg-black/95 backdrop-blur">
               <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
                 <div className="border-r border-white/[0.08] px-6 py-5 text-[14px] text-white/55">
-                  Features
+                  {"What's included"}
                 </div>
 
                 <div className="border-r border-white/[0.08] px-6 py-5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[15px] font-semibold">Basic</span>
+                    <span className="text-[15px] font-semibold">Starter</span>
                     <Link
-                      href="/register"
+                      href="/contact"
                       className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
                     >
-                      Start Project
+                      Start
                     </Link>
                   </div>
                 </div>
 
                 <div className="border-r border-white/[0.08] px-6 py-5">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-[15px] font-semibold">Pro</span>
+                    <span className="text-[15px] font-semibold">Business</span>
                     <Link
-                      href="/register"
+                      href="/contact"
                       className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
                     >
-                      Start a free trial
+                      Discuss
                     </Link>
                   </div>
                 </div>
@@ -449,10 +446,10 @@ export function Pricing() {
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-[15px] font-semibold">Enterprise</span>
                     <Link
-                      href="/register"
+                      href="/contact"
                       className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
                     >
-                      Get a demo
+                      Consult
                     </Link>
                   </div>
                 </div>
@@ -464,10 +461,9 @@ export function Pricing() {
                 <div className="border-b border-white/[0.08] px-8 py-12 md:px-10">
                   <p className="font-mono text-[13px] text-white/35">{section.eyebrow}</p>
                   <h3 className="mt-3 flex items-center gap-2 text-[22px] font-semibold tracking-[-0.03em]">
-                    {section.title === 'Vercel Delivery Network' && <Globe className="h-5 w-5 text-white/70" />}
-                    {section.title === 'Vercel Firewall' && <Shield className="h-5 w-5 text-white/70" />}
-                    {section.title === 'Content, Caching & Optimization' && <Cloud className="h-5 w-5 text-white/70" />}
-                    {section.title === 'Vercel Compute' && <Rocket className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Design & UI/UX' && <Layout className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Development & Integrations' && <Code className="h-5 w-5 text-white/70" />}
+                    {section.title === 'Hosting & Maintenance' && <Rocket className="h-5 w-5 text-white/70" />}
                     {section.title}
                   </h3>
                   <p className="mt-3 max-w-2xl text-[17px] leading-8 text-white/50">
@@ -496,11 +492,11 @@ export function Pricing() {
                         </div>
 
                         <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
-                          <CellValue value={row.hobby} />
+                          <CellValue value={row.starter} />
                         </div>
 
                         <div className="flex items-center justify-center border-r border-white/[0.08] px-6 py-4 text-center">
-                          <CellValue value={row.pro} />
+                          <CellValue value={row.business} />
                         </div>
 
                         <div className="flex items-center justify-center px-6 py-4 text-center">
@@ -513,31 +509,32 @@ export function Pricing() {
               </div>
             ))}
 
+            {/* Bottom sticky header */}
             <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr]">
               <div className="border-r border-white/[0.08] px-6 py-5 text-[15px] text-white/55">
-                Features
+                {"What's included"}
               </div>
 
               <div className="border-r border-white/[0.08] px-6 py-5">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-[15px] font-semibold">Basic</span>
+                  <span className="text-[15px] font-semibold">Starter</span>
                   <Link
-                    href="/register"
+                    href="/contact"
                     className="inline-flex h-9 items-center justify-center rounded-full border border-white/[0.12] bg-black px-4 text-[14px] font-medium text-white/80 transition hover:bg-white/[0.04]"
                   >
-                    Start Project
+                    Start
                   </Link>
                 </div>
               </div>
 
               <div className="border-r border-white/[0.08] px-6 py-5">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-[15px] font-semibold">Pro</span>
+                  <span className="text-[15px] font-semibold">Business</span>
                   <Link
-                    href="/register"
+                    href="/contact"
                     className="inline-flex h-9 items-center justify-center rounded-full bg-[#0A84FF] px-4 text-[14px] font-medium text-white transition hover:bg-[#117df0]"
                   >
-                    Start a free trial
+                    Discuss
                   </Link>
                 </div>
               </div>
@@ -546,10 +543,10 @@ export function Pricing() {
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-[15px] font-semibold">Enterprise</span>
                   <Link
-                    href="/register"
+                    href="/contact"
                     className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-[14px] font-medium text-black transition hover:bg-white/90"
                   >
-                    Get a demo
+                    Consult
                   </Link>
                 </div>
               </div>
