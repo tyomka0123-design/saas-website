@@ -211,9 +211,9 @@ export default function RegisterPage() {
       <AnimatedBackground />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1160px] items-center px-4 py-24">
-        <div className="relative grid w-full overflow-visible border border-white/[0.12] bg-black/80 md:grid-cols-[0.92fr_1.08fr]">
+        <div className="relative grid w-full overflow-visible border border-white/[0.12] bg-black/80 md:grid-cols-[1.05fr_0.95fr]">
           <div
-  className="pointer-events-none absolute left-0 top-0 z-0 hidden h-[96px] w-[46%] border-b border-r border-white/[0.1] md:block"
+  className="pointer-events-none absolute left-0 top-0 z-0 hidden h-[96px] w-full border-b border-white/[0.1] md:block"
   style={{
     backgroundImage: `
       linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
@@ -224,7 +224,7 @@ export default function RegisterPage() {
 />
 
           <div
-  className="pointer-events-none absolute bottom-0 left-0 z-0 hidden h-[96px] w-[46%] border-r border-t border-white/[0.1] md:block"
+  className="pointer-events-none absolute bottom-0 left-0 z-0 hidden h-[96px] w-full border-t border-white/[0.1] md:block"
   style={{
     backgroundImage: `
       linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
