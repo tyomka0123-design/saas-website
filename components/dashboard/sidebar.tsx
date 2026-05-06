@@ -102,11 +102,11 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
     }
   }
 
-  document.addEventListener('mousedown', handleClickOutside)
+  document.addEventListener('pointerdown', handleClickOutside)
 
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside)
-  }
+return () => {
+  document.removeEventListener('pointerdown', handleClickOutside)
+}
 }, [notificationsOpen, accountMenuOpen])
 
   function archiveNotification(id: number) {
@@ -243,7 +243,8 @@ function archiveAll() {
     {accountMenuOpen && (
   <div
     ref={accountMenuRef}
-    className="absolute bottom-11 left-0 z-50 w-[292px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+    onClick={(e) => e.stopPropagation()}
+    className="pointer-events-auto absolute bottom-11 left-0 z-[80] w-[292px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
   >
         <div className="border-b border-white/[0.08] p-4">
           <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
@@ -255,26 +256,38 @@ function archiveAll() {
 
         <div className="p-2">
           <Link
-            href="/dashboard/settings"
-            className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
-          >
+  href="/dashboard/settings"
+  onClick={() => {
+    setAccountMenuOpen(false)
+    setMobileOpen(false)
+  }}
+  className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+>
             Settings
             <Settings className="h-4 w-4 text-white/40" />
           </Link>
 
           <Link
-            href="/dashboard/support"
-            className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
-          >
+  href="/dashboard/support"
+  onClick={() => {
+    setAccountMenuOpen(false)
+    setMobileOpen(false)
+  }}
+  className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+>
             Help
             <LifeBuoy className="h-4 w-4 text-white/40" />
           </Link>
 
           <form action={logout}>
             <button
-              type="submit"
-              className="mt-2 flex h-9 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
-            >
+  type="submit"
+  onClick={() => {
+    setAccountMenuOpen(false)
+    setMobileOpen(false)
+  }}
+  className="mt-2 flex h-9 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
+>
               <span className="px-3">Log Out</span>
               <LogOut className="mr-3 h-4 w-4 text-black/60" />
             </button>
@@ -286,7 +299,8 @@ function archiveAll() {
     {notificationsOpen && (
   <div
     ref={notificationsRef}
-    className="absolute bottom-11 left-0 z-50 w-[408px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+    onClick={(e) => e.stopPropagation()}
+    className="pointer-events-auto absolute bottom-11 left-0 z-[80] w-[408px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
   >
         <div className="flex h-11 items-center border-b border-white/[0.08]">
           <button
@@ -443,7 +457,7 @@ function archiveAll() {
 
       <aside
         className={cn(
-          'fixed bottom-0 left-0 top-14 z-50 flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
+          'fixed bottom-0 left-0 top-14 z-[70] flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
