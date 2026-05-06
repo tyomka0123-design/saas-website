@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useChat } from '@ai-sdk/react'
 import {
   Copy,
   Share,
@@ -11,12 +12,6 @@ import {
   Square,
 } from 'lucide-react'
 
-type Message = {
-  id: number
-  role: 'user' | 'assistant'
-  content: string
-}
-
 export function AskAIPanel({
   open,
   onClose,
@@ -25,42 +20,80 @@ export function AskAIPanel({
   onClose: () => void
 }) {
   const [input, setInput] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const scrollRef = useRef<HTMLDivElement>(null)
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  const {
+    messages,
+    sendMessage,
+    status,
+    stop,
+    setMessages,
+  } = useChat()
+
+  const isGenerating = status === 'submitted' || status === 'streaming'
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTop = el.scrollHeight
+  }, [messages, status])
+
+  function handleSubmit(e?: React.FormEvent) {
+    e?.preventDefault()
 
     const text = input.trim()
-    if (!text) return
+    if (!text || isGenerating) return
 
-    const userMessage: Message = {
-      id: Date.now(),
-      role: 'user',
-      content: text,
-    }
-
-    setMessages((prev) => [...prev, userMessage])
+    sendMessage({ text })
     setInput('')
-    setIsGenerating(true)
-
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content:
-          'This is a demo AI response. Later this panel can be connected to Vercel AI Gateway or OpenAI API.',
-      }
-
-      setMessages((prev) => [...prev, aiMessage])
-      setIsGenerating(false)
-    }, 900)
   }
 
   function clearChat() {
     setMessages([])
     setInput('')
-    setIsGenerating(false)
+  }
+
+  async function copyChat() {
+    const text = messages
+      .map((message) => {
+        const content =
+          message.parts
+            ?.map((part) => (part.type === 'text' ? part.text : ''))
+            .join('') || ''
+
+        return `${message.role === 'user' ? 'You' : 'AI'}: ${content}`
+      })
+      .join('\n\n')
+
+    if (!text) return
+    await navigator.clipboard.writeText(text)
+  }
+
+  async function shareChat() {
+    const text = messages
+      .map((message) => {
+        const content =
+          message.parts
+            ?.map((part) => (part.type === 'text' ? part.text : ''))
+            .join('') || ''
+
+        return `${message.role === 'user' ? 'You' : 'AI'}: ${content}`
+      })
+      .join('\n\n')
+
+    if (!text) return
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Ask AI Chat',
+          text,
+        })
+      } catch {}
+      return
+    }
+
+    await navigator.clipboard.writeText(text)
   }
 
   return (
@@ -93,6 +126,7 @@ export function AskAIPanel({
               <div className="flex items-center gap-1.5 text-white/45">
                 <button
                   type="button"
+                  onClick={copyChat}
                   className="flex h-8 w-8 items-center justify-center rounded-md transition hover:bg-white/[0.06] hover:text-white"
                   aria-label="Copy"
                 >
@@ -101,6 +135,7 @@ export function AskAIPanel({
 
                 <button
                   type="button"
+                  onClick={shareChat}
                   className="flex h-8 w-8 items-center justify-center rounded-md transition hover:bg-white/[0.06] hover:text-white"
                   aria-label="Share"
                 >
@@ -127,7 +162,7 @@ export function AskAIPanel({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-6">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
               {messages.length === 0 ? (
                 <div className="flex h-full items-center justify-center text-center">
                   <div>
@@ -141,24 +176,31 @@ export function AskAIPanel({
                 </div>
               ) : (
                 <div className="space-y-5">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${
-                        message.role === 'user' ? 'justify-end' : 'justify-start'
-                      }`}
-                    >
+                  {messages.map((message) => {
+                    const content =
+                      message.parts
+                        ?.map((part) => (part.type === 'text' ? part.text : ''))
+                        .join('') || ''
+
+                    return (
                       <div
-                        className={`max-w-[82%] rounded-[22px] px-4 py-3 text-[14px] leading-6 ${
-                          message.role === 'user'
-                            ? 'rounded-br-md bg-white/[0.08] text-white'
-                            : 'rounded-bl-md border border-white/[0.08] bg-white/[0.03] text-white/72'
+                        key={message.id}
+                        className={`flex ${
+                          message.role === 'user' ? 'justify-end' : 'justify-start'
                         }`}
                       >
-                        {message.content}
+                        <div
+                          className={`max-w-[82%] rounded-[22px] px-4 py-3 text-[14px] leading-6 ${
+                            message.role === 'user'
+                              ? 'rounded-br-md bg-white/[0.08] text-white'
+                              : 'rounded-bl-md border border-white/[0.08] bg-white/[0.03] text-white/72'
+                          }`}
+                        >
+                          {content}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
 
                   {isGenerating && (
                     <div className="flex justify-start">
@@ -184,14 +226,14 @@ export function AskAIPanel({
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
-                      handleSubmit(e)
+                      handleSubmit()
                     }
                   }}
                 />
 
                 <button
                   type={isGenerating ? 'button' : 'submit'}
-                  onClick={isGenerating ? () => setIsGenerating(false) : undefined}
+                  onClick={isGenerating ? stop : undefined}
                   className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-lg bg-white text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-40"
                   disabled={!input.trim() && !isGenerating}
                   aria-label={isGenerating ? 'Stop' : 'Send'}
