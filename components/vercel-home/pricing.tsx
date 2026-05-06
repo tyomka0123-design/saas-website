@@ -26,7 +26,7 @@ const topPlans = [
     key: 'starter' as const,
     title: 'Starter',
     subtitle: 'Perfect for landing pages, portfolios, and small business websites.',
-    price: 'from $800',
+    price: 'from CA$450',
     button: 'Start Project',
     buttonStyle:
       'border border-white/[0.12] bg-black text-white hover:bg-white/[0.04]',
@@ -40,11 +40,11 @@ const topPlans = [
     ],
   },
   {
-    key: 'business' as const,
+    key: 'pro' as const,
     title: 'Business',
     badge: 'Popular',
     subtitle: 'Full-featured website with CMS, blog, and advanced functionality.',
-    price: 'from $2,500',
+    price: 'from CA$1,400',
     button: 'Discuss Project',
     buttonStyle: 'bg-[#0A84FF] text-white hover:bg-[#117df0]',
     features: [
@@ -61,7 +61,6 @@ const topPlans = [
     title: 'Enterprise',
     subtitle:
       'Complex SaaS solutions, custom platforms, and full business process automation.',
-    price: 'from $8,000',
     button: 'Get Consultation',
     secondaryButton: 'Request Demo',
     buttonStyle: 'bg-white text-black hover:bg-white/90',
