@@ -282,7 +282,7 @@ export function Pricing() {
         <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="relative grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
   <svg
-    className="pointer-events-none absolute -right-[20px] -top-[64px] z-20 h-4 w-4 text-white/75"
+  className="pointer-events-none absolute -right-[28px] -top-[72px] z-20 h-4 w-4 text-white/75"
     viewBox="0 0 16 16"
     fill="none"
     aria-hidden="true"
