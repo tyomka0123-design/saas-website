@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { AskAIPanel } from './ask-ai-panel'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -128,6 +129,7 @@ const navItems = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [askAIOpen, setAskAIOpen] = useState(false)
   const [activeMenu, setActiveMenu] = useState<keyof typeof menus | null>(null)
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
@@ -201,12 +203,13 @@ export function Navbar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-2">
-  <Link
-    href="/ai"
-    className="flex h-8 items-center justify-center rounded-md border border-white/[0.16] bg-black px-3 text-[13px] font-medium text-white/80 hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white"
-  >
-    Ask AI
-  </Link>
+  <button
+  type="button"
+  onClick={() => setAskAIOpen(true)}
+  className="flex h-8 items-center justify-center rounded-md border border-white/[0.16] bg-black px-3 text-[13px] font-medium text-white/80 hover:border-white/[0.28] hover:bg-white/[0.04] hover:text-white"
+>
+  Ask AI
+</button>
 
   <Link
     href="/login"
@@ -316,13 +319,16 @@ export function Navbar() {
           >
             <div className="min-h-screen px-[23px] pt-[118px] pb-24">
               <div className="space-y-[12px] mb-[42px]">
-  <Link
-    href="/ai"
-    onClick={() => setMobileOpen(false)}
-    className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
-  >
-    Ask AI
-  </Link>
+  <button
+  type="button"
+  onClick={() => {
+    setMobileOpen(false)
+    setAskAIOpen(true)
+  }}
+  className="flex h-[48px] w-full items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
+>
+  Ask AI
+</button>
 
   <Link
     href="/login"
@@ -415,6 +421,7 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <AskAIPanel open={askAIOpen} onClose={() => setAskAIOpen(false)} />
     </header>
   )
 }
