@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Check, ChevronDown, Eye, EyeOff, Loader2, Search } from 'lucide-react'
@@ -285,12 +286,16 @@ export default function RegisterPage() {
             className="relative z-10 bg-[#050505]/95 p-8 md:min-h-[760px] md:p-12 md:pt-36"
           >
             <div className="mb-8">
-              <Link href="/" className="mb-8 inline-flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-black">
-                  <span className="text-lg font-bold">A</span>
-                </div>
-                <span className="text-lg font-semibold tracking-tight">Apex Studio</span>
-              </Link>
+              <Link href="/" className="mb-8 inline-flex items-center">
+  <Image
+    src="/koryx-logo.png"
+    alt="Koryx logo"
+    width={160}
+    height={40}
+    className="h-auto w-[140px] object-contain"
+    priority
+  />
+</Link>
 
               <h2 className="text-2xl font-semibold tracking-[-0.03em]">
                 Register your account
