@@ -31,10 +31,10 @@ const menus = {
       {
         title: 'Web Services',
         items: [
-          { icon: Store, label: 'Business Websites', desc: 'Premium websites for local brands' },
-          { icon: CalendarCheck, label: 'Appointment Booking', desc: 'Let clients book online 24/7' },
-          { icon: LayoutDashboard, label: 'Client Dashboards', desc: 'Private portals for customers' },
-          { icon: Search, label: 'SEO & Speed', desc: 'Fast pages built to rank better' },
+          { icon: Store, label: 'Business Websites', desc: 'Premium websites for local brands', href: '/services/business-websites' },
+          { icon: CalendarCheck, label: 'Appointment Booking', desc: 'Let clients book online 24/7', href: '/services/appointment-booking' },
+          { icon: LayoutDashboard, label: 'Client Dashboards', desc: 'Private portals for customers', href: '/services/client-dashboards' },
+          { icon: Search, label: 'SEO & Speed', desc: 'Fast pages built to rank better', href: '/services/seo-speed' },
         ],
       },
       {
@@ -273,8 +273,8 @@ export function Navbar() {
                           const active = hoveredItem === item.label
 
                           return (
-                            <a
-                              href="#"
+                            <Link
+                              href={item.href || '#'}
                               key={item.label}
                               onMouseEnter={() => setHoveredItem(item.label)}
                               className="flex min-h-[50px] items-start gap-3"
@@ -292,7 +292,7 @@ export function Navbar() {
                                 <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
                                 <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
                               </div>
-                            </a>
+                            </Link>
                           )
                         })}
                       </div>
