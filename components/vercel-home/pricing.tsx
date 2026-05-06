@@ -280,7 +280,16 @@ export function Pricing() {
 
         {/* Flexible Payment Section */}
         <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
-          <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+          <div className="relative grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+            <svg
+  className="pointer-events-none absolute -right-[8px] -top-[8px] z-20 h-4 w-4 text-white/75"
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+>
+  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+</svg>
             <div>
               <h3 className="text-[18px] font-semibold tracking-[-0.03em] md:text-[22px]">
                 Flexible payment terms.
@@ -313,13 +322,9 @@ export function Pricing() {
               />
               
               {/* Top line with label */}
-              <div className="absolute left-6 right-6 top-6">
-                <div className="h-[1px] w-full bg-[#0A84FF]" />
-                <div className="absolute -top-3 left-0 rounded-full border border-[#0A84FF] bg-[#0A84FF]/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-[#72AEFF]">
-                  Budget
-                </div>
-              </div>
-
+              <div className="absolute left-6 top-4 rounded-full border border-[#0A84FF] bg-[#0A84FF]/10 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-[#72AEFF]">
+  Budget
+</div>
               {/* Bars - evenly spaced */}
               <div className="absolute bottom-6 left-6 right-6 flex h-[120px] items-end justify-between gap-2">
                 {[30, 50, 70, 90, 100, 100, 100, 100].map((heightPercent, i) => (
