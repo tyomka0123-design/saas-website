@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -47,12 +48,16 @@ export default function LoginPage() {
           <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-xl p-8">
             {/* Header */}
             <div className="text-center mb-8">
-              <Link href="/" className="inline-flex items-center gap-2 mb-6">
-                <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-xl">A</span>
-                </div>
-                <span className="font-semibold text-xl tracking-tight">Apex Studio</span>
-              </Link>
+              <Link href="/" className="inline-flex items-center mb-6">
+  <Image
+    src="/koryx-logo.png"
+    alt="Koryx logo"
+    width={160}
+    height={40}
+    className="h-auto w-[140px] object-contain"
+    priority
+  />
+</Link>
               <h1 className="text-2xl font-bold mb-2">Welcome back</h1>
               <p className="text-muted-foreground">Sign in to access your dashboard</p>
             </div>
