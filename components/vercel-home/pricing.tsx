@@ -40,8 +40,8 @@ const topPlans = [
     ],
   },
   {
-    key: 'pro' as const,
-    title: 'Business',
+    key: 'Business' as const,
+    title: 'Pro',
     badge: 'Popular',
     subtitle: 'Full-featured website with CMS, blog, and advanced functionality.',
     price: 'from CA$1,400',
