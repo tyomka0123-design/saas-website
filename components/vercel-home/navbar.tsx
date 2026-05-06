@@ -316,21 +316,30 @@ export function Navbar() {
           >
             <div className="min-h-screen px-[23px] pt-[118px] pb-24">
               <div className="space-y-[12px] mb-[42px]">
-                <Link
-  href="/ai"
-  onClick={() => setMobileOpen(false)}
-  className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
->
-  Ask AI
-</Link>
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
-                >
-                  Log In
-                </Link>
-              </div>
+  <Link
+    href="/ai"
+    onClick={() => setMobileOpen(false)}
+    className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
+  >
+    Ask AI
+  </Link>
+
+  <Link
+    href="/login"
+    onClick={() => setMobileOpen(false)}
+    className="flex h-[48px] items-center justify-center rounded-[9px] border border-white/[0.16] text-[15px] font-semibold text-white/70"
+  >
+    Log In
+  </Link>
+
+  <Link
+    href="/register"
+    onClick={() => setMobileOpen(false)}
+    className="flex h-[48px] items-center justify-center rounded-[9px] bg-white text-[15px] font-semibold text-black"
+  >
+    Sign Up
+  </Link>
+</div>
 
               <div className="space-y-[24px]">
                 {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
