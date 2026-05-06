@@ -211,7 +211,7 @@ export default function RegisterPage() {
       <AnimatedBackground />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-[1160px] items-center px-4 py-24">
-        <div className="relative grid w-full overflow-visible border border-white/[0.12] bg-black/80 md:grid-cols-[0.92fr_1.08fr]"">
+        <div className="relative grid w-full overflow-visible border border-white/[0.12] bg-black/80 md:grid-cols-[0.92fr_1.08fr]">
           <div
   className="pointer-events-none absolute left-0 top-0 z-0 hidden h-[96px] w-[46%] border-b border-r border-white/[0.1] md:block"
   style={{
