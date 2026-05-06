@@ -281,15 +281,15 @@ export function Pricing() {
         {/* Flexible Payment Section */}
         <div className="border-b border-white/[0.08] px-6 py-12 md:px-10">
           <div className="relative grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-center">
-            <svg
-  className="pointer-events-none absolute -right-[20px] -top-[20px] z-20 h-4 w-4 text-white/75"
-  viewBox="0 0 16 16"
-  fill="none"
-  aria-hidden="true"
->
-  <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
-  <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
-</svg>
+  <svg
+    className="pointer-events-none absolute -right-[20px] -top-[68px] z-20 h-4 w-4 text-white/75"
+    viewBox="0 0 16 16"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path d="M8 0V16" stroke="currentColor" strokeWidth="1" />
+    <path d="M0 8H16" stroke="currentColor" strokeWidth="1" />
+  </svg>
             <div>
               <h3 className="text-[18px] font-semibold tracking-[-0.03em] md:text-[22px]">
                 Flexible payment terms.
