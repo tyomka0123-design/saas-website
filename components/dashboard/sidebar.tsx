@@ -264,6 +264,8 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
               <div className="p-2">
                 <Link
                   href="/dashboard/settings"
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
                   className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
                 >
                   Settings
@@ -272,13 +274,15 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
 
                 <Link
                   href="/dashboard/support"
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
                   className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
                 >
                   Help
                   <LifeBuoy className="h-4 w-4 text-white/40" />
                 </Link>
 
-                <form action={logout}>
+                <form action={logout} onClick={(e) => e.stopPropagation()} onTouchEnd={(e) => e.stopPropagation()}>
                   <button
                     type="submit"
                     className="pointer-events-auto mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
@@ -447,7 +451,11 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
+          onClick={() => {
+            if (!accountMenuOpen && !notificationsOpen) {
+              setMobileOpen(false)
+            }
+          }}
         />
       )}
 
