@@ -19,6 +19,7 @@ import {
   Search,
   Settings,
   Shield,
+  User,
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -93,6 +94,10 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   }, [pathname])
 
   useEffect(() => {
+    if (mobileOpen) {
+      return
+    }
+
     function handlePointerDown(event: PointerEvent) {
       const target = event.target as Node
 
@@ -101,19 +106,11 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       const insideDesktopNotifications = !!desktopNotificationsRef.current?.contains(target)
       const insideDesktopNotificationsTrigger = !!desktopNotificationsTriggerRef.current?.contains(target)
 
-      if (
-        accountMenuOpen &&
-        !insideDesktopAccountMenu &&
-        !insideDesktopAccountTrigger
-      ) {
+      if (accountMenuOpen && !insideDesktopAccountMenu && !insideDesktopAccountTrigger) {
         setAccountMenuOpen(false)
       }
 
-      if (
-        notificationsOpen &&
-        !insideDesktopNotifications &&
-        !insideDesktopNotificationsTrigger
-      ) {
+      if (notificationsOpen && !insideDesktopNotifications && !insideDesktopNotificationsTrigger) {
         setNotificationsOpen(false)
       }
     }
@@ -122,7 +119,20 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
     return () => {
       document.removeEventListener('pointerdown', handlePointerDown)
     }
-  }, [accountMenuOpen, notificationsOpen])
+  }, [accountMenuOpen, notificationsOpen, mobileOpen])
+
+  useEffect(() => {
+    if (!mobileOpen) {
+      return
+    }
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [mobileOpen])
 
   function archiveNotification(id: number) {
     setNotifications((current) => {
@@ -165,13 +175,15 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       className={cn(
         'overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]',
         mobile
-          ? 'fixed inset-x-2 bottom-24 z-[140]'
+          ? 'fixed inset-x-3 bottom-3 z-[140] max-h-[min(70vh,560px)]'
           : 'absolute bottom-11 left-0 right-0 z-[90] md:right-auto md:w-[408px]'
       )}
       onPointerDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
     >
       <div className="flex h-11 items-center border-b border-white/[0.08]">
         <button
+          type="button"
           onClick={() => setNotificationTab('inbox')}
           className={cn(
             'h-full px-4 text-sm font-medium transition-none',
@@ -189,6 +201,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
         </button>
 
         <button
+          type="button"
           onClick={() => setNotificationTab('archive')}
           className={cn(
             'h-full px-4 text-sm font-medium transition-none',
@@ -201,6 +214,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
         </button>
 
         <button
+          type="button"
           onClick={() => setNotificationTab('comments')}
           className={cn(
             'h-full px-4 text-sm font-medium transition-none',
@@ -212,7 +226,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           Comments
         </button>
 
-        {mobile && (
+        {mobile ? (
           <button
             type="button"
             onClick={() => setNotificationsOpen(false)}
@@ -221,16 +235,17 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           >
             <X className="h-4 w-4" />
           </button>
-        )}
-
-        {!mobile && (
-          <button className="ml-auto mr-2 flex h-8 w-8 items-center justify-center rounded-md text-white/45 transition-none hover:bg-white/[0.07] hover:text-white">
+        ) : (
+          <button
+            type="button"
+            className="ml-auto mr-2 flex h-8 w-8 items-center justify-center rounded-md text-white/45 transition-none hover:bg-white/[0.07] hover:text-white"
+          >
             <Settings className="h-4 w-4" />
           </button>
         )}
       </div>
 
-      <div className="max-h-[420px] overflow-y-auto">
+      <div className={cn('overflow-y-auto', mobile ? 'max-h-[calc(min(70vh,560px)-44px)]' : 'max-h-[420px]')}>
         {notificationTab === 'inbox' && (
           notifications.length > 0 ? (
             notifications.map((item) => (
@@ -315,10 +330,11 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       className={cn(
         'overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]',
         mobile
-          ? 'fixed inset-x-2 bottom-24 z-[150]'
+          ? 'fixed inset-x-3 bottom-3 z-[150]'
           : 'absolute bottom-11 left-0 right-0 z-[90]'
       )}
       onPointerDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
     >
       <div className="relative border-b border-white/[0.08] p-4">
         {mobile && (
@@ -374,7 +390,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   const SidebarContent = ({ mobileView = false }: { mobileView?: boolean }) => (
     <>
       <div className="flex h-14 items-center border-b border-white/[0.08] px-4">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-black">
             <span className="text-sm font-bold">A</span>
           </div>
@@ -394,7 +410,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
         </div>
       </div>
 
-      <nav className="relative z-0 flex-1 overflow-y-auto px-2 py-3">
+      <nav className={cn('relative z-0 flex-1 overflow-y-auto px-2 py-3', mobileView && 'pb-24')}>
         <div className="space-y-0.5">
           {navItems.map((item) => {
             const isActive =
@@ -405,7 +421,10 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  closeAllMenus()
+                  setMobileOpen(false)
+                }}
                 className={cn(
                   'flex h-9 items-center gap-3 rounded-md px-3 text-[14px] font-medium transition-none',
                   isActive
@@ -422,7 +441,10 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           {isAdmin === true && (
             <Link
               href="/dashboard/admin"
-              onClick={() => setMobileOpen(false)}
+              onClick={() => {
+                closeAllMenus()
+                setMobileOpen(false)
+              }}
               className={cn(
                 'flex h-9 items-center gap-3 rounded-md px-3 text-[14px] font-medium transition-none',
                 pathname.startsWith('/dashboard/admin')
@@ -437,21 +459,50 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
         </div>
       </nav>
 
-      <div className="relative z-[95] border-t border-white/[0.08] p-2">
-        <div ref={desktopAccountTriggerRef} className="relative flex items-center gap-1">
+      {mobileView ? (
+        <div className="border-t border-white/[0.08] p-2">
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setAccountMenuOpen((prev) => !prev)
+                setNotificationsOpen(false)
+              }}
+              className="flex h-11 items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm font-medium text-white/75 active:bg-white/[0.1]"
+            >
+              <User className="h-4 w-4" />
+              <span>Account</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setNotificationsOpen((prev) => !prev)
+                setAccountMenuOpen(false)
+              }}
+              className="relative flex h-11 items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm font-medium text-white/75 active:bg-white/[0.1]"
+            >
+              <Bell className="h-4 w-4" />
+              <span>Notifications</span>
+              {unreadCount > 0 && (
+                <span className="absolute right-3 top-2.5 h-2 w-2 rounded-full bg-blue-500" />
+              )}
+            </button>
+          </div>
+
           <button
             type="button"
             onClick={() => {
               setAccountMenuOpen((prev) => !prev)
               setNotificationsOpen(false)
             }}
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-2 text-left transition-none hover:bg-white/[0.06]"
+            className="mt-2 flex min-w-0 w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-none active:bg-white/[0.08]"
           >
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.11] text-sm font-semibold text-white">
               {(userName || userEmail || 'U').charAt(0).toUpperCase()}
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium leading-4 text-white">
                 {userName || 'User'}
               </p>
@@ -459,40 +510,68 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
                 {role || 'Client'}
               </p>
             </div>
-          </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setAccountMenuOpen((prev) => !prev)
-              setNotificationsOpen(false)
-            }}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
-            aria-label="Account menu"
-          >
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="h-4 w-4 text-white/50" />
           </button>
-
-          <button
-            ref={desktopNotificationsTriggerRef}
-            type="button"
-            onClick={() => {
-              setNotificationsOpen((prev) => !prev)
-              setAccountMenuOpen(false)
-            }}
-            className="relative flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-            {unreadCount > 0 && (
-              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-500" />
-            )}
-          </button>
-
-          {!mobileView && accountMenuOpen && <AccountMenu />}
-          {!mobileView && notificationsOpen && <NotificationsPanel />}
         </div>
-      </div>
+      ) : (
+        <div className="relative z-[95] border-t border-white/[0.08] p-2">
+          <div ref={desktopAccountTriggerRef} className="relative flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                setAccountMenuOpen((prev) => !prev)
+                setNotificationsOpen(false)
+              }}
+              className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-2 text-left transition-none hover:bg-white/[0.06]"
+            >
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.11] text-sm font-semibold text-white">
+                {(userName || userEmail || 'U').charAt(0).toUpperCase()}
+              </div>
+
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium leading-4 text-white">
+                  {userName || 'User'}
+                </p>
+                <p className="truncate text-xs leading-4 text-white/42">
+                  {role || 'Client'}
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setAccountMenuOpen((prev) => !prev)
+                setNotificationsOpen(false)
+              }}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
+              aria-label="Account menu"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+
+            <button
+              ref={desktopNotificationsTriggerRef}
+              type="button"
+              onClick={() => {
+                setNotificationsOpen((prev) => !prev)
+                setAccountMenuOpen(false)
+              }}
+              className="relative flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" />
+              {unreadCount > 0 && (
+                <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-500" />
+              )}
+            </button>
+
+            {accountMenuOpen && <AccountMenu />}
+            {notificationsOpen && <NotificationsPanel />}
+          </div>
+        </div>
+      )}
     </>
   )
 
@@ -508,7 +587,15 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
 
         <button
           type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          onClick={() => {
+            setMobileOpen((prev) => {
+              const next = !prev
+              if (!next) {
+                closeAllMenus()
+              }
+              return next
+            })
+          }}
           className="rounded-md p-2 text-white/60 hover:bg-white/[0.07] hover:text-white"
           aria-label="Toggle menu"
         >
@@ -531,6 +618,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           'fixed bottom-0 left-0 top-14 z-[80] flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
+        onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
         <SidebarContent mobileView />
