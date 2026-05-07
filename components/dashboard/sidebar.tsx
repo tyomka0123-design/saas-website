@@ -88,7 +88,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   )
 
   useEffect(() => {
-    function handleClickOutside(event: PointerEvent) {
+    function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node
 
       if (
@@ -108,10 +108,12 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       }
     }
 
-    document.addEventListener('pointerdown', handleClickOutside)
+    // Only use mousedown for closing on outside click
+    // Touch devices will close via the explicit close button or navigation
+    document.addEventListener('mousedown', handleClickOutside)
 
     return () => {
-      document.removeEventListener('pointerdown', handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [notificationsOpen, accountMenuOpen])
 
@@ -451,10 +453,17 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Separate overlay for closing dropdowns on mobile */}
+      {(accountMenuOpen || notificationsOpen) && mobileOpen && (
+        <div
+          className="fixed inset-0 z-[110] lg:hidden"
           onClick={() => {
-            if (!accountMenuOpen && !notificationsOpen) {
-              setMobileOpen(false)
-            }
+            setAccountMenuOpen(false)
+            setNotificationsOpen(false)
           }}
         />
       )}
