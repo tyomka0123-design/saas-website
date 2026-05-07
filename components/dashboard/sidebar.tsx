@@ -152,7 +152,7 @@ function archiveAll() {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-2 py-3">
+      <nav className="flex-1 overflow-y-auto px-2 py-3 relative z-0">
         <div className="space-y-0.5">
           {navItems.map((item) => {
             const isActive =
@@ -195,7 +195,7 @@ function archiveAll() {
         </div>
       </nav>
 
-      <div className="border-t border-white/[0.08] p-2">
+      <div className="relative z-[95] border-t border-white/[0.08] p-2">
   <div className="relative flex items-center gap-1">
     <button
       type="button"
@@ -245,57 +245,57 @@ function archiveAll() {
     ref={accountMenuRef}
     onPointerDown={(e) => e.stopPropagation()}
     onClick={(e) => e.stopPropagation()}
-    className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+    className="pointer-events-auto fixed left-2 right-2 bottom-24 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
   >
-        <div className="border-b border-white/[0.08] p-4">
-          <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
-          <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
-          <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
-            {role || 'Client'}
-          </p>
-        </div>
+    <div className="border-b border-white/[0.08] p-4">
+      <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
+      <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
+      <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+        {role || 'Client'}
+      </p>
+    </div>
 
-        <div className="p-2">
-          <Link
-  href="/dashboard/settings"
-  onClick={() => {
-    setAccountMenuOpen(false)
-    setMobileOpen(false)
-  }}
-  className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
->
-            Settings
-            <Settings className="h-4 w-4 text-white/40" />
-          </Link>
+    <div className="p-2">
+      <Link
+        href="/dashboard/settings"
+        onClick={() => {
+          setAccountMenuOpen(false)
+          setMobileOpen(false)
+        }}
+        className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+      >
+        Settings
+        <Settings className="h-4 w-4 text-white/40" />
+      </Link>
 
-          <Link
-  href="/dashboard/support"
-  onClick={() => {
-    setAccountMenuOpen(false)
-    setMobileOpen(false)
-  }}
-  className="flex h-9 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
->
-            Help
-            <LifeBuoy className="h-4 w-4 text-white/40" />
-          </Link>
+      <Link
+        href="/dashboard/support"
+        onClick={() => {
+          setAccountMenuOpen(false)
+          setMobileOpen(false)
+        }}
+        className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+      >
+        Help
+        <LifeBuoy className="h-4 w-4 text-white/40" />
+      </Link>
 
-          <form action={logout}>
-            <button
-  type="submit"
-  onClick={() => {
-    setAccountMenuOpen(false)
-    setMobileOpen(false)
-  }}
-  className="mt-2 flex h-9 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
->
-              <span className="px-3">Log Out</span>
-              <LogOut className="mr-3 h-4 w-4 text-black/60" />
-            </button>
-          </form>
-        </div>
-      </div>
-    )}
+      <form action={logout}>
+        <button
+          type="submit"
+          onClick={() => {
+            setAccountMenuOpen(false)
+            setMobileOpen(false)
+          }}
+          className="pointer-events-auto mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
+        >
+          <span className="px-3">Log Out</span>
+          <LogOut className="mr-3 h-4 w-4 text-black/60" />
+        </button>
+      </form>
+    </div>
+  </div>
+)}
 
     {notificationsOpen && (
   <div
