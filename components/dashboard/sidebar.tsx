@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   Archive,
   Bell,
@@ -67,14 +67,18 @@ const initialNotifications = [
 
 export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
+
   const [mobileOpen, setMobileOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [notifications, setNotifications] = useState(initialNotifications)
   const [archivedNotifications, setArchivedNotifications] = useState<typeof initialNotifications>([])
   const [notificationTab, setNotificationTab] = useState<'inbox' | 'archive' | 'comments'>('inbox')
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+
   const notificationsRef = useRef<HTMLDivElement | null>(null)
   const accountMenuRef = useRef<HTMLDivElement | null>(null)
+  const accountTriggerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     setAccountMenuOpen(false)
@@ -88,31 +92,26 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   )
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handlePointerDown(event: PointerEvent) {
       const target = event.target as Node
 
-      // Check if click is inside any dropdown
-      const isInsideAccountMenu = accountMenuRef.current?.contains(target)
-      const isInsideNotifications = notificationsRef.current?.contains(target)
+      const isInsideAccountMenu = !!accountMenuRef.current?.contains(target)
+      const isInsideAccountTrigger = !!accountTriggerRef.current?.contains(target)
+      const isInsideNotifications = !!notificationsRef.current?.contains(target)
 
-      if (isInsideAccountMenu || isInsideNotifications) {
-        return // Don't close if clicking inside dropdowns
-      }
-
-      if (notificationsOpen) {
+      if (!isInsideNotifications && notificationsOpen) {
         setNotificationsOpen(false)
       }
 
-      if (accountMenuOpen) {
+      if (!isInsideAccountMenu && !isInsideAccountTrigger && accountMenuOpen) {
         setAccountMenuOpen(false)
       }
     }
 
-    // Only use mousedown for desktop - touch devices close via pathname change
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('pointerdown', handlePointerDown)
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('pointerdown', handlePointerDown)
     }
   }, [notificationsOpen, accountMenuOpen])
 
@@ -203,10 +202,13 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       </nav>
 
       <div className="relative z-[95] border-t border-white/[0.08] p-2">
-        <div className="relative flex items-center gap-1">
+        <div ref={accountTriggerRef} className="relative flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setAccountMenuOpen((prev) => !prev)}
+            onClick={() => {
+              setAccountMenuOpen((prev) => !prev)
+              setNotificationsOpen(false)
+            }}
             className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-2 text-left transition-none hover:bg-white/[0.06]"
           >
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.11] text-sm font-semibold text-white">
@@ -225,7 +227,10 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
 
           <button
             type="button"
-            onClick={() => setAccountMenuOpen((prev) => !prev)}
+            onClick={() => {
+              setAccountMenuOpen((prev) => !prev)
+              setNotificationsOpen(false)
+            }}
             className="flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
             aria-label="Account menu"
           >
@@ -248,78 +253,66 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           </button>
 
           {accountMenuOpen && (
-            <>
-              {/* Mobile backdrop - closes dropdown when tapping outside */}
-              <div
-                className="fixed inset-0 z-[115] lg:hidden"
-                onTouchEnd={() => setAccountMenuOpen(false)}
+            <div
+              ref={accountMenuRef}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="fixed bottom-24 left-2 right-2 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
+            >
+              <button
+                type="button"
                 onClick={() => setAccountMenuOpen(false)}
-              />
-              <div
-                ref={accountMenuRef}
-                className="fixed bottom-24 left-2 right-2 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-md text-white/50 hover:bg-white/[0.07] hover:text-white lg:hidden"
+                aria-label="Close menu"
               >
-                {/* Mobile close button */}
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="border-b border-white/[0.08] p-4">
+                <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
+                <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
+                <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+                  {role || 'Client'}
+                </p>
+              </div>
+
+              <div className="p-2">
                 <button
                   type="button"
-                  onClick={() => setAccountMenuOpen(false)}
-                  className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-md text-white/50 hover:bg-white/[0.07] hover:text-white lg:hidden"
-                  aria-label="Close menu"
+                  onClick={() => router.push('/dashboard/settings')}
+                  className="flex h-11 w-full items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
                 >
-                  <X className="h-4 w-4" />
+                  <span>Settings</span>
+                  <Settings className="h-4 w-4 text-white/40" />
                 </button>
 
-                <div className="border-b border-white/[0.08] p-4">
-                  <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
-                  <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
-                  <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
-                    {role || 'Client'}
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => router.push('/dashboard/support')}
+                  className="flex h-11 w-full items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
+                >
+                  <span>Help</span>
+                  <LifeBuoy className="h-4 w-4 text-white/40" />
+                </button>
 
-                <div className="p-2">
-                  <Link
-                    href="/dashboard/settings"
-                    className="flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    className="mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90 active:bg-white/80"
                   >
-                    Settings
-                    <Settings className="h-4 w-4 text-white/40" />
-                  </Link>
-
-                  <Link
-                    href="/dashboard/support"
-                    className="flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
-                  >
-                    Help
-                    <LifeBuoy className="h-4 w-4 text-white/40" />
-                  </Link>
-
-                  <form action={logout}>
-                    <button
-                      type="submit"
-                      className="mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90 active:bg-white/80"
-                    >
-                      <span className="px-3">Log Out</span>
-                      <LogOut className="mr-3 h-4 w-4 text-black/60" />
-                    </button>
-                  </form>
-                </div>
+                    <span className="px-3">Log Out</span>
+                    <LogOut className="mr-3 h-4 w-4 text-black/60" />
+                  </button>
+                </form>
               </div>
-            </>
+            </div>
           )}
 
           {notificationsOpen && (
-            <>
-              {/* Mobile backdrop - closes dropdown when tapping outside */}
-              <div
-                className="fixed inset-0 z-[85] lg:hidden"
-                onTouchEnd={() => setNotificationsOpen(false)}
-                onClick={() => setNotificationsOpen(false)}
-              />
-              <div
-                ref={notificationsRef}
-                className="absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
-              >
+            <div
+              ref={notificationsRef}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
+            >
               <div className="flex h-11 items-center border-b border-white/[0.08]">
                 <button
                   onClick={() => setNotificationTab('inbox')}
@@ -439,8 +432,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
                   Archive All
                 </button>
               )}
-              </div>
-            </>
+            </div>
           )}
         </div>
       </div>
