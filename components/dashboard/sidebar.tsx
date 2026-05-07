@@ -371,7 +371,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
     </div>
   )
 
-  const SidebarContent = () => (
+  const SidebarContent = ({ mobileView = false }: { mobileView?: boolean }) => (
     <>
       <div className="flex h-14 items-center border-b border-white/[0.08] px-4">
         <Link href="/" className="flex items-center gap-2.5">
@@ -489,8 +489,8 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
             )}
           </button>
 
-          {accountMenuOpen && <AccountMenu />}
-          {notificationsOpen && <NotificationsPanel />}
+          {!mobileView && accountMenuOpen && <AccountMenu />}
+          {!mobileView && notificationsOpen && <NotificationsPanel />}
         </div>
       </div>
     </>
@@ -531,8 +531,9 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           'fixed bottom-0 left-0 top-14 z-[80] flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
+        onClick={(e) => e.stopPropagation()}
       >
-        <SidebarContent />
+        <SidebarContent mobileView />
       </aside>
 
       <aside className="fixed bottom-0 left-0 top-0 hidden w-[292px] flex-col border-r border-white/[0.08] bg-black lg:flex">
