@@ -76,58 +76,64 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   const notificationsRef = useRef<HTMLDivElement | null>(null)
   const accountMenuRef = useRef<HTMLDivElement | null>(null)
 
+  useEffect(() => {
+    setAccountMenuOpen(false)
+    setNotificationsOpen(false)
+    setMobileOpen(false)
+  }, [pathname])
+
   const unreadCount = useMemo(
     () => notifications.filter((item) => item.unread).length,
     [notifications]
   )
 
   useEffect(() => {
-  function handleClickOutside(event: PointerEvent) {
-    const target = event.target as Node
+    function handleClickOutside(event: PointerEvent) {
+      const target = event.target as Node
 
-    if (
-      notificationsOpen &&
-      notificationsRef.current &&
-      !notificationsRef.current.contains(target)
-    ) {
-      setNotificationsOpen(false)
+      if (
+        notificationsOpen &&
+        notificationsRef.current &&
+        !notificationsRef.current.contains(target)
+      ) {
+        setNotificationsOpen(false)
+      }
+
+      if (
+        accountMenuOpen &&
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(target)
+      ) {
+        setAccountMenuOpen(false)
+      }
     }
 
-    if (
-      accountMenuOpen &&
-      accountMenuRef.current &&
-      !accountMenuRef.current.contains(target)
-    ) {
-      setAccountMenuOpen(false)
+    document.addEventListener('pointerdown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside)
     }
-  }
-
-  document.addEventListener('pointerdown', handleClickOutside)
-
-return () => {
-  document.removeEventListener('pointerdown', handleClickOutside)
-}
-}, [notificationsOpen, accountMenuOpen])
+  }, [notificationsOpen, accountMenuOpen])
 
   function archiveNotification(id: number) {
-  setNotifications((current) => {
-    const item = current.find((notification) => notification.id === id)
+    setNotifications((current) => {
+      const item = current.find((notification) => notification.id === id)
 
-    if (item) {
-      setArchivedNotifications((archive) => [{ ...item, unread: false }, ...archive])
-    }
+      if (item) {
+        setArchivedNotifications((archive) => [{ ...item, unread: false }, ...archive])
+      }
 
-    return current.filter((notification) => notification.id !== id)
-  })
-}
+      return current.filter((notification) => notification.id !== id)
+    })
+  }
 
-function archiveAll() {
-  setArchivedNotifications((archive) => [
-    ...notifications.map((item) => ({ ...item, unread: false })),
-    ...archive,
-  ])
-  setNotifications([])
-}
+  function archiveAll() {
+    setArchivedNotifications((archive) => [
+      ...notifications.map((item) => ({ ...item, unread: false })),
+      ...archive,
+    ])
+    setNotifications([])
+  }
 
   const SidebarContent = () => (
     <>
@@ -152,7 +158,7 @@ function archiveAll() {
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-2 py-3 relative z-0">
+      <nav className="relative z-0 flex-1 overflow-y-auto px-2 py-3">
         <div className="space-y-0.5">
           {navItems.map((item) => {
             const isActive =
@@ -196,237 +202,225 @@ function archiveAll() {
       </nav>
 
       <div className="relative z-[95] border-t border-white/[0.08] p-2">
-  <div className="relative flex items-center gap-1">
-    <button
-      type="button"
-      onClick={() => setAccountMenuOpen((prev) => !prev)}
-      className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-2 text-left transition-none hover:bg-white/[0.06]"
-    >
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.11] text-sm font-semibold text-white">
-        {(userName || userEmail || 'U').charAt(0).toUpperCase()}
-      </div>
-
-      <div className="min-w-0">
-        <p className="truncate text-sm font-medium leading-4 text-white">
-          {userName || 'User'}
-        </p>
-        <p className="truncate text-xs leading-4 text-white/42">
-          {role || 'Client'}
-        </p>
-      </div>
-    </button>
-
-    <button
-      type="button"
-      onClick={() => setAccountMenuOpen((prev) => !prev)}
-      className="flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
-      aria-label="Account menu"
-    >
-      <MoreHorizontal className="h-4 w-4" />
-    </button>
-
-    <button
-      type="button"
-      onClick={() => {
-  setNotificationsOpen((prev) => !prev)
-  setAccountMenuOpen(false)
-}}
-      className="relative flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
-      aria-label="Notifications"
-    >
-      <Bell className="h-4 w-4" />
-      {unreadCount > 0 && (
-        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-500" />
-      )}
-    </button>
-
-    {accountMenuOpen && (
-  <div
-    ref={accountMenuRef}
-    onPointerDown={(e) => e.stopPropagation()}
-    onClick={(e) => e.stopPropagation()}
-    className="pointer-events-auto fixed left-2 right-2 bottom-24 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
-  >
-    <div className="border-b border-white/[0.08] p-4">
-      <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
-      <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
-      <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
-        {role || 'Client'}
-      </p>
-    </div>
-
-    <div className="p-2">
-      <Link
-        href="/dashboard/settings"
-        onClick={() => {
-          setAccountMenuOpen(false)
-          setMobileOpen(false)
-        }}
-        className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
-      >
-        Settings
-        <Settings className="h-4 w-4 text-white/40" />
-      </Link>
-
-      <Link
-        href="/dashboard/support"
-        onClick={() => {
-          setAccountMenuOpen(false)
-          setMobileOpen(false)
-        }}
-        className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
-      >
-        Help
-        <LifeBuoy className="h-4 w-4 text-white/40" />
-      </Link>
-
-      <form action={logout}>
-        <button
-          type="submit"
-          onClick={() => {
-            setAccountMenuOpen(false)
-            setMobileOpen(false)
-          }}
-          className="pointer-events-auto mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
-        >
-          <span className="px-3">Log Out</span>
-          <LogOut className="mr-3 h-4 w-4 text-black/60" />
-        </button>
-      </form>
-    </div>
-  </div>
-)}
-
-    {notificationsOpen && (
-  <div
-    ref={notificationsRef}
-    onPointerDown={(e) => e.stopPropagation()}
-    onClick={(e) => e.stopPropagation()}
-    className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
-  >
-        <div className="flex h-11 items-center border-b border-white/[0.08]">
+        <div className="relative flex items-center gap-1">
           <button
-            onClick={() => setNotificationTab('inbox')}
-            className={cn(
-              'h-full px-4 text-sm font-medium transition-none',
-              notificationTab === 'inbox'
-                ? 'border-b border-blue-500 text-white'
-                : 'text-white/45 hover:text-white'
-            )}
+            type="button"
+            onClick={() => setAccountMenuOpen((prev) => !prev)}
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-2 text-left transition-none hover:bg-white/[0.06]"
           >
-            Inbox
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.11] text-sm font-semibold text-white">
+              {(userName || userEmail || 'U').charAt(0).toUpperCase()}
+            </div>
+
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium leading-4 text-white">
+                {userName || 'User'}
+              </p>
+              <p className="truncate text-xs leading-4 text-white/42">
+                {role || 'Client'}
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setAccountMenuOpen((prev) => !prev)}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
+            aria-label="Account menu"
+          >
+            <MoreHorizontal className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setNotificationsOpen((prev) => !prev)
+              setAccountMenuOpen(false)
+            }}
+            className="relative flex h-8 w-8 items-center justify-center rounded-md text-white/50 transition-none hover:bg-white/[0.07] hover:text-white"
+            aria-label="Notifications"
+          >
+            <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
-              <span className="ml-2 rounded-full bg-white/[0.12] px-1.5 py-0.5 text-xs text-white/70">
-                {unreadCount}
-              </span>
+              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-500" />
             )}
           </button>
 
-          <button
-            onClick={() => setNotificationTab('archive')}
-            className={cn(
-              'h-full px-4 text-sm font-medium transition-none',
-              notificationTab === 'archive'
-                ? 'border-b border-blue-500 text-white'
-                : 'text-white/45 hover:text-white'
-            )}
-          >
-            Archive
-          </button>
+          {accountMenuOpen && (
+            <div
+              ref={accountMenuRef}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              className="pointer-events-auto fixed bottom-24 left-2 right-2 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
+            >
+              <div className="border-b border-white/[0.08] p-4">
+                <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
+                <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
+                <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+                  {role || 'Client'}
+                </p>
+              </div>
 
-          <button
-            onClick={() => setNotificationTab('comments')}
-            className={cn(
-              'h-full px-4 text-sm font-medium transition-none',
-              notificationTab === 'comments'
-                ? 'border-b border-blue-500 text-white'
-                : 'text-white/45 hover:text-white'
-            )}
-          >
-            Comments
-          </button>
-
-          <button className="ml-auto mr-2 flex h-8 w-8 items-center justify-center rounded-md text-white/45 transition-none hover:bg-white/[0.07] hover:text-white">
-            <Settings className="h-4 w-4" />
-          </button>
-        </div>
-
-        <div className="max-h-[420px] overflow-y-auto">
-          {notificationTab === 'inbox' && (
-            notifications.length > 0 ? (
-              notifications.map((item) => (
-                <div
-                  key={item.id}
-                  className="group flex gap-3 border-b border-white/[0.08] px-4 py-4 transition-none hover:bg-white/[0.055]"
+              <div className="p-2">
+                <Link
+                  href="/dashboard/settings"
+                  className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
                 >
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-amber-500/25 bg-amber-500/10 text-amber-400">
-                    <Inbox className="h-4 w-4" />
-                  </div>
+                  Settings
+                  <Settings className="h-4 w-4 text-white/40" />
+                </Link>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium leading-5 text-white">{item.title}</p>
-                    <p className="mt-0.5 line-clamp-2 text-sm leading-5 text-white/50">
-                      {item.description}
-                    </p>
-                    <p className="mt-1 text-xs text-white/35">{item.time}</p>
-                  </div>
+                <Link
+                  href="/dashboard/support"
+                  className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+                >
+                  Help
+                  <LifeBuoy className="h-4 w-4 text-white/40" />
+                </Link>
 
+                <form action={logout}>
                   <button
-                    type="button"
-                    onClick={() => archiveNotification(item.id)}
-                    className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-md text-white/40 transition-none hover:bg-white/[0.08] hover:text-white group-hover:flex"
-                    aria-label="Archive notification"
+                    type="submit"
+                    className="pointer-events-auto mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
                   >
-                    <Archive className="h-4 w-4" />
+                    <span className="px-3">Log Out</span>
+                    <LogOut className="mr-3 h-4 w-4 text-black/60" />
                   </button>
-                </div>
-              ))
-            ) : (
-              <div className="px-4 py-16 text-center">
-                <Archive className="mx-auto h-8 w-8 text-white/25" />
-                <p className="mt-4 text-sm text-white/45">Nothing in the inbox</p>
+                </form>
               </div>
-            )
+            </div>
           )}
 
-          {notificationTab === 'archive' && (
-            archivedNotifications.length > 0 ? (
-              archivedNotifications.map((item) => (
-                <div key={item.id} className="border-b border-white/[0.08] px-4 py-4">
-                  <p className="text-sm font-medium text-white">{item.title}</p>
-                  <p className="mt-1 text-sm text-white/45">{item.description}</p>
-                  <p className="mt-1 text-xs text-white/30">{item.time}</p>
-                </div>
-              ))
-            ) : (
-              <div className="px-4 py-16 text-center">
-                <Archive className="mx-auto h-8 w-8 text-white/25" />
-                <p className="mt-4 text-sm text-white/45">Nothing in the archive</p>
-              </div>
-            )
-          )}
+          {notificationsOpen && (
+            <div
+              ref={notificationsRef}
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
+            >
+              <div className="flex h-11 items-center border-b border-white/[0.08]">
+                <button
+                  onClick={() => setNotificationTab('inbox')}
+                  className={cn(
+                    'h-full px-4 text-sm font-medium transition-none',
+                    notificationTab === 'inbox'
+                      ? 'border-b border-blue-500 text-white'
+                      : 'text-white/45 hover:text-white'
+                  )}
+                >
+                  Inbox
+                  {unreadCount > 0 && (
+                    <span className="ml-2 rounded-full bg-white/[0.12] px-1.5 py-0.5 text-xs text-white/70">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
 
-          {notificationTab === 'comments' && (
-            <div className="px-4 py-16 text-center">
-              <MessageSquare className="mx-auto h-8 w-8 text-white/25" />
-              <p className="mt-4 text-sm text-white/45">No new comments</p>
+                <button
+                  onClick={() => setNotificationTab('archive')}
+                  className={cn(
+                    'h-full px-4 text-sm font-medium transition-none',
+                    notificationTab === 'archive'
+                      ? 'border-b border-blue-500 text-white'
+                      : 'text-white/45 hover:text-white'
+                  )}
+                >
+                  Archive
+                </button>
+
+                <button
+                  onClick={() => setNotificationTab('comments')}
+                  className={cn(
+                    'h-full px-4 text-sm font-medium transition-none',
+                    notificationTab === 'comments'
+                      ? 'border-b border-blue-500 text-white'
+                      : 'text-white/45 hover:text-white'
+                  )}
+                >
+                  Comments
+                </button>
+
+                <button className="ml-auto mr-2 flex h-8 w-8 items-center justify-center rounded-md text-white/45 transition-none hover:bg-white/[0.07] hover:text-white">
+                  <Settings className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="max-h-[420px] overflow-y-auto">
+                {notificationTab === 'inbox' && (
+                  notifications.length > 0 ? (
+                    notifications.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group flex gap-3 border-b border-white/[0.08] px-4 py-4 transition-none hover:bg-white/[0.055]"
+                      >
+                        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-amber-500/25 bg-amber-500/10 text-amber-400">
+                          <Inbox className="h-4 w-4" />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium leading-5 text-white">{item.title}</p>
+                          <p className="mt-0.5 line-clamp-2 text-sm leading-5 text-white/50">
+                            {item.description}
+                          </p>
+                          <p className="mt-1 text-xs text-white/35">{item.time}</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => archiveNotification(item.id)}
+                          className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-md text-white/40 transition-none hover:bg-white/[0.08] hover:text-white group-hover:flex"
+                          aria-label="Archive notification"
+                        >
+                          <Archive className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-16 text-center">
+                      <Archive className="mx-auto h-8 w-8 text-white/25" />
+                      <p className="mt-4 text-sm text-white/45">Nothing in the inbox</p>
+                    </div>
+                  )
+                )}
+
+                {notificationTab === 'archive' && (
+                  archivedNotifications.length > 0 ? (
+                    archivedNotifications.map((item) => (
+                      <div key={item.id} className="border-b border-white/[0.08] px-4 py-4">
+                        <p className="text-sm font-medium text-white">{item.title}</p>
+                        <p className="mt-1 text-sm text-white/45">{item.description}</p>
+                        <p className="mt-1 text-xs text-white/30">{item.time}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-16 text-center">
+                      <Archive className="mx-auto h-8 w-8 text-white/25" />
+                      <p className="mt-4 text-sm text-white/45">Nothing in the archive</p>
+                    </div>
+                  )
+                )}
+
+                {notificationTab === 'comments' && (
+                  <div className="px-4 py-16 text-center">
+                    <MessageSquare className="mx-auto h-8 w-8 text-white/25" />
+                    <p className="mt-4 text-sm text-white/45">No new comments</p>
+                  </div>
+                )}
+              </div>
+
+              {notificationTab === 'inbox' && notifications.length > 0 && (
+                <button
+                  type="button"
+                  onClick={archiveAll}
+                  className="flex h-10 w-full items-center justify-center border-t border-white/[0.08] text-sm font-medium text-white/70 transition-none hover:bg-white/[0.06] hover:text-white"
+                >
+                  Archive All
+                </button>
+              )}
             </div>
           )}
         </div>
-
-        {notificationTab === 'inbox' && notifications.length > 0 && (
-          <button
-            type="button"
-            onClick={archiveAll}
-            className="flex h-10 w-full items-center justify-center border-t border-white/[0.08] text-sm font-medium text-white/70 transition-none hover:bg-white/[0.06] hover:text-white"
-          >
-            Archive All
-          </button>
-        )}
       </div>
-    )}
-    </div>
-</div>
     </>
   )
 
