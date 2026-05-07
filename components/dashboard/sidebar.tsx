@@ -91,25 +91,24 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node
 
-      if (
-        notificationsOpen &&
-        notificationsRef.current &&
-        !notificationsRef.current.contains(target)
-      ) {
+      // Check if click is inside any dropdown
+      const isInsideAccountMenu = accountMenuRef.current?.contains(target)
+      const isInsideNotifications = notificationsRef.current?.contains(target)
+
+      if (isInsideAccountMenu || isInsideNotifications) {
+        return // Don't close if clicking inside dropdowns
+      }
+
+      if (notificationsOpen) {
         setNotificationsOpen(false)
       }
 
-      if (
-        accountMenuOpen &&
-        accountMenuRef.current &&
-        !accountMenuRef.current.contains(target)
-      ) {
+      if (accountMenuOpen) {
         setAccountMenuOpen(false)
       }
     }
 
-    // Only use mousedown for closing on outside click
-    // Touch devices will close via the explicit close button or navigation
+    // Only use mousedown for desktop - touch devices close via pathname change
     document.addEventListener('mousedown', handleClickOutside)
 
     return () => {
@@ -249,61 +248,78 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
           </button>
 
           {accountMenuOpen && (
-            <div
-              ref={accountMenuRef}
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
-              className="pointer-events-auto fixed bottom-24 left-2 right-2 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
-            >
-              <div className="border-b border-white/[0.08] p-4">
-                <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
-                <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
-                <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
-                  {role || 'Client'}
-                </p>
-              </div>
-
-              <div className="p-2">
-                <Link
-                  href="/dashboard/settings"
-                  onClick={(e) => e.stopPropagation()}
-                  onTouchEnd={(e) => e.stopPropagation()}
-                  className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
+            <>
+              {/* Mobile backdrop - closes dropdown when tapping outside */}
+              <div
+                className="fixed inset-0 z-[115] lg:hidden"
+                onTouchEnd={() => setAccountMenuOpen(false)}
+                onClick={() => setAccountMenuOpen(false)}
+              />
+              <div
+                ref={accountMenuRef}
+                className="fixed bottom-24 left-2 right-2 z-[120] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] lg:absolute lg:bottom-11 lg:left-0 lg:right-0 lg:z-[90]"
+              >
+                {/* Mobile close button */}
+                <button
+                  type="button"
+                  onClick={() => setAccountMenuOpen(false)}
+                  className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-md text-white/50 hover:bg-white/[0.07] hover:text-white lg:hidden"
+                  aria-label="Close menu"
                 >
-                  Settings
-                  <Settings className="h-4 w-4 text-white/40" />
-                </Link>
+                  <X className="h-4 w-4" />
+                </button>
 
-                <Link
-                  href="/dashboard/support"
-                  onClick={(e) => e.stopPropagation()}
-                  onTouchEnd={(e) => e.stopPropagation()}
-                  className="pointer-events-auto flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white"
-                >
-                  Help
-                  <LifeBuoy className="h-4 w-4 text-white/40" />
-                </Link>
+                <div className="border-b border-white/[0.08] p-4">
+                  <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
+                  <p className="mt-1 truncate text-xs text-white/45">{userEmail}</p>
+                  <p className="mt-2 inline-flex rounded-md border border-white/[0.1] bg-white/[0.04] px-2 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+                    {role || 'Client'}
+                  </p>
+                </div>
 
-                <form action={logout} onClick={(e) => e.stopPropagation()} onTouchEnd={(e) => e.stopPropagation()}>
-                  <button
-                    type="submit"
-                    className="pointer-events-auto mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90"
+                <div className="p-2">
+                  <Link
+                    href="/dashboard/settings"
+                    className="flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
                   >
-                    <span className="px-3">Log Out</span>
-                    <LogOut className="mr-3 h-4 w-4 text-black/60" />
-                  </button>
-                </form>
+                    Settings
+                    <Settings className="h-4 w-4 text-white/40" />
+                  </Link>
+
+                  <Link
+                    href="/dashboard/support"
+                    className="flex h-11 items-center justify-between rounded-md px-3 text-sm text-white/70 transition-none hover:bg-white/[0.07] hover:text-white active:bg-white/[0.1]"
+                  >
+                    Help
+                    <LifeBuoy className="h-4 w-4 text-white/40" />
+                  </Link>
+
+                  <form action={logout}>
+                    <button
+                      type="submit"
+                      className="mt-2 flex h-11 w-full items-center justify-between rounded-md bg-white text-sm font-medium text-black transition-none hover:bg-white/90 active:bg-white/80"
+                    >
+                      <span className="px-3">Log Out</span>
+                      <LogOut className="mr-3 h-4 w-4 text-black/60" />
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
+            </>
           )}
 
           {notificationsOpen && (
-            <div
-              ref={notificationsRef}
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
-              className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
-            >
+            <>
+              {/* Mobile backdrop - closes dropdown when tapping outside */}
+              <div
+                className="fixed inset-0 z-[85] lg:hidden"
+                onTouchEnd={() => setNotificationsOpen(false)}
+                onClick={() => setNotificationsOpen(false)}
+              />
+              <div
+                ref={notificationsRef}
+                className="absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
+              >
               <div className="flex h-11 items-center border-b border-white/[0.08]">
                 <button
                   onClick={() => setNotificationTab('inbox')}
@@ -423,7 +439,8 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
                   Archive All
                 </button>
               )}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -454,17 +471,6 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
         <div
           className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* Separate overlay for closing dropdowns on mobile */}
-      {(accountMenuOpen || notificationsOpen) && mobileOpen && (
-        <div
-          className="fixed inset-0 z-[110] lg:hidden"
-          onClick={() => {
-            setAccountMenuOpen(false)
-            setNotificationsOpen(false)
-          }}
         />
       )}
 
