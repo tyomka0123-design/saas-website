@@ -175,8 +175,8 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       className={cn(
         'overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]',
         mobile
-          ? 'fixed inset-x-3 bottom-3 z-[140] max-h-[min(70vh,560px)]'
-          : 'absolute bottom-11 left-0 right-0 z-[90] md:right-auto md:w-[408px]'
+  ? 'fixed left-0 bottom-3 z-[140] w-[292px] max-w-[calc(100vw-12px)] max-h-[min(70vh,560px)]'
+  : 'absolute bottom-11 left-0 right-0 z-[90] md:right-auto md:w-[408px]'
       )}
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
@@ -330,8 +330,8 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
       className={cn(
         'overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]',
         mobile
-          ? 'fixed inset-x-3 bottom-3 z-[150]'
-          : 'absolute bottom-11 left-0 right-0 z-[90]'
+  ? 'fixed left-0 bottom-3 z-[150] w-[292px] max-w-[calc(100vw-12px)]'
+  : 'absolute bottom-11 left-0 right-0 z-[90]'
       )}
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
