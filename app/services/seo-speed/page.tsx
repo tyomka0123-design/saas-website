@@ -1,11 +1,10 @@
-import Link from 'next/link'
 import {
   ArrowRight,
   BarChart3,
   CheckCircle2,
+  Circle,
   Gauge,
   Globe,
-  Layers3,
   LineChart,
   Search,
   ShieldCheck,
