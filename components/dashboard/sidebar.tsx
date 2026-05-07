@@ -82,7 +82,7 @@ export function Sidebar({ isAdmin, userName, userEmail, role }: SidebarProps) {
   )
 
   useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
+  function handleClickOutside(event: PointerEvent) {
     const target = event.target as Node
 
     if (
@@ -243,8 +243,9 @@ function archiveAll() {
     {accountMenuOpen && (
   <div
     ref={accountMenuRef}
+    onPointerDown={(e) => e.stopPropagation()}
     onClick={(e) => e.stopPropagation()}
-    className="pointer-events-auto absolute bottom-11 left-0 z-[80] w-[292px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+    className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
   >
         <div className="border-b border-white/[0.08] p-4">
           <p className="truncate text-sm font-medium text-white">{userName || 'User'}</p>
@@ -299,8 +300,9 @@ function archiveAll() {
     {notificationsOpen && (
   <div
     ref={notificationsRef}
+    onPointerDown={(e) => e.stopPropagation()}
     onClick={(e) => e.stopPropagation()}
-    className="pointer-events-auto absolute bottom-11 left-0 z-[80] w-[408px] overflow-hidden rounded-lg border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)]"
+    className="pointer-events-auto absolute bottom-11 left-0 right-0 z-[90] overflow-hidden rounded-2xl border border-white/[0.12] bg-black shadow-[0_24px_80px_rgba(0,0,0,0.75)] md:left-0 md:right-auto md:w-[408px]"
   >
         <div className="flex h-11 items-center border-b border-white/[0.08]">
           <button
@@ -457,7 +459,7 @@ function archiveAll() {
 
       <aside
         className={cn(
-          'fixed bottom-0 left-0 top-14 z-[70] flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
+          'fixed bottom-0 left-0 top-14 z-[80] flex w-[292px] flex-col border-r border-white/[0.08] bg-black transition-transform duration-200 lg:hidden',
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
