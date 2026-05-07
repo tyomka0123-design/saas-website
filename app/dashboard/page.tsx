@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import {
   ArrowRight,
   CheckCircle2,
-  CircleDashed,
+  ChevronRight,
+  Circle,
   Clock3,
   Code2,
   FileText,
@@ -18,11 +19,10 @@ import {
   ShieldCheck,
   Sparkles,
   UploadCloud,
-  Wand2,
   BarChart3,
-  CalendarClock,
   BellRing,
   LifeBuoy,
+  Activity,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/dashboard/status-badge'
@@ -31,6 +31,14 @@ type ProjectStep = {
   label: string
   description: string
   done: boolean
+}
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 }
 
 export default async function DashboardPage() {
@@ -77,49 +85,49 @@ export default async function DashboardPage() {
     user.user_metadata?.full_name?.split(' ')[0] ||
     'Client'
 
-  const currentOrder = orders?.[0]
+  const currentOrder = orders?.[0] || null
 
   const steps: ProjectStep[] = [
     {
-      label: 'Strategy',
-      description: 'Goals, positioning, and website direction',
+      label: 'Intake',
+      description: 'Project scope, goals, and requirements are captured.',
       done: !!currentOrder,
     },
     {
       label: 'Design',
-      description: 'Premium layout, visual system, and structure',
-      done: !!currentOrder && activeOrders !== 0,
+      description: 'Layout direction, visual hierarchy, and interface language.',
+      done: !!currentOrder && (activeOrders || 0) > 0,
     },
     {
       label: 'Development',
-      description: 'Fast, scalable, conversion-ready implementation',
+      description: 'Implementation, responsiveness, and system structure.',
       done: false,
     },
     {
       label: 'Launch',
-      description: 'QA, deployment, and final polish',
+      description: 'Review, polish, final delivery, and deployment.',
       done: false,
     },
   ]
 
   const stats = [
     {
-      label: 'Total Orders',
+      label: 'Total orders',
       value: totalOrders || 0,
       icon: FolderOpen,
       description: 'All submitted website requests',
     },
     {
-      label: 'Active Projects',
+      label: 'Active projects',
       value: activeOrders || 0,
       icon: Clock3,
-      description: 'Projects currently in progress',
+      description: 'Projects currently moving through delivery',
     },
     {
       label: 'Completed',
       value: completedOrders || 0,
       icon: CheckCircle2,
-      description: 'Delivered and finalized projects',
+      description: 'Finished and delivered projects',
     },
   ]
 
@@ -127,232 +135,229 @@ export default async function DashboardPage() {
     {
       href: '/dashboard/new-order',
       icon: Plus,
-      title: 'Create New Order',
-      text: 'Submit a new website request and outline the scope clearly.',
+      title: 'New order',
+      text: 'Create a new project request and define scope clearly.',
     },
     {
       href: '/dashboard/files',
       icon: UploadCloud,
-      title: 'Upload Brand Assets',
-      text: 'Send logos, content, images, references, and documents.',
+      title: 'Upload assets',
+      text: 'Send logos, content, references, and visual materials.',
     },
     {
       href: '/dashboard/messages',
       icon: MessageSquare,
-      title: 'Message the Team',
-      text: 'Ask questions, send feedback, and keep progress moving.',
+      title: 'Messages',
+      text: 'Keep communication and revision flow in one place.',
     },
     {
       href: '/dashboard/support',
       icon: LifeBuoy,
-      title: 'Get Support',
-      text: 'Need help with your project, files, or next steps? Reach out here.',
+      title: 'Support',
+      text: 'Get help with files, project process, or next steps.',
     },
   ]
 
-  const standards = [
+  const principles = [
     {
       icon: Rocket,
-      title: 'Performance-first',
-      text: 'Clean architecture, fast load times, and a premium experience that feels reliable.',
+      title: 'Fast execution',
+      text: 'Clean structure, controlled workflow, and serious delivery speed.',
     },
     {
       icon: ShieldCheck,
-      title: 'Serious delivery',
-      text: 'Clear milestones, structured workflow, and a professional client process from start to finish.',
+      title: 'Trust-focused',
+      text: 'A client workspace that feels stable, premium, and professional.',
     },
     {
-      icon: Wand2,
-      title: 'Product-level polish',
-      text: 'Thoughtful UI, visual consistency, and high-trust presentation across every screen.',
+      icon: Layers3,
+      title: 'System design',
+      text: 'Sections are organized like a product, not a random admin panel.',
     },
     {
       icon: LockKeyhole,
-      title: 'Stable systems',
-      text: 'Scalable builds designed to support growth, updates, and future expansion.',
+      title: 'Built to scale',
+      text: 'A stronger base for future updates, growth, and expansion.',
     },
   ]
 
   return (
-    <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#050505]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.11),transparent_28%),radial-gradient(circle_at_82%_14%,rgba(59,130,246,0.16),transparent_24%),radial-gradient(circle_at_76%_72%,rgba(99,102,241,0.16),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:72px_72px]" />
-        <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute right-24 top-32 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl" />
-        <div className="absolute bottom-0 right-16 h-56 w-56 rounded-full bg-white/[0.04] blur-3xl" />
+    <div className="space-y-4 pb-2">
+      <style>{`
+        @keyframes dashPulse {
+          0%, 100% { opacity: 0.45; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.08); }
+        }
 
-        <div className="relative grid gap-8 p-6 md:p-8 xl:grid-cols-[1.1fr_0.9fr] xl:p-10">
-          <div className="flex flex-col justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/60">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(74,222,128,0.95)] animate-pulse" />
+        @keyframes dashGlow {
+          0%, 100% { opacity: 0.24; }
+          50% { opacity: 0.75; }
+        }
+
+        @keyframes dashFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-6px); }
+        }
+
+        @keyframes dashSlide {
+          0% { transform: translateX(-6px); opacity: 0.15; }
+          50% { transform: translateX(0px); opacity: 1; }
+          100% { transform: translateX(6px); opacity: 0.15; }
+        }
+      `}</style>
+
+      <section className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+        <div className="grid xl:grid-cols-[1.12fr_0.88fr]">
+          <div className="relative border-b border-white/[0.07] xl:border-b-0 xl:border-r">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:88px_88px]" />
+            <div className="absolute left-[18%] top-[22%] h-28 w-28 rounded-full bg-white/[0.03] blur-3xl" />
+            <div className="absolute right-[10%] top-[10%] h-36 w-36 rounded-full bg-blue-500/[0.07] blur-3xl" />
+            <div className="absolute bottom-[14%] left-[34%] h-44 w-44 rounded-full bg-indigo-500/[0.05] blur-3xl" />
+
+            <div className="relative px-6 py-8 md:px-8 md:py-10 xl:px-10 xl:py-12">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/52">
+                <span
+                  className="h-2 w-2 rounded-full bg-white"
+                  style={{ animation: 'dashPulse 2.2s ease-in-out infinite' }}
+                />
                 Client workspace
               </div>
 
-              <div className="mt-6 max-w-3xl">
-                <h1 className="text-4xl font-semibold tracking-[-0.06em] text-white md:text-6xl">
-                  Serious project control,
-                  <span className="block text-white/92">built for premium clients.</span>
+              <div className="mt-8 max-w-3xl">
+                <h1 className="max-w-4xl text-[38px] font-semibold leading-[0.96] tracking-[-0.06em] text-white md:text-[58px]">
+                  Premium project control,
+                  <span className="block text-white/78">
+                    built to feel serious from the first second.
+                  </span>
                 </h1>
 
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/52 md:text-base">
-                  Welcome back, {firstName}. Track project status, files, communication, approvals,
-                  and delivery in one refined dashboard designed to feel clean, trustworthy, and high-end.
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/44 md:text-[15px]">
+                  Welcome back, {firstName}. This dashboard is designed as a refined client control
+                  center — not just to show status, but to create trust, clarity, and a stronger
+                  project experience from intake to launch.
                 </p>
               </div>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button
                   asChild
-                  className="h-11 rounded-xl bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
+                  className="h-11 rounded-full bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
                 >
                   <Link href="/dashboard/new-order">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Start New Project
+                    Start new project
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
 
                 <Button
                   asChild
                   variant="outline"
-                  className="h-11 rounded-xl border-white/[0.12] bg-white/[0.03] px-5 text-sm font-medium text-white hover:bg-white/[0.06]"
+                  className="h-11 rounded-full border-white/[0.1] bg-white/[0.02] px-5 text-sm text-white hover:bg-white/[0.05]"
                 >
-                  <Link href="/dashboard/orders">
-                    View All Orders
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  <Link href="/dashboard/orders">View all projects</Link>
                 </Button>
               </div>
-            </div>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {[
-                { label: 'Structured delivery', value: '01' },
-                { label: 'Premium presentation', value: '02' },
-                { label: 'Clear communication', value: '03' },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.035] p-4 backdrop-blur-sm transition-transform duration-500 hover:-translate-y-1"
-                >
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/34">{item.value}</p>
-                  <p className="mt-2 text-sm font-medium text-white/86">{item.label}</p>
-                </div>
-              ))}
+              <div className="mt-10 grid gap-3 md:grid-cols-3">
+                {[
+                  { value: '01', title: 'Structured delivery' },
+                  { value: '02', title: 'Client-grade clarity' },
+                  { value: '03', title: 'Controlled execution' },
+                ].map((item) => (
+                  <div
+                    key={item.value}
+                    className="rounded-[22px] border border-white/[0.07] bg-white/[0.02] px-4 py-4 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.035]"
+                  >
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-white/28">
+                      {item.value}
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-white/84">{item.title}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <div className="relative">
-            <div className="relative overflow-hidden rounded-[24px] border border-white/[0.08] bg-black/50 p-4 md:p-5">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.1),transparent_24%),radial-gradient(circle_at_78%_20%,rgba(59,130,246,0.18),transparent_28%),radial-gradient(circle_at_70%_78%,rgba(129,140,248,0.14),transparent_24%)]" />
-              <div className="absolute right-[-48px] top-[-48px] h-44 w-44 rounded-full border border-white/[0.08] [animation:spin_18s_linear_infinite]" />
-              <div className="absolute right-8 top-8 h-28 w-28 rounded-full border border-white/[0.08] [animation:spin_12s_linear_infinite_reverse]" />
-
-              <div className="relative space-y-4">
-                <div className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/35">Workspace status</p>
-                    <p className="mt-1 text-sm font-medium text-white">Client dashboard connected</p>
-                  </div>
-                  <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                    Live
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:88px_88px]" />
+            <div className="relative h-full min-h-[420px] px-6 py-8 md:px-8 md:py-10 xl:px-10 xl:py-12">
+              <div className="grid h-full gap-4 md:grid-cols-2 md:grid-rows-[auto_1fr_auto]">
+                <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.02] p-5 md:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                        Workspace signal
+                      </p>
+                      <p className="mt-2 text-sm font-medium text-white">System ready for delivery</p>
+                    </div>
+                    <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs text-white/60">
+                      Live
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-white/[0.08] bg-[#070707] p-4 transition-all duration-500 hover:border-white/[0.14] hover:bg-white/[0.045]">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
-                        <Layers3 className="h-5 w-5 text-white/78" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-white">Project Pipeline</p>
-                        <p className="text-xs text-white/40">Clear stages and delivery flow</p>
-                      </div>
-                    </div>
+                <div
+                  className="relative overflow-hidden rounded-[24px] border border-white/[0.07] bg-black p-5"
+                  style={{ animation: 'dashFloat 5.5s ease-in-out infinite' }}
+                >
+                  <div className="absolute left-6 top-10 h-px w-24 bg-white/[0.12]" />
+                  <div className="absolute left-[120px] top-10 h-px w-16 bg-blue-500/60" />
+                  <div className="absolute left-[180px] top-[39px] h-2 w-2 rounded-full bg-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.9)]" />
+                  <div className="absolute left-[182px] top-[39px] h-24 w-px bg-gradient-to-b from-blue-500/80 to-transparent" />
+                  <div className="absolute left-[182px] top-[136px] h-2 w-2 rounded-full bg-white/80" />
+                  <div className="absolute left-[184px] top-[138px] h-px w-24 bg-gradient-to-r from-white/70 to-transparent" />
 
-                    <div className="mt-5 space-y-3">
-                      {steps.map((step, index) => (
-                        <div key={step.label} className="flex items-start gap-3">
+                  <div className="relative">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                      Delivery graph
+                    </p>
+                    <h3 className="mt-3 text-lg font-medium tracking-[-0.03em] text-white">
+                      A cleaner client-facing system layer.
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-white/42">
+                      Thin lines, strict borders, and restrained signals give the interface a more
+                      professional SaaS feel.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-[24px] border border-white/[0.07] bg-black p-5">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                    Activity state
+                  </p>
+
+                  <div className="mt-5 space-y-4">
+                    {[
+                      { label: 'Scope intake', value: 'stable', glow: 'bg-white/90' },
+                      { label: 'Design direction', value: 'active', glow: 'bg-blue-400' },
+                      { label: 'Launch path', value: 'ready', glow: 'bg-white/65' },
+                    ].map((row) => (
+                      <div key={row.label}>
+                        <div className="mb-2 flex items-center justify-between text-xs">
+                          <span className="text-white/42">{row.label}</span>
+                          <span className="uppercase tracking-[0.18em] text-white/62">
+                            {row.value}
+                          </span>
+                        </div>
+                        <div className="h-[3px] overflow-hidden rounded-full bg-white/[0.06]">
                           <div
-                            className={`mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border text-[11px] ${
-                              step.done
-                                ? 'border-emerald-400/30 bg-emerald-400/12 text-emerald-300'
-                                : 'border-white/[0.1] bg-white/[0.03] text-white/50'
-                            }`}
-                          >
-                            {step.done ? (
-                              <CheckCircle2 className="h-3.5 w-3.5" />
-                            ) : (
-                              <span>{index + 1}</span>
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-white/90">{step.label}</p>
-                            <p className="text-xs leading-5 text-white/42">{step.description}</p>
-                          </div>
+                            className={`h-[3px] w-[72%] ${row.glow}`}
+                            style={{ animation: 'dashSlide 3.6s ease-in-out infinite' }}
+                          />
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/[0.08] bg-[#070707] p-4 transition-all duration-500 hover:border-white/[0.14] hover:bg-white/[0.045]">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]">
-                        <BarChart3 className="h-5 w-5 text-white/78" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-white">Delivery Signals</p>
-                        <p className="text-xs text-white/40">What the workspace is tracking</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-5 space-y-4">
-                      {[
-                        { label: 'Project visibility', value: 'High', width: 'w-[88%]' },
-                        { label: 'Asset readiness', value: 'Stable', width: 'w-[70%]' },
-                        { label: 'Launch alignment', value: 'Active', width: 'w-[76%]' },
-                      ].map((row) => (
-                        <div key={row.label}>
-                          <div className="mb-2 flex items-center justify-between text-xs">
-                            <span className="text-white/48">{row.label}</span>
-                            <span className="text-white/72">{row.value}</span>
-                          </div>
-                          <div className="h-2 rounded-full bg-white/[0.06]">
-                            <div
-                              className={`h-2 rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0.7),rgba(59,130,246,0.9))] ${row.width}`}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-[1.2fr_0.8fr]">
-                  <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/34">Delivery model</p>
-                    <p className="mt-3 text-lg font-medium tracking-[-0.03em] text-white">
-                      Designed to feel premium before the launch even happens.
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-white/46">
-                      The goal is not only to build a site, but to present the project in a way that gives the client trust, clarity, and momentum.
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/34">Visual layer</p>
-                    <div className="mt-4 flex items-end gap-2">
-                      <div className="h-12 w-10 rounded-t-xl bg-white/90" />
-                      <div className="h-20 w-10 rounded-t-xl bg-white/65" />
-                      <div className="h-28 w-10 rounded-t-xl bg-blue-400/90" />
-                      <div className="h-16 w-10 rounded-t-xl bg-indigo-300/70" />
-                    </div>
-                    <p className="mt-4 text-xs leading-5 text-white/48">
-                      Clean dark foundation with restrained color accents for a serious SaaS feel.
-                    </p>
-                  </div>
+                <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.02] p-5 md:col-span-2">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                    Design direction
+                  </p>
+                  <p className="mt-3 text-base font-medium tracking-[-0.03em] text-white">
+                    Controlled dark interface with high-trust spacing, modular borders, and subtle
+                    blue infrastructure signals.
+                  </p>
                 </div>
               </div>
             </div>
@@ -364,266 +369,278 @@ export default async function DashboardPage() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="group rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5 transition-all duration-500 hover:-translate-y-1 hover:border-white/[0.14]"
+            className="rounded-[26px] border border-white/[0.07] bg-black p-5 transition-all duration-500 hover:border-white/[0.12]"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/40">
-                <stat.icon className="h-5 w-5 text-white/82" />
+            <div className="flex items-start justify-between">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
+                <stat.icon className="h-4.5 w-4.5 text-white/76" />
               </div>
-              <div className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] text-white/36">
-                Live
-              </div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-white/28">Metric</div>
             </div>
 
-            <div className="mt-7">
-              <p className="text-4xl font-semibold tracking-[-0.06em] text-white">{stat.value}</p>
-              <p className="mt-2 text-sm font-medium text-white/82">{stat.label}</p>
-              <p className="mt-1 text-sm leading-6 text-white/42">{stat.description}</p>
+            <div className="mt-8">
+              <p className="text-[42px] font-semibold leading-none tracking-[-0.06em] text-white">
+                {stat.value}
+              </p>
+              <p className="mt-3 text-sm font-medium text-white/82">{stat.label}</p>
+              <p className="mt-1 text-sm leading-6 text-white/40">{stat.description}</p>
             </div>
           </div>
         ))}
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
-        <div className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#050505] p-6 md:p-7">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_0%,rgba(255,255,255,0.11),transparent_25%),radial-gradient(circle_at_95%_0%,rgba(59,130,246,0.16),transparent_28%)]" />
+        <div className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+          <div className="grid border-b border-white/[0.07] md:grid-cols-[0.95fr_1.05fr]">
+            <div className="border-b border-white/[0.07] p-6 md:border-b-0 md:border-r md:p-7">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">Current project</p>
+              <h2 className="mt-3 text-[30px] font-semibold leading-[1] tracking-[-0.05em] text-white md:text-[38px]">
+                {currentOrder ? currentOrder.business_name : 'No active project yet.'}
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/42">
+                {currentOrder
+                  ? 'Your latest order becomes the active workspace layer, where project state, structure, files, and delivery signals can be monitored in one place.'
+                  : 'Once your first order is submitted, this section becomes the main delivery layer for project structure, stage visibility, and next actions.'}
+              </p>
 
-          <div className="relative">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-white/35">Current project</p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
-                  {currentOrder ? currentOrder.business_name : 'Your workspace is ready'}
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/46">
-                  {currentOrder
-                    ? 'Your most recent order is shown below with the latest project context and next-stage structure.'
-                    : 'You do not have an active order yet. Once you submit a project, this area will show the build status, workflow, and next steps.'}
-                </p>
-              </div>
-
-              <div className="rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs text-white/58">
-                {currentOrder ? 'Active workspace' : 'Awaiting first order'}
+              <div className="mt-8 flex flex-wrap gap-3">
+                {currentOrder ? (
+                  <>
+                    <StatusBadge status={currentOrder.status} />
+                    <div className="rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-xs text-white/58">
+                      {currentOrder.website_type}
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-xs text-white/58">
+                    Awaiting first order
+                  </div>
+                )}
               </div>
             </div>
 
-            {currentOrder ? (
-              <div className="mt-7 grid gap-4">
-                <div className="grid gap-4 lg:grid-cols-[1fr_0.92fr]">
-                  <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-5">
-                    <div className="flex items-center justify-between gap-4">
+            <div className="relative p-6 md:p-7">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:74px_74px]" />
+              <div className="relative">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">Project path</p>
+
+                <div className="mt-6 space-y-4">
+                  {steps.map((step, index) => (
+                    <div key={step.label} className="flex items-start gap-4">
+                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] text-xs text-white/70">
+                        {step.done ? <CheckCircle2 className="h-4 w-4 text-white" /> : index + 1}
+                      </div>
+
                       <div>
-                        <p className="text-xs uppercase tracking-[0.18em] text-white/34">Project type</p>
-                        <p className="mt-2 text-lg font-medium text-white">{currentOrder.website_type}</p>
+                        <p className="text-sm font-medium text-white">{step.label}</p>
+                        <p className="mt-1 text-sm leading-6 text-white/40">{step.description}</p>
                       </div>
-                      <StatusBadge status={currentOrder.status} />
-                    </div>
-
-                    <div className="mt-6">
-                      <div className="mb-3 flex items-center justify-between text-sm">
-                        <span className="text-white/52">Progress overview</span>
-                        <span className="text-white/82">56%</span>
-                      </div>
-                      <div className="h-2.5 rounded-full bg-white/[0.06]">
-                        <div className="h-2.5 w-[56%] rounded-full bg-[linear-gradient(90deg,rgba(255,255,255,0.95),rgba(59,130,246,0.85))]" />
-                      </div>
-                    </div>
-
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      {steps.map((step, index) => (
-                        <div
-                          key={step.label}
-                          className="rounded-2xl border border-white/[0.08] bg-black/40 p-4"
-                        >
-                          <div className="flex items-center gap-2">
-                            {step.done ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-                            ) : (
-                              <CircleDashed className="h-4 w-4 text-white/45" />
-                            )}
-                            <p className="text-sm font-medium text-white">
-                              {index + 1}. {step.label}
-                            </p>
-                          </div>
-                          <p className="mt-2 text-xs leading-5 text-white/42">{step.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5">
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/34">Project focus</p>
-                    <h3 className="mt-3 text-lg font-medium tracking-[-0.03em] text-white">
-                      Clean structure, premium feel, and strong client confidence.
-                    </h3>
-
-                    <div className="mt-5 space-y-3">
-                      {[
-                        'Clear page structure and content hierarchy',
-                        'Modern, trustworthy visual presentation',
-                        'Strong performance and scalable implementation',
-                        'Smooth delivery path from idea to launch',
-                      ].map((item) => (
-                        <div key={item} className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-black/35 p-3">
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />
-                          <p className="text-sm leading-6 text-white/70">{item}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="mt-5 h-11 rounded-xl border-white/[0.12] bg-white/[0.04] text-white hover:bg-white/[0.08]"
-                    >
-                      <Link href={`/dashboard/orders/${currentOrder.id}`}>
-                        Open Project
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  {[
-                    {
-                      icon: CalendarClock,
-                      title: 'Timeline visibility',
-                      text: 'Project stages are organized so the client always sees what comes next.',
-                    },
-                    {
-                      icon: BellRing,
-                      title: 'Status clarity',
-                      text: 'Each request is easier to understand, review, and follow through the dashboard.',
-                    },
-                    {
-                      icon: Globe,
-                      title: 'Launch mindset',
-                      text: 'The workspace is built around completion, quality, and real delivery.',
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.title}
-                      className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4"
-                    >
-                      <item.icon className="h-5 w-5 text-white/74" />
-                      <p className="mt-4 text-sm font-medium text-white">{item.title}</p>
-                      <p className="mt-2 text-sm leading-6 text-white/42">{item.text}</p>
                     </div>
                   ))}
                 </div>
               </div>
-            ) : (
-              <div className="mt-7 grid gap-4 lg:grid-cols-[1fr_0.88fr]">
-                <div className="rounded-[24px] border border-white/[0.08] bg-white/[0.03] p-6">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/40">
-                    <Rocket className="h-6 w-6 text-white/80" />
+            </div>
+          </div>
+
+          {currentOrder ? (
+            <div className="grid md:grid-cols-[1.1fr_0.9fr]">
+              <div className="border-b border-white/[0.07] p-6 md:border-b-0 md:border-r md:p-7">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                      Build status
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-white">Project infrastructure layer</p>
                   </div>
-
-                  <h3 className="mt-6 text-2xl font-medium tracking-[-0.03em] text-white">
-                    Start your first premium build
-                  </h3>
-                  <p className="mt-3 max-w-xl text-sm leading-7 text-white/46">
-                    Submit your first order to unlock a more complete client workflow with tracking, assets, communication, and structured delivery stages.
-                  </p>
-
-                  <div className="mt-6 grid gap-3 md:grid-cols-2">
-                    {[
-                      'Business details and project scope',
-                      'Goals, references, and positioning',
-                      'Brand assets, images, and copy',
-                      'Structured review and launch process',
-                    ].map((item) => (
-                      <div key={item} className="rounded-2xl border border-white/[0.08] bg-black/35 p-4">
-                        <p className="text-sm text-white/72">{item}</p>
-                      </div>
-                    ))}
+                  <div className="rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 text-xs text-white/58">
+                    Active
                   </div>
-
-                  <Button
-                    asChild
-                    className="mt-6 h-11 rounded-xl bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
-                  >
-                    <Link href="/dashboard/new-order">Create Order</Link>
-                  </Button>
                 </div>
 
-                <div className="overflow-hidden rounded-[24px] border border-white/[0.08] bg-black/45 p-5">
-                  <div className="rounded-[22px] border border-white/[0.08] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_90%_15%,rgba(59,130,246,0.18),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-5">
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/34">Workspace preview</p>
-                    <div className="mt-5 space-y-3">
-                      <div className="h-10 rounded-xl border border-white/[0.08] bg-white/[0.06]" />
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="h-24 rounded-2xl border border-white/[0.08] bg-white/[0.05]" />
-                        <div className="h-24 rounded-2xl border border-white/[0.08] bg-blue-500/10" />
-                        <div className="h-24 rounded-2xl border border-white/[0.08] bg-white/[0.05]" />
-                      </div>
-                      <div className="h-36 rounded-2xl border border-white/[0.08] bg-white/[0.04]" />
-                    </div>
+                <div className="mt-6">
+                  <div className="mb-2 flex items-center justify-between text-xs">
+                    <span className="text-white/42">Execution progress</span>
+                    <span className="text-white/70">56%</span>
                   </div>
+                  <div className="h-[4px] rounded-full bg-white/[0.06]">
+                    <div className="h-[4px] w-[56%] rounded-full bg-white" />
+                  </div>
+                </div>
 
-                  <p className="mt-5 text-sm leading-6 text-white/44">
-                    A more complete dashboard experience starts once a project is submitted.
+                <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {[
+                    'Project scope recorded',
+                    'System direction aligned',
+                    'Design-to-build path structured',
+                    'Launch workflow prepared',
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      className="rounded-[20px] border border-white/[0.07] bg-white/[0.02] px-4 py-4"
+                    >
+                      <p className="text-sm text-white/72">{item}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  className="mt-6 h-11 rounded-full border-white/[0.1] bg-white/[0.02] text-white hover:bg-white/[0.05]"
+                >
+                  <Link href={`/dashboard/orders/${currentOrder.id}`}>
+                    Open project workspace
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="p-6 md:p-7">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                  Project details
+                </p>
+
+                <div className="mt-5 space-y-3">
+                  {[
+                    {
+                      label: 'Business',
+                      value: currentOrder.business_name,
+                    },
+                    {
+                      label: 'Type',
+                      value: currentOrder.website_type,
+                    },
+                    {
+                      label: 'Created',
+                      value: formatDate(currentOrder.created_at),
+                    },
+                    {
+                      label: 'Status',
+                      value: currentOrder.status,
+                    },
+                  ].map((row) => (
+                    <div
+                      key={row.label}
+                      className="flex items-center justify-between rounded-[18px] border border-white/[0.07] bg-white/[0.02] px-4 py-3"
+                    >
+                      <span className="text-sm text-white/42">{row.label}</span>
+                      <span className="text-sm text-white/82">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 rounded-[22px] border border-white/[0.07] bg-black p-4">
+                  <p className="text-sm font-medium text-white">Client-grade presentation matters.</p>
+                  <p className="mt-2 text-sm leading-6 text-white/40">
+                    This workspace is meant to make the whole project feel clearer, more refined,
+                    and more serious from the client side.
                   </p>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-[1fr_1fr]">
+              <div className="border-b border-white/[0.07] p-6 md:border-b-0 md:border-r md:p-7">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
+                  <Rocket className="h-5 w-5 text-white/78" />
+                </div>
+
+                <h3 className="mt-6 text-[28px] font-semibold leading-[1.02] tracking-[-0.05em] text-white">
+                  Start your first premium build.
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-white/42">
+                  Submit a project and unlock a more complete delivery experience with structure,
+                  files, communication, and stage visibility in one serious workspace.
+                </p>
+
+                <Button
+                  asChild
+                  className="mt-6 h-11 rounded-full bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
+                >
+                  <Link href="/dashboard/new-order">Create first order</Link>
+                </Button>
+              </div>
+
+              <div className="relative p-6 md:p-7">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:74px_74px]" />
+                <div className="relative rounded-[24px] border border-white/[0.07] bg-black p-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs uppercase tracking-[0.18em] text-white/32">
+                      Workspace preview
+                    </span>
+                    <span className="text-xs text-white/40">Preview</span>
+                  </div>
+
+                  <div className="mt-6 space-y-4">
+                    <div className="h-10 rounded-full border border-white/[0.07] bg-white/[0.02]" />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="h-24 rounded-[20px] border border-white/[0.07] bg-white/[0.02]" />
+                      <div className="h-24 rounded-[20px] border border-white/[0.07] bg-blue-500/[0.08]" />
+                      <div className="h-24 rounded-[20px] border border-white/[0.07] bg-white/[0.02]" />
+                    </div>
+                    <div className="h-40 rounded-[22px] border border-white/[0.07] bg-white/[0.02]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-[28px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-white/35">Quick actions</p>
-                <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white">
-                  Move your project forward
-                </h2>
-              </div>
-              <Sparkles className="h-5 w-5 text-white/48" />
+          <div className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+            <div className="border-b border-white/[0.07] px-6 py-5">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">Quick actions</p>
+              <h2 className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.05em] text-white">
+                Move the project forward.
+              </h2>
             </div>
 
-            <div className="mt-5 space-y-3">
+            <div className="divide-y divide-white/[0.07]">
               {quickActions.map((item) => (
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="group flex items-start gap-4 rounded-[22px] border border-white/[0.08] bg-black/35 p-4 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/[0.14] hover:bg-white/[0.05]"
+                  className="group flex items-start gap-4 px-6 py-5 transition-colors duration-300 hover:bg-white/[0.02]"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]">
-                    <item.icon className="h-5 w-5 text-white/78" />
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
+                    <item.icon className="h-4.5 w-4.5 text-white/74" />
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-white">{item.title}</p>
-                    <p className="mt-1 text-sm leading-6 text-white/42">{item.text}</p>
+                    <p className="mt-1 text-sm leading-6 text-white/40">{item.text}</p>
                   </div>
 
-                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-white/28 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white/70" />
+                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-white/22 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white/64" />
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/[0.08] bg-[#050505] p-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/35">Build standards</p>
-            <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white">
-              What this workspace is built around
-            </h2>
+          <div className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+            <div className="border-b border-white/[0.07] px-6 py-5">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                Design principles
+              </p>
+              <h2 className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.05em] text-white">
+                Built like a product.
+              </h2>
+            </div>
 
-            <div className="mt-5 grid gap-3">
-              {standards.map((item) => (
+            <div className="grid">
+              {principles.map((item, index) => (
                 <div
                   key={item.title}
-                  className="rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4 transition-all duration-500 hover:border-white/[0.14]"
+                  className={`px-6 py-5 ${index !== principles.length - 1 ? 'border-b border-white/[0.07]' : ''}`}
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/40">
-                      <item.icon className="h-4.5 w-4.5 text-white/75" />
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
+                      <item.icon className="h-4.5 w-4.5 text-white/74" />
                     </div>
+
                     <div>
                       <p className="text-sm font-medium text-white">{item.title}</p>
-                      <p className="mt-1 text-sm leading-6 text-white/42">{item.text}</p>
+                      <p className="mt-1 text-sm leading-6 text-white/40">{item.text}</p>
                     </div>
                   </div>
                 </div>
@@ -633,66 +650,66 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[0.88fr_1.12fr]">
-        <div className="rounded-[28px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/35">Client flow</p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white">
-                How delivery is structured
-              </h2>
-            </div>
-            <Code2 className="h-5 w-5 text-white/42" />
+      <section className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+          <div className="border-b border-white/[0.07] px-6 py-5">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">System layer</p>
+            <h2 className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.05em] text-white">
+              Delivery flow
+            </h2>
           </div>
 
-          <div className="mt-6 space-y-4">
-            {[
-              {
-                number: '01',
-                title: 'Project submitted',
-                text: 'Scope, goals, and key details enter the workspace in a structured format.',
-              },
-              {
-                number: '02',
-                title: 'Assets and communication',
-                text: 'Files, references, and feedback stay organized in one place instead of getting lost.',
-              },
-              {
-                number: '03',
-                title: 'Build and review',
-                text: 'The project moves through design, implementation, and refinement with visibility.',
-              },
-              {
-                number: '04',
-                title: 'Launch readiness',
-                text: 'Final delivery becomes cleaner, more confident, and more professional for the client.',
-              },
-            ].map((item) => (
-              <div key={item.number} className="flex gap-4 rounded-[22px] border border-white/[0.08] bg-black/35 p-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.04] text-xs font-medium text-white/72">
-                  {item.number}
-                </div>
-                <div>
+          <div className="relative px-6 py-6">
+            <div className="absolute left-10 top-0 bottom-0 w-px bg-white/[0.06]" />
+            <div className="space-y-5">
+              {[
+                {
+                  title: 'Project submitted',
+                  text: 'A structured order enters the workspace with clear project context.',
+                },
+                {
+                  title: 'Assets and communication',
+                  text: 'Files, references, updates, and messages stay centralized.',
+                },
+                {
+                  title: 'Design and implementation',
+                  text: 'The project moves through a more controlled build pipeline.',
+                },
+                {
+                  title: 'Review and delivery',
+                  text: 'Final output feels cleaner, more organized, and more professional.',
+                },
+              ].map((item, index) => (
+                <div key={item.title} className="relative pl-12">
+                  <div
+                    className="absolute left-[3px] top-[7px] h-4 w-4 rounded-full border border-white/[0.1] bg-black"
+                    style={{ animation: index === 1 ? 'dashPulse 2.2s ease-in-out infinite' : undefined }}
+                  >
+                    <div className="absolute inset-[4px] rounded-full bg-white" />
+                  </div>
+
                   <p className="text-sm font-medium text-white">{item.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-white/42">{item.text}</p>
+                  <p className="mt-1 text-sm leading-6 text-white/40">{item.text}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-white/[0.08] bg-[#050505]">
-          <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5">
+        <div className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+          <div className="flex items-center justify-between border-b border-white/[0.07] px-6 py-5">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/35">Orders</p>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white">
-                Recent project activity
+              <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">
+                Recent activity
+              </p>
+              <h2 className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.05em] text-white">
+                Orders and project movement
               </h2>
             </div>
 
             <Link
               href="/dashboard/orders"
-              className="inline-flex items-center text-sm text-white/58 transition hover:text-white"
+              className="inline-flex items-center text-sm text-white/54 transition hover:text-white"
             >
               View all
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -706,10 +723,10 @@ export default async function DashboardPage() {
                   <Link
                     key={order.id}
                     href={`/dashboard/orders/${order.id}`}
-                    className="group flex items-center justify-between gap-4 rounded-[22px] border border-white/[0.08] bg-white/[0.03] p-4 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/[0.14] hover:bg-white/[0.05]"
+                    className="group flex items-center justify-between gap-4 rounded-[24px] border border-white/[0.07] bg-white/[0.02] px-4 py-4 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.035]"
                   >
                     <div className="flex min-w-0 items-start gap-4">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/35 text-sm font-medium text-white/70">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-black text-xs font-medium text-white/74">
                         {String(index + 1).padStart(2, '0')}
                       </div>
 
@@ -717,38 +734,106 @@ export default async function DashboardPage() {
                         <h3 className="truncate text-sm font-medium text-white">
                           {order.business_name}
                         </h3>
-                        <p className="mt-1 text-sm text-white/42">
-                          {order.website_type}
-                        </p>
-                        <p className="mt-1 text-xs text-white/30">
-                          {new Date(order.created_at).toLocaleDateString()}
-                        </p>
+                        <p className="mt-1 text-sm text-white/42">{order.website_type}</p>
+                        <p className="mt-1 text-xs text-white/28">{formatDate(order.created_at)}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <StatusBadge status={order.status} />
-                      <ArrowRight className="h-4 w-4 text-white/24 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white/70" />
+                      <ChevronRight className="h-4 w-4 text-white/24 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white/64" />
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="py-16 text-center">
-                <FileText className="mx-auto h-10 w-10 text-white/24" />
-                <h3 className="mt-4 text-lg font-medium text-white">No orders yet</h3>
-                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-white/40">
-                  Once you submit your first project request, recent activity will appear here with status updates and direct access.
+              <div className="flex min-h-[320px] flex-col items-center justify-center px-6 py-12 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02]">
+                  <FileText className="h-5 w-5 text-white/70" />
+                </div>
+
+                <h3 className="mt-6 text-xl font-medium tracking-[-0.03em] text-white">
+                  No orders yet
+                </h3>
+                <p className="mt-3 max-w-md text-sm leading-7 text-white/40">
+                  Create your first order to start building a cleaner client workflow with structure,
+                  visibility, and delivery control.
                 </p>
 
                 <Button
                   asChild
-                  className="mt-6 h-11 rounded-xl bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
+                  className="mt-6 h-11 rounded-full bg-white px-5 text-sm font-medium text-black hover:bg-white/90"
                 >
-                  <Link href="/dashboard/new-order">Create Your First Order</Link>
+                  <Link href="/dashboard/new-order">Create first order</Link>
                 </Button>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      <section className="overflow-hidden rounded-[28px] border border-white/[0.07] bg-black">
+        <div className="grid xl:grid-cols-[0.9fr_1.1fr]">
+          <div className="border-b border-white/[0.07] p-6 md:p-7 xl:border-b-0 xl:border-r">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-white/32">Infrastructure feel</p>
+            <h2 className="mt-3 text-[30px] font-semibold leading-[1.02] tracking-[-0.05em] text-white md:text-[40px]">
+              Less decoration.
+              <span className="block text-white/74">More system confidence.</span>
+            </h2>
+
+            <p className="mt-4 max-w-xl text-sm leading-7 text-white/40">
+              The goal is to make your dashboard feel closer to a real premium SaaS platform:
+              stricter lines, stronger spacing, lower noise, and more confidence in every block.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {[
+                { icon: Globe, label: 'Global-ready' },
+                { icon: BarChart3, label: 'Control-driven' },
+                { icon: Activity, label: 'Live system' },
+                { icon: Code2, label: 'Built in Next.js' },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-2 text-sm text-white/66"
+                >
+                  <item.icon className="h-4 w-4 text-white/58" />
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative min-h-[300px] p-6 md:p-7">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:86px_86px]" />
+
+            <div className="relative h-full">
+              <div className="absolute left-[8%] top-[62%] h-px w-[26%] bg-white/[0.08]" />
+              <div className="absolute left-[34%] top-[62%] h-px w-[18%] bg-blue-500/75" />
+              <div className="absolute left-[52%] top-[62%] h-px w-[22%] bg-white/[0.08]" />
+              <div className="absolute left-[74%] top-[62%] h-px w-[12%] bg-blue-500/75" />
+
+              <div className="absolute left-[34%] top-[61.5%] h-2.5 w-2.5 rounded-full bg-blue-400 shadow-[0_0_28px_rgba(59,130,246,0.9)]" />
+              <div
+                className="absolute left-[74%] top-[61.5%] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_28px_rgba(255,255,255,0.55)]"
+                style={{ animation: 'dashGlow 2.6s ease-in-out infinite' }}
+              />
+              <div className="absolute left-[52%] top-[46%] h-[16%] w-px bg-gradient-to-b from-blue-500/85 to-transparent" />
+              <div className="absolute left-[52%] top-[46%] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-blue-400 shadow-[0_0_28px_rgba(59,130,246,0.9)]" />
+
+              <div className="absolute left-[10%] top-[20%] rounded-full border border-white/[0.08] bg-black px-4 py-2 text-sm text-white/74">
+                Intake
+              </div>
+              <div className="absolute left-[42%] top-[38%] rounded-full border border-white/[0.08] bg-black px-4 py-2 text-sm text-white/74">
+                Build
+              </div>
+              <div className="absolute right-[12%] top-[20%] rounded-full border border-white/[0.08] bg-black px-4 py-2 text-sm text-white/74">
+                Launch
+              </div>
+              <div className="absolute left-[38%] bottom-[14%] rounded-full border border-white/[0.08] bg-black px-4 py-2 text-sm text-white/74">
+                Client system
+              </div>
+            </div>
           </div>
         </div>
       </section>
