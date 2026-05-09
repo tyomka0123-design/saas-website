@@ -19,12 +19,19 @@ import {
   ShieldCheck,
   Sparkles,
   Store,
-  Triangle,
   Users,
   Workflow,
   Zap,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
+
+// Featured items for Services with brand colors
+const featuredServices = [
+  { label: 'Next.js', desc: 'React framework for production', color: 'bg-white', textColor: 'text-black', icon: '▲' },
+  { label: 'Tailwind', desc: 'Utility-first CSS framework', color: 'bg-[#06B6D4]', textColor: 'text-white', icon: '◆' },
+  { label: 'Vercel', desc: 'Deploy with zero config', color: 'bg-gradient-to-br from-violet-500 to-pink-500', textColor: 'text-white', icon: '▲' },
+  { label: 'TypeScript', desc: 'JavaScript with types', color: 'bg-[#3178C6]', textColor: 'text-white', icon: 'TS' },
+]
 
 const menus = {
   Services: {
@@ -39,50 +46,49 @@ const menus = {
         ],
       },
       {
-        title: 'Platform',
+        title: 'Development',
         items: [
-          { icon: Code2, label: 'Custom Code', desc: 'No templates, no cheap builders' },
-          { icon: Database, label: 'Database Logic', desc: 'Orders, users, bookings, admin data' },
-          { icon: ShieldCheck, label: 'Secure Auth', desc: 'Login, accounts, protected routes' },
-          { icon: BarChart3, label: 'Analytics', desc: 'Track leads and website performance' },
+          { icon: Code2, label: 'Custom Code', desc: 'No templates, handcrafted builds' },
+          { icon: Database, label: 'Backend Systems', desc: 'APIs, databases, server logic' },
+          { icon: Globe, label: 'Domain & Hosting', desc: 'Deploy and connect your domain' },
         ],
       },
       {
-        title: 'For Business',
+        title: 'Solutions',
         items: [
-          { icon: Users, label: 'Local Businesses', desc: 'Restaurants, salons, shops, services' },
-          { icon: Rocket, label: 'Launch Package', desc: 'Design, build, deploy, optimize' },
-          { icon: Zap, label: 'Conversion UI', desc: 'Pages made to turn visitors into clients' },
+          { icon: Users, label: 'Small Business', desc: 'Perfect for local services' },
+          { icon: Rocket, label: 'Startup Launch', desc: 'MVP to market in weeks' },
+          { icon: Sparkles, label: 'Premium Design', desc: 'Stand out from competitors' },
         ],
       },
     ],
+    featured: featuredServices,
   },
   Process: {
     columns: [
       {
-        title: 'How It Works',
+        title: 'Project Stages',
         items: [
-          { icon: FileText, label: '1. Discovery', desc: 'We define your business goal' },
-          { icon: Sparkles, label: '2. Design Direction', desc: 'Premium look, clear structure' },
-          { icon: Code2, label: '3. Development', desc: 'Clean Next.js code and responsive UI' },
-          { icon: Rocket, label: '4. Launch', desc: 'Deploy online and connect your domain' },
+          { icon: FileText, label: 'Brief & Strategy', desc: 'Define goals and requirements' },
+          { icon: Sparkles, label: 'UI/UX Design', desc: 'Wireframes and visual mockups' },
+          { icon: Code2, label: 'Build & Code', desc: 'Development with modern stack' },
+          { icon: Rocket, label: 'Deploy & Go Live', desc: 'Launch your website online' },
         ],
       },
       {
-        title: 'Delivery',
+        title: 'Deliverables',
         items: [
-          { icon: CalendarCheck, label: 'Booking Setup', desc: 'Appointments, requests, forms' },
-          { icon: LayoutDashboard, label: 'Admin Controls', desc: 'Manage orders and clients' },
-          { icon: Globe, label: 'Live Website', desc: 'Hosted, fast, and production ready' },
-          { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
+          { icon: Globe, label: 'Live Website', desc: 'Fully functional production site' },
+          { icon: LayoutDashboard, label: 'Admin Access', desc: 'Manage content yourself' },
+          { icon: FileText, label: 'Documentation', desc: 'How to use your website' },
         ],
       },
       {
-        title: 'After Launch',
+        title: 'Support',
         items: [
-          { icon: BarChart3, label: 'Performance', desc: 'Review speed and conversion' },
-          { icon: Mail, label: 'Lead Review', desc: 'Check forms and client flow' },
-          { icon: Zap, label: 'Optimization', desc: 'Improve what brings results' },
+          { icon: Mail, label: 'Direct Contact', desc: 'Quick responses via email' },
+          { icon: Zap, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours' },
+          { icon: ShieldCheck, label: 'Maintenance', desc: 'Keep your site up to date' },
         ],
       },
     ],
@@ -90,28 +96,27 @@ const menus = {
   Workflows: {
     columns: [
       {
+        title: 'Client Tools',
+        items: [
+          { icon: CalendarCheck, label: 'Online Booking', desc: 'Clients schedule appointments' },
+          { icon: FileText, label: 'Contact Forms', desc: 'Capture leads and inquiries' },
+          { icon: Users, label: 'Client Portal', desc: 'Private area for customers' },
+        ],
+      },
+      {
+        title: 'Business Tools',
+        items: [
+          { icon: LayoutDashboard, label: 'Dashboard', desc: 'Overview of your business' },
+          { icon: Database, label: 'Data Management', desc: 'Orders, clients, inventory' },
+          { icon: BarChart3, label: 'Reports', desc: 'Insights and analytics' },
+        ],
+      },
+      {
         title: 'Automation',
         items: [
-          { icon: CalendarCheck, label: 'Booking Flow', desc: 'Client chooses time and sends details' },
-          { icon: Mail, label: 'Email Notifications', desc: 'Get notified when clients submit forms' },
-          { icon: Database, label: 'Order Storage', desc: 'Save every client request safely' },
-          { icon: Workflow, label: 'Business Logic', desc: 'Custom workflows for your service' },
-        ],
-      },
-      {
-        title: 'Management',
-        items: [
-          { icon: LayoutDashboard, label: 'Admin Panel', desc: 'See clients, orders, payments' },
-          { icon: BarChart3, label: 'Performance View', desc: 'Track what is working' },
-          { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
-        ],
-      },
-      {
-        title: 'Growth',
-        items: [
-          { icon: Search, label: 'SEO Tracking', desc: 'Understand how people find you' },
-          { icon: Rocket, label: 'Launch Updates', desc: 'Improve sections over time' },
-          { icon: Users, label: 'Client Journey', desc: 'Make visitors become clients' },
+          { icon: Mail, label: 'Email Alerts', desc: 'Get notified of new requests' },
+          { icon: Workflow, label: 'Auto-responses', desc: 'Instant client confirmations' },
+          { icon: Zap, label: 'Integrations', desc: 'Connect third-party tools' },
         ],
       },
     ],
@@ -256,53 +261,85 @@ export function Navbar() {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.12 }}
-          className="hidden lg:block absolute left-[180px] top-[58px] w-[760px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
+          className="hidden lg:block absolute left-[180px] top-[58px] w-[860px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
         >
-          <div className="relative w-full h-[340px] overflow-hidden">
+          <div className="relative w-full overflow-hidden">
             <motion.div
-              className="flex h-full"
+              className="flex"
               initial={false}
               animate={{ x: `-${menuIndex * 100}%` }}
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             >
-              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
-                <div key={menuKey} className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6">
-                  {menus[menuKey].columns.map((column) => (
-                    <div key={column.title} className="min-w-0">
-                      <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
-                      <div className="space-y-3">
-                        {column.items.map((item) => {
-                          const Icon = item.icon
-                          const active = hoveredItem === item.label
+              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => {
+                const menu = menus[menuKey]
+                const hasFeatured = 'featured' in menu && menu.featured
+                
+                return (
+                  <div key={menuKey} className="w-full shrink-0">
+                    <div className="grid grid-cols-3 gap-8 px-6 py-6">
+                      {menu.columns.map((column) => (
+                        <div key={column.title} className="min-w-0">
+                          <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
+                          <div className="space-y-3">
+                            {column.items.map((item) => {
+                              const Icon = item.icon
+                              const active = hoveredItem === item.label
 
-                          return (
-                            <Link
-                              href={item.href || '#'}
-                              key={item.label}
-                              onMouseEnter={() => setHoveredItem(item.label)}
-                              className="flex min-h-[50px] items-start gap-3"
+                              return (
+                                <Link
+                                  href={item.href || '#'}
+                                  key={item.label}
+                                  onMouseEnter={() => setHoveredItem(item.label)}
+                                  className="flex min-h-[50px] items-start gap-3"
+                                >
+                                  <div
+                                    className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
+                                      active
+                                        ? 'bg-white text-black border-white'
+                                        : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
+                                    }`}
+                                  >
+                                    <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                                  </div>
+                                  <div className="min-w-0 pt-[1px]">
+                                    <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
+                                    <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
+                                  </div>
+                                </Link>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Featured tech stack cards for Services */}
+                    {hasFeatured && (
+                      <div className="border-t border-white/[0.08] px-6 py-4">
+                        <p className="mb-3 text-[13px] text-white/40">Built With</p>
+                        <div className="grid grid-cols-4 gap-3">
+                          {menu.featured.map((tech) => (
+                            <div
+                              key={tech.label}
+                              className="group flex items-center gap-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3 transition-colors hover:border-white/[0.16] hover:bg-white/[0.04]"
                             >
                               <div
-                                className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
-                                  active
-                                    ? 'bg-white text-black border-white'
-                                    : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
-                                }`}
+                                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${tech.color} ${tech.textColor} text-xs font-bold`}
                               >
-                                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                                {tech.icon}
                               </div>
-                              <div className="min-w-0 pt-[1px]">
-                                <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
-                                <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
+                              <div className="min-w-0">
+                                <p className="text-[13px] font-medium text-white">{tech.label}</p>
+                                <p className="truncate text-[11px] text-white/40">{tech.desc}</p>
                               </div>
-                            </Link>
-                          )
-                        })}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                    )}
+                  </div>
+                )
+              })}
             </motion.div>
           </div>
         </motion.div>
