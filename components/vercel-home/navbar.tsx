@@ -6,22 +6,41 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
   BarChart3,
+  Bell,
+  Blocks,
   CalendarCheck,
   ChevronDown,
+  ClipboardList,
   Code2,
+  Cog,
   Database,
+  FileCheck,
   FileText,
+  FolderKanban,
   Globe,
+  Layers,
   LayoutDashboard,
+  LineChart,
   Mail,
+  MessageSquare,
+  Palette,
+  PenTool,
+  Play,
+  RefreshCcw,
   Rocket,
   Search,
+  Send,
+  Server,
+  Settings,
   ShieldCheck,
   Sparkles,
   Store,
-  Triangle,
+  Target,
+  Timer,
   Users,
+  Wand2,
   Workflow,
+  Wrench,
   Zap,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -39,20 +58,19 @@ const menus = {
         ],
       },
       {
-        title: 'Platform',
+        title: 'Development',
         items: [
-          { icon: Code2, label: 'Custom Code', desc: 'No templates, no cheap builders' },
-          { icon: Database, label: 'Database Logic', desc: 'Orders, users, bookings, admin data' },
-          { icon: ShieldCheck, label: 'Secure Auth', desc: 'Login, accounts, protected routes' },
-          { icon: BarChart3, label: 'Analytics', desc: 'Track leads and website performance' },
+          { icon: Code2, label: 'Custom Code', desc: 'No templates, handcrafted builds' },
+          { icon: Database, label: 'Backend Systems', desc: 'APIs, databases, server logic' },
+          { icon: Globe, label: 'Domain & Hosting', desc: 'Deploy and connect your domain' },
         ],
       },
       {
-        title: 'For Business',
+        title: 'Solutions',
         items: [
-          { icon: Users, label: 'Local Businesses', desc: 'Restaurants, salons, shops, services' },
-          { icon: Rocket, label: 'Launch Package', desc: 'Design, build, deploy, optimize' },
-          { icon: Zap, label: 'Conversion UI', desc: 'Pages made to turn visitors into clients' },
+          { icon: Users, label: 'Small Business', desc: 'Perfect for local services' },
+          { icon: Rocket, label: 'Startup Launch', desc: 'MVP to market in weeks' },
+          { icon: Sparkles, label: 'Premium Design', desc: 'Stand out from competitors' },
         ],
       },
     ],
@@ -60,29 +78,28 @@ const menus = {
   Process: {
     columns: [
       {
-        title: 'How It Works',
+        title: 'Project Stages',
         items: [
-          { icon: FileText, label: '1. Discovery', desc: 'We define your business goal' },
-          { icon: Sparkles, label: '2. Design Direction', desc: 'Premium look, clear structure' },
-          { icon: Code2, label: '3. Development', desc: 'Clean Next.js code and responsive UI' },
-          { icon: Rocket, label: '4. Launch', desc: 'Deploy online and connect your domain' },
+          { icon: ClipboardList, label: 'Brief & Strategy', desc: 'Define goals and requirements' },
+          { icon: PenTool, label: 'UI/UX Design', desc: 'Wireframes and visual mockups' },
+          { icon: Layers, label: 'Build & Code', desc: 'Development with modern stack' },
+          { icon: Play, label: 'Deploy & Go Live', desc: 'Launch your website online' },
         ],
       },
       {
-        title: 'Delivery',
+        title: 'Deliverables',
         items: [
-          { icon: CalendarCheck, label: 'Booking Setup', desc: 'Appointments, requests, forms' },
-          { icon: LayoutDashboard, label: 'Admin Controls', desc: 'Manage orders and clients' },
-          { icon: Globe, label: 'Live Website', desc: 'Hosted, fast, and production ready' },
-          { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
+          { icon: Blocks, label: 'Live Website', desc: 'Fully functional production site' },
+          { icon: Settings, label: 'Admin Access', desc: 'Manage content yourself' },
+          { icon: FileCheck, label: 'Documentation', desc: 'How to use your website' },
         ],
       },
       {
-        title: 'After Launch',
+        title: 'Support',
         items: [
-          { icon: BarChart3, label: 'Performance', desc: 'Review speed and conversion' },
-          { icon: Mail, label: 'Lead Review', desc: 'Check forms and client flow' },
-          { icon: Zap, label: 'Optimization', desc: 'Improve what brings results' },
+          { icon: MessageSquare, label: 'Direct Contact', desc: 'Quick responses via email' },
+          { icon: Timer, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours' },
+          { icon: Wrench, label: 'Maintenance', desc: 'Keep your site up to date' },
         ],
       },
     ],
@@ -90,28 +107,27 @@ const menus = {
   Workflows: {
     columns: [
       {
+        title: 'Client Tools',
+        items: [
+          { icon: Target, label: 'Online Booking', desc: 'Clients schedule appointments' },
+          { icon: Send, label: 'Contact Forms', desc: 'Capture leads and inquiries' },
+          { icon: FolderKanban, label: 'Client Portal', desc: 'Private area for customers' },
+        ],
+      },
+      {
+        title: 'Business Tools',
+        items: [
+          { icon: Cog, label: 'Dashboard', desc: 'Overview of your business' },
+          { icon: Server, label: 'Data Management', desc: 'Orders, clients, inventory' },
+          { icon: LineChart, label: 'Reports', desc: 'Insights and analytics' },
+        ],
+      },
+      {
         title: 'Automation',
         items: [
-          { icon: CalendarCheck, label: 'Booking Flow', desc: 'Client chooses time and sends details' },
-          { icon: Mail, label: 'Email Notifications', desc: 'Get notified when clients submit forms' },
-          { icon: Database, label: 'Order Storage', desc: 'Save every client request safely' },
-          { icon: Workflow, label: 'Business Logic', desc: 'Custom workflows for your service' },
-        ],
-      },
-      {
-        title: 'Management',
-        items: [
-          { icon: LayoutDashboard, label: 'Admin Panel', desc: 'See clients, orders, payments' },
-          { icon: BarChart3, label: 'Performance View', desc: 'Track what is working' },
-          { icon: ShieldCheck, label: 'Private Access', desc: 'Only you can manage the system' },
-        ],
-      },
-      {
-        title: 'Growth',
-        items: [
-          { icon: Search, label: 'SEO Tracking', desc: 'Understand how people find you' },
-          { icon: Rocket, label: 'Launch Updates', desc: 'Improve sections over time' },
-          { icon: Users, label: 'Client Journey', desc: 'Make visitors become clients' },
+          { icon: Bell, label: 'Email Alerts', desc: 'Get notified of new requests' },
+          { icon: RefreshCcw, label: 'Auto-responses', desc: 'Instant client confirmations' },
+          { icon: Wand2, label: 'Integrations', desc: 'Connect third-party tools' },
         ],
       },
     ],
