@@ -6,32 +6,44 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
   BarChart3,
+  Bell,
+  Blocks,
   CalendarCheck,
   ChevronDown,
+  ClipboardList,
   Code2,
+  Cog,
   Database,
+  FileCheck,
   FileText,
+  FolderKanban,
   Globe,
+  Layers,
   LayoutDashboard,
+  LineChart,
   Mail,
+  MessageSquare,
+  Palette,
+  PenTool,
+  Play,
+  RefreshCcw,
   Rocket,
   Search,
+  Send,
+  Server,
+  Settings,
   ShieldCheck,
   Sparkles,
   Store,
+  Target,
+  Timer,
   Users,
+  Wand2,
   Workflow,
+  Wrench,
   Zap,
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
-
-// Featured items for Services with brand colors
-const featuredServices = [
-  { label: 'Next.js', desc: 'React framework for production', color: 'bg-white', textColor: 'text-black', icon: '▲' },
-  { label: 'Tailwind', desc: 'Utility-first CSS framework', color: 'bg-[#06B6D4]', textColor: 'text-white', icon: '◆' },
-  { label: 'Vercel', desc: 'Deploy with zero config', color: 'bg-gradient-to-br from-violet-500 to-pink-500', textColor: 'text-white', icon: '▲' },
-  { label: 'TypeScript', desc: 'JavaScript with types', color: 'bg-[#3178C6]', textColor: 'text-white', icon: 'TS' },
-]
 
 const menus = {
   Services: {
@@ -62,33 +74,32 @@ const menus = {
         ],
       },
     ],
-    featured: featuredServices,
   },
   Process: {
     columns: [
       {
         title: 'Project Stages',
         items: [
-          { icon: FileText, label: 'Brief & Strategy', desc: 'Define goals and requirements' },
-          { icon: Sparkles, label: 'UI/UX Design', desc: 'Wireframes and visual mockups' },
-          { icon: Code2, label: 'Build & Code', desc: 'Development with modern stack' },
-          { icon: Rocket, label: 'Deploy & Go Live', desc: 'Launch your website online' },
+          { icon: ClipboardList, label: 'Brief & Strategy', desc: 'Define goals and requirements' },
+          { icon: PenTool, label: 'UI/UX Design', desc: 'Wireframes and visual mockups' },
+          { icon: Layers, label: 'Build & Code', desc: 'Development with modern stack' },
+          { icon: Play, label: 'Deploy & Go Live', desc: 'Launch your website online' },
         ],
       },
       {
         title: 'Deliverables',
         items: [
-          { icon: Globe, label: 'Live Website', desc: 'Fully functional production site' },
-          { icon: LayoutDashboard, label: 'Admin Access', desc: 'Manage content yourself' },
-          { icon: FileText, label: 'Documentation', desc: 'How to use your website' },
+          { icon: Blocks, label: 'Live Website', desc: 'Fully functional production site' },
+          { icon: Settings, label: 'Admin Access', desc: 'Manage content yourself' },
+          { icon: FileCheck, label: 'Documentation', desc: 'How to use your website' },
         ],
       },
       {
         title: 'Support',
         items: [
-          { icon: Mail, label: 'Direct Contact', desc: 'Quick responses via email' },
-          { icon: Zap, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours' },
-          { icon: ShieldCheck, label: 'Maintenance', desc: 'Keep your site up to date' },
+          { icon: MessageSquare, label: 'Direct Contact', desc: 'Quick responses via email' },
+          { icon: Timer, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours' },
+          { icon: Wrench, label: 'Maintenance', desc: 'Keep your site up to date' },
         ],
       },
     ],
@@ -98,25 +109,25 @@ const menus = {
       {
         title: 'Client Tools',
         items: [
-          { icon: CalendarCheck, label: 'Online Booking', desc: 'Clients schedule appointments' },
-          { icon: FileText, label: 'Contact Forms', desc: 'Capture leads and inquiries' },
-          { icon: Users, label: 'Client Portal', desc: 'Private area for customers' },
+          { icon: Target, label: 'Online Booking', desc: 'Clients schedule appointments' },
+          { icon: Send, label: 'Contact Forms', desc: 'Capture leads and inquiries' },
+          { icon: FolderKanban, label: 'Client Portal', desc: 'Private area for customers' },
         ],
       },
       {
         title: 'Business Tools',
         items: [
-          { icon: LayoutDashboard, label: 'Dashboard', desc: 'Overview of your business' },
-          { icon: Database, label: 'Data Management', desc: 'Orders, clients, inventory' },
-          { icon: BarChart3, label: 'Reports', desc: 'Insights and analytics' },
+          { icon: Cog, label: 'Dashboard', desc: 'Overview of your business' },
+          { icon: Server, label: 'Data Management', desc: 'Orders, clients, inventory' },
+          { icon: LineChart, label: 'Reports', desc: 'Insights and analytics' },
         ],
       },
       {
         title: 'Automation',
         items: [
-          { icon: Mail, label: 'Email Alerts', desc: 'Get notified of new requests' },
-          { icon: Workflow, label: 'Auto-responses', desc: 'Instant client confirmations' },
-          { icon: Zap, label: 'Integrations', desc: 'Connect third-party tools' },
+          { icon: Bell, label: 'Email Alerts', desc: 'Get notified of new requests' },
+          { icon: RefreshCcw, label: 'Auto-responses', desc: 'Instant client confirmations' },
+          { icon: Wand2, label: 'Integrations', desc: 'Connect third-party tools' },
         ],
       },
     ],
@@ -261,85 +272,53 @@ export function Navbar() {
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.12 }}
-          className="hidden lg:block absolute left-[180px] top-[58px] w-[860px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
+          className="hidden lg:block absolute left-[180px] top-[58px] w-[760px] rounded-2xl border border-white/[0.1] bg-black/95 backdrop-blur-xl overflow-hidden"
         >
-          <div className="relative w-full overflow-hidden">
+          <div className="relative w-full h-[340px] overflow-hidden">
             <motion.div
-              className="flex"
+              className="flex h-full"
               initial={false}
               animate={{ x: `-${menuIndex * 100}%` }}
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             >
-              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => {
-                const menu = menus[menuKey]
-                const hasFeatured = 'featured' in menu && menu.featured
-                
-                return (
-                  <div key={menuKey} className="w-full shrink-0">
-                    <div className="grid grid-cols-3 gap-8 px-6 py-6">
-                      {menu.columns.map((column) => (
-                        <div key={column.title} className="min-w-0">
-                          <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
-                          <div className="space-y-3">
-                            {column.items.map((item) => {
-                              const Icon = item.icon
-                              const active = hoveredItem === item.label
+              {(['Services', 'Process', 'Workflows'] as const).map((menuKey) => (
+                <div key={menuKey} className="w-full h-full shrink-0 grid grid-cols-3 gap-8 px-6 py-6">
+                  {menus[menuKey].columns.map((column) => (
+                    <div key={column.title} className="min-w-0">
+                      <p className="mb-4 text-[13px] text-white/40">{column.title}</p>
+                      <div className="space-y-3">
+                        {column.items.map((item) => {
+                          const Icon = item.icon
+                          const active = hoveredItem === item.label
 
-                              return (
-                                <Link
-                                  href={item.href || '#'}
-                                  key={item.label}
-                                  onMouseEnter={() => setHoveredItem(item.label)}
-                                  className="flex min-h-[50px] items-start gap-3"
-                                >
-                                  <div
-                                    className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
-                                      active
-                                        ? 'bg-white text-black border-white'
-                                        : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
-                                    }`}
-                                  >
-                                    <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
-                                  </div>
-                                  <div className="min-w-0 pt-[1px]">
-                                    <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
-                                    <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
-                                  </div>
-                                </Link>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    {/* Featured tech stack cards for Services */}
-                    {hasFeatured && (
-                      <div className="border-t border-white/[0.08] px-6 py-4">
-                        <p className="mb-3 text-[13px] text-white/40">Built With</p>
-                        <div className="grid grid-cols-4 gap-3">
-                          {menu.featured.map((tech) => (
-                            <div
-                              key={tech.label}
-                              className="group flex items-center gap-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3 transition-colors hover:border-white/[0.16] hover:bg-white/[0.04]"
+                          return (
+                            <Link
+                              href={item.href || '#'}
+                              key={item.label}
+                              onMouseEnter={() => setHoveredItem(item.label)}
+                              className="flex min-h-[50px] items-start gap-3"
                             >
                               <div
-                                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${tech.color} ${tech.textColor} text-xs font-bold`}
+                                className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
+                                  active
+                                    ? 'bg-white text-black border-white'
+                                    : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
+                                }`}
                               >
-                                {tech.icon}
+                                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
                               </div>
-                              <div className="min-w-0">
-                                <p className="text-[13px] font-medium text-white">{tech.label}</p>
-                                <p className="truncate text-[11px] text-white/40">{tech.desc}</p>
+                              <div className="min-w-0 pt-[1px]">
+                                <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
+                                <p className="mt-0.5 text-[12px] leading-[17px] text-white/40">{item.desc}</p>
                               </div>
-                            </div>
-                          ))}
-                        </div>
+                            </Link>
+                          )
+                        })}
                       </div>
-                    )}
-                  </div>
-                )
-              })}
+                    </div>
+                  ))}
+                </div>
+              ))}
             </motion.div>
           </div>
         </motion.div>
