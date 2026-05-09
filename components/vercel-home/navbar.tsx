@@ -97,9 +97,9 @@ const menus = {
       {
         title: 'Support',
         items: [
-          { icon: MessageSquare, label: 'Direct Contact', desc: 'Quick responses via email' },
-          { icon: Timer, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours' },
-          { icon: Wrench, label: 'Maintenance', desc: 'Keep your site up to date' },
+          { icon: MessageSquare, label: 'Direct Contact', desc: 'Quick responses via email', iconColor: 'text-emerald-400' },
+          { icon: Timer, label: 'Fast Fixes', desc: 'Bug fixes within 24 hours', iconColor: 'text-amber-400' },
+          { icon: Wrench, label: 'Maintenance', desc: 'Keep your site up to date', iconColor: 'text-sky-400' },
         ],
       },
     ],
@@ -290,6 +290,7 @@ export function Navbar() {
                         {column.items.map((item) => {
                           const Icon = item.icon
                           const active = hoveredItem === item.label
+                          const hasIconColor = 'iconColor' in item && item.iconColor
 
                           return (
                             <Link
@@ -302,10 +303,12 @@ export function Navbar() {
                                 className={`mt-0.5 flex h-9 w-9 min-w-9 shrink-0 items-center justify-center rounded-lg border transition-colors duration-75 ${
                                   active
                                     ? 'bg-white text-black border-white'
-                                    : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
+                                    : hasIconColor
+                                      ? `bg-white/[0.02] border-white/[0.09]`
+                                      : 'bg-white/[0.02] text-white/55 border-white/[0.09]'
                                 }`}
                               >
-                                <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                                <Icon className={`h-4 w-4 shrink-0 ${hasIconColor && !active ? item.iconColor : ''}`} strokeWidth={1.8} />
                               </div>
                               <div className="min-w-0 pt-[1px]">
                                 <p className="text-[14px] leading-5 font-medium text-white">{item.label}</p>
